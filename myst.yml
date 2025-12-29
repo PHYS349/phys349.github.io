@@ -39,7 +39,7 @@ site:
   folders: true
   hide_authors: true
   options:
-    logo: null
+    logo: ./figures/PU-H-logo.jpg
     hide_myst_branding: true
 
   actions:
