@@ -6,18 +6,22 @@ project:
   authors:
     - name: Jonathan Hood
       affiliation: Purdue University
+  date: 2025-12-29 # ${BUILD_DATE} 
   github: https://github.com/PHYS349/phys349.github.io
   keywords:
     - quantum computing
     - physics
     - purdue
+  license:
+    content: CC-BY-4.0
 
-site:
-  template: book-theme
-  title: PHYS349 Introduction to Quantum Computing
-  actions:
-    - title: Brightspace
-      url: https://purdue.brightspace.com
+# exports and downloads
+exports:
+  - format: typst
+    template: lapreprint-typst
+    output: exports/book.pdf
+    id: output-pdf
+
 
 
 toc:
@@ -28,3 +32,14 @@ toc:
     children:
       - file: lectures/intro.md
       - file: lectures/qubits.md
+
+site:
+  template: book-theme
+  title: PHYS349
+  folders: true
+  hide_authors: true
+  
+  actions:
+    - title: Brightspace
+      url: https://purdue.brightspace.com
+
