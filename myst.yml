@@ -14,6 +14,7 @@ project:
 
 site:
   template: book-theme
+  title: PHYS349 Introduction to Quantum Computing
   actions:
     - title: Brightspace
       url: https://purdue.brightspace.com

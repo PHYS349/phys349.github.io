@@ -1,30 +1,12 @@
 # Introduction
 
-+++ {"part": "abstract"}
-This is my abstract!
-+++
+```{note}
+The template and its content are not meant as a replacement of the documentation already available on the [Jupyter Book 2 website](https://next.jupyterbook.org/) and the [MyST website](https://mystmd.org/guide). It is designed to support new users of Jupyter Book 2 and MystMD, in particular for use in workshop settings where participants may not have time or ability to install the required software on a personal computer.
+```
 
-I am a book about ... something! Wikipedia has [information about books](wiki:book): hover over the link for more information.
-
-% An admonition containing a note
-:::{note}
-Books are usually written on paper ... But Jupyter Book can create _websites_!
-:::
-
-If you sold 100 books at \$10 per book, you'd have \$1000 dollars according to [](#eq:book). If instead you publish your Jupyter Book to the web for free, you'd have \$0 dollars!
-
-% An arbitrary math equation
-:::{math}
-:name: eq:book
-
-x \times y = z
-:::
-
-Sometimes when reading it is helpful to foster a _tranquil_ environment. The image in [](#fig:mountains) would be a perfect spot!
-
-% A figure of a photograph of some mountains, followed by a caption
-:::{figure} https://github.com/rowanc1/pics/blob/main/mountains.png?raw=true
-:label: fig:mountains
-
-A photograph of some beautiful mountains to look at whilst reading.
+:::{myst}
+```{warning} Enjoyment Warning!
+Once you start building JB2 books, it is likely you will get hooked!
+For instance, try changing this cell in the browser and see its output!
+```
 :::

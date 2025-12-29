@@ -1,10 +1,24 @@
-\# PHYS 349
+---
+title: PHYS349 Introduction to Quantum Computing
+site:
+  hide_outline: true
+  hide_toc: true
+  hide_title_block: true
+---
 
+<div style="text-align: center">
 
+# PHYS349 Introduction to Quantum Computing
 
-Welcome to the course website.
+</div>
 
+<!-- ```{figure} content/figures/logo.svg
+:width: 80%
+:align: center
+``` -->
 
+_Course website for PHYS349_
 
-\- \[Introduction](intro.md)
-
+<div style="text-align: center", font-size: 1.2em>
+Jonathan Hood
+</div>
