@@ -39,7 +39,8 @@ site:
   folders: true
   hide_authors: true
   options:
-      hide_myst_branding: true
+    logo: null
+    hide_myst_branding: true
 
   actions:
     - title: Brightspace
