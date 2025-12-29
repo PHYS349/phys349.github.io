@@ -27,7 +27,6 @@ exports:
 toc:
   - file: index.md
   - file: syllabus.md
-  # - file: schedule.md
   - title: Lectures
     children:
       - file: lectures/intro.md
