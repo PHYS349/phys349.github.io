@@ -1,9 +1,9 @@
 ---
 title: PHYS349 Introduction to Quantum Computing
 site:
-  hide_outline: true
-  hide_toc: true
-  hide_title_block: true
+  hide_outline: false
+  hide_toc: false
+  hide_title_block: false
 ---
 
 <div style="text-align: center">
