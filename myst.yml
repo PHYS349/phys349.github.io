@@ -2,15 +2,11 @@
 version: 1
 project:
   id: 7204695b-7485-4989-863c-16cf6e4db155
-  title: Jupyter Book 2 Workshop Template
-  description: This description goes in the preface of the pdf output. 
+  title: PHYS349
+  description: Course website for PHYS 349
   # keywords: []
   authors:
-    - name: Freek Pols
-    - name: Luuk Fröling
-    - name: Robert Lanzafame
-    - name: Kirstie Whitaker
-    - name: Jim Madge
+    - name: Jonathan Hood
   license:
     content: CC-BY-4.0
   references:
@@ -18,7 +14,7 @@ project:
     jupyter: https://docs.jupyter.org/en/latest
 
   date: 2025-11-02 # ${BUILD_DATE} 
-  github: https://github.com/jupyter-book/workshop-template # Change this URL to your GitHub repository
+  github: https://github.com/PHYS349/phys349.github.io # Change this URL to your GitHub repository
   edit_url: 
   
   plugins:
