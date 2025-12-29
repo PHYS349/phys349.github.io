@@ -38,7 +38,9 @@ site:
   title: PHYS349
   folders: true
   hide_authors: true
-  
+  options:
+      hide_myst_branding: true
+
   actions:
     - title: Brightspace
       url: https://purdue.brightspace.com
