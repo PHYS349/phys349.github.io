@@ -26,7 +26,7 @@ exports:
 
 toc:
   - file: index.md
-  - file: syllabus.md
+  #- file: syllabus.md
   - title: Lectures
     children:
       - file: lectures/01_lecture.md

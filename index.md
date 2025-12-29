@@ -8,7 +8,9 @@ site:
 
 <div style="text-align: center">
 
-# PHYS349 Introduction to Quantum Computing
+%# PHYS349 Introduction to Quantum Computing
+Welcome to PHYS349: Introduction to Quantum Computing for Spring 2026.
+This course website will be updated soon...
 
 </div>
 
