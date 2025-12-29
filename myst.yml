@@ -29,8 +29,12 @@ toc:
   - file: syllabus.md
   - title: Lectures
     children:
-      - file: lectures/intro.md
-      - file: lectures/qubits.md
+      - file: lectures/01_lecture.md
+  - title: Homework
+    children:
+      - file: homework/01_homework.md
+
+  
 
 site:
   template: book-theme
