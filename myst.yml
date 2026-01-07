@@ -1,12 +1,13 @@
 # See docs at: https://mystmd.org/guide/frontmatter
 version: 1
+
 project:
   title: PHYS 349 - Introduction to Quantum Computing
   description: Course materials for PHYS 349 at Purdue University
   authors:
     - name: Jonathan Hood
       affiliation: Purdue University
-  date: 2025-12-29 # ${BUILD_DATE} 
+  date: 2025-12-29 # ${BUILD_DATE}
   github: https://github.com/PHYS349/phys349.github.io
   keywords:
     - quantum computing
@@ -15,39 +16,33 @@ project:
   license:
     content: CC-BY-4.0
 
-# exports and downloads
-exports:
-  - format: typst
-    template: lapreprint-typst
-    output: exports/book.pdf
-    id: output-pdf
+  toc:
+    - file: index.md
+    # - file: syllabus.md
+    - title: Lectures
+      children:
+        - file: lectures/01_lecture.md
+    - title: Homework
+      children:
+        - file: homework/01_homework.md
 
-
-
-toc:
-  - file: index.md
-  #- file: syllabus.md
-  - title: Lectures
-    children:
-      - file: lectures/01_lecture.md
-  - title: Homework
-    children:
-      - file: homework/01_homework.md
-
-  
+  exports:
+    - format: pdf          # (recommended if you only want a PDF)
+      template: lapreprint-typst
+      output: exports/book.pdf
+      id: output-pdf
+      articles:
+        - index.md
+        - lectures/01_lecture.md
+        - homework/01_homework.md
 
 site:
   template: book-theme
-
   options:
     logo: ./figures/PU-H-logo.jpg
-    hide_myst_branding: true
     style: ./style/custom.css
     folders: true
-    hide_authors: false
 
   actions:
     - title: Brightspace
       url: https://purdue.brightspace.com
-
-
