@@ -1,0 +1,78 @@
+/* style/custom.css
+   Minimal, safe overrides for MyST / Jupyter Book 2 (book-theme)
+*/
+
+/* ---------- 1) Global readability ---------- */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  line-height: 1.6;
+  font-size: 17px;
+}
+
+/* Make headings a bit tighter + consistent */
+h1, h2, h3, h4 {
+  line-height: 1.2;
+  margin-top: 1.2em;
+}
+
+/* ---------- 2) Links ---------- */
+a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- 3) Content width (gentle) ---------- */
+/* These selectors are intentionally broad to avoid theme-specific breakage. */
+main, article {
+  max-width: 900px;
+}
+
+/* ---------- 4) Code ---------- */
+pre, code {
+  font-size: 0.95em;
+}
+
+/* Code blocks: a touch more padding and rounding */
+pre {
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+/* Inline code: slightly rounded */
+code {
+  padding: 0.1em 0.25em;
+  border-radius: 6px;
+}
+
+/* ---------- 5) Tables ---------- */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 0.45rem 0.6rem;
+  vertical-align: top;
+}
+
+/* ---------- 6) Callouts (notes/warnings/etc.) ---------- */
+/* Many MyST callouts use some kind of "admonition" class; keep it defensive. */
+.admonition, .note, .warning, .important, .tip {
+  border-radius: 12px;
+}
+
+/* ---------- 7) Images ---------- */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
