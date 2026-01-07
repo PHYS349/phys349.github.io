@@ -40,7 +40,6 @@ site:
   template: book-theme
   options:
     logo: ./figures/PU-H-logo.jpg
-    style: ./style/custom.css
     folders: true
 
   actions:
