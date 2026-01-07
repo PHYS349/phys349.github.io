@@ -1,78 +1,211 @@
+```css
 /* style/custom.css
-   Minimal, safe overrides for MyST / Jupyter Book 2 (book-theme)
+   “Soft paper” look for MyST / Jupyter Book 2 (book-theme)
+   Save as: style/custom.css (matches your myst.yml: site.options.style)
 */
 
-/* ---------- 1) Global readability ---------- */
-html {
-  scroll-behavior: smooth;
+/* ---------- Palette (tweak these first) ---------- */
+:root{
+  --paper-bg: #e9e1d3;         /* page backdrop */
+  --paper-bg-2: #e3dacb;       /* subtle variation for texture */
+  --paper-surface: #fbf6ed;    /* the “sheet of paper” */
+  --paper-surface-2: #f6efe3;  /* gentle depth */
+  --ink: #2f2a24;              /* main text */
+  --ink-muted: #5a5248;        /* secondary text */
+  --accent: #b05b6b;           /* links / highlights */
+  --accent-2: #7a4a55;         /* hover/active */
+  --border: #d6cbbd;           /* thin lines */
+  --shadow: 0 18px 45px rgba(0,0,0,0.10);
+  --shadow-soft: 0 10px 22px rgba(0,0,0,0.08);
 }
 
-body {
-  line-height: 1.6;
-  font-size: 17px;
+/* ---------- Global background + “paper texture” ---------- */
+html, body{
+  height: 100%;
 }
 
-/* Make headings a bit tighter + consistent */
-h1, h2, h3, h4 {
-  line-height: 1.2;
-  margin-top: 1.2em;
+body{
+  color: var(--ink);
+  background-color: var(--paper-bg);
+
+  /* Paper-like texture using very subtle layered gradients (no images needed) */
+  background-image:
+    radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,0.35), rgba(255,255,255,0.0) 60%),
+    radial-gradient(900px 650px at 80% 20%, rgba(255,255,255,0.25), rgba(255,255,255,0.0) 55%),
+    radial-gradient(900px 700px at 50% 100%, rgba(0,0,0,0.035), rgba(0,0,0,0.0) 55%),
+    linear-gradient(180deg, var(--paper-bg), var(--paper-bg-2));
+  background-attachment: fixed;
+  line-height: 1.65;
 }
 
-/* ---------- 2) Links ---------- */
-a {
+/* Slightly softer “ink” for paragraph text */
+p, li{
+  color: var(--ink);
+}
+
+/* ---------- Links ---------- */
+a{
+  color: var(--accent);
   text-decoration: underline;
-  text-underline-offset: 0.15em;
+  text-underline-offset: 0.16em;
   text-decoration-thickness: 1px;
 }
-
-a:hover {
+a:hover{
+  color: var(--accent-2);
   text-decoration-thickness: 2px;
 }
 
-/* ---------- 3) Content width (gentle) ---------- */
-/* These selectors are intentionally broad to avoid theme-specific breakage. */
-main, article {
-  max-width: 900px;
+/* ---------- Main “paper sheet” (robust selectors) ---------- */
+/* MyST book-theme / Sphinx-ish / generic fallbacks */
+main,
+main article,
+article,
+.myst-content,
+.bd-main .bd-content,
+.bd-article,
+.content{
+  /* don’t force anything here yet; we’ll style the inner “page” below */
 }
 
-/* ---------- 4) Code ---------- */
-pre, code {
+/* Try to catch the primary reading container across themes */
+main article,
+.bd-main .bd-content,
+.bd-article,
+.myst-content,
+article{
+  background: linear-gradient(180deg, var(--paper-surface), var(--paper-surface-2));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 2.25rem 2.35rem;
+  margin: 1.75rem auto 2.5rem auto;
+  max-width: 980px;
+}
+
+/* Keep headings crisp but still “printed” */
+h1, h2, h3, h4{
+  color: var(--ink);
+  line-height: 1.2;
+}
+h1{
+  letter-spacing: -0.01em;
+}
+h2{
+  margin-top: 1.35em;
+  padding-bottom: 0.15em;
+  border-bottom: 1px solid rgba(214, 203, 189, 0.75);
+}
+
+/* Breadcrumbs / small UI text often looks too dark on paper */
+small, .small, .text-muted{
+  color: var(--ink-muted);
+}
+
+/* ---------- Sidebar / header (optional cohesion; safe fallbacks) ---------- */
+header,
+.navbar,
+.bd-header,
+.myst-header{
+  background: rgba(233, 225, 211, 0.75);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(214, 203, 189, 0.75);
+}
+
+/* Sidebars: make them parchment-y, not stark */
+.bd-sidebar,
+.bd-sidebar-primary,
+.bd-sidebar-secondary,
+.myst-sidebar,
+aside{
+  background: rgba(233, 225, 211, 0.60);
+  border-right: 1px solid rgba(214, 203, 189, 0.75);
+}
+
+/* ---------- Code blocks: “printed on paper” ---------- */
+pre, code{
   font-size: 0.95em;
 }
 
-/* Code blocks: a touch more padding and rounding */
-pre {
-  padding: 0.9rem 1rem;
-  border-radius: 10px;
+pre{
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(214, 203, 189, 0.9);
+  border-radius: 14px;
+  padding: 0.95rem 1.05rem;
+  box-shadow: var(--shadow-soft);
   overflow-x: auto;
 }
 
-/* Inline code: slightly rounded */
-code {
-  padding: 0.1em 0.25em;
-  border-radius: 6px;
+/* Inline code */
+code{
+  background: rgba(255,255,255,0.45);
+  border: 1px solid rgba(214, 203, 189, 0.7);
+  border-radius: 8px;
+  padding: 0.12em 0.3em;
 }
 
-/* ---------- 5) Tables ---------- */
-table {
-  border-collapse: collapse;
+/* ---------- Tables ---------- */
+table{
   width: 100%;
-}
-
-th, td {
-  padding: 0.45rem 0.6rem;
-  vertical-align: top;
-}
-
-/* ---------- 6) Callouts (notes/warnings/etc.) ---------- */
-/* Many MyST callouts use some kind of "admonition" class; keep it defensive. */
-.admonition, .note, .warning, .important, .tip {
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.35);
+  border: 1px solid rgba(214, 203, 189, 0.9);
   border-radius: 12px;
+  overflow: hidden;
+}
+th, td{
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid rgba(214, 203, 189, 0.6);
+}
+thead th{
+  background: rgba(255,255,255,0.55);
 }
 
-/* ---------- 7) Images ---------- */
-img {
+/* ---------- Admonitions / callouts (gentle) ---------- */
+.admonition,
+.note, .warning, .important, .tip,
+.myst-admonition{
+  background: rgba(255,255,255,0.40);
+  border: 1px solid rgba(214, 203, 189, 0.9);
+  border-radius: 14px;
+  box-shadow: var(--shadow-soft);
+}
+
+/* ---------- Images ---------- */
+img{
   max-width: 100%;
   height: auto;
-  border-radius: 10px;
+  border-radius: 14px;
 }
+
+/* ---------- Mobile padding ---------- */
+@media (max-width: 900px){
+  main article,
+  .bd-main .bd-content,
+  .bd-article,
+  .myst-content,
+  article{
+    padding: 1.25rem 1.15rem;
+    margin: 1rem 0.75rem 1.5rem 0.75rem;
+    border-radius: 16px;
+  }
+}
+
+/* ---------- Optional: Dark mode that still feels “paper-ish” ---------- */
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper-bg: #141210;
+    --paper-bg-2: #11100e;
+    --paper-surface: #1c1916;
+    --paper-surface-2: #171512;
+    --ink: #e8e0d6;
+    --ink-muted: #c7bdb2;
+    --border: rgba(255,255,255,0.10);
+    --shadow: 0 18px 45px rgba(0,0,0,0.45);
+    --shadow-soft: 0 10px 22px rgba(0,0,0,0.35);
+  }
+
+  body{
+    background-attachment: fixed;
+  }
+}
+```
