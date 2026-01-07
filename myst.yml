@@ -38,14 +38,16 @@ toc:
 
 site:
   template: book-theme
-  title: PHYS349
-  folders: true
-  hide_authors: true
+
   options:
     logo: ./figures/PU-H-logo.jpg
     hide_myst_branding: true
+    style: ./style/custom.css
+    folders: true
+    hide_authors: false
 
   actions:
     - title: Brightspace
       url: https://purdue.brightspace.com
+
 
