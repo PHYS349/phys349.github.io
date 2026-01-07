@@ -1,1 +1,2 @@
-# Homework 1: Welcome to Quantum Computing
+# Homework 1
+To be released soon...

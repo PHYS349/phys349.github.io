@@ -7,7 +7,7 @@ project:
   authors:
     - name: Jonathan Hood
       affiliation: Purdue University
-  date: 2025-12-29 # ${BUILD_DATE}
+  #date: 2026-01-07 # ${BUILD_DATE}
   github: https://github.com/PHYS349/phys349.github.io
   keywords:
     - quantum computing
@@ -25,11 +25,18 @@ project:
     - title: Homework
       children:
         - file: homework/01_homework.md
+    - title: Resources
+      children:
+        - file: ./resources/syllabus.md
+        - file: ./resources/python_resources.md
+        - file: ./resources/student_resources.md
+        - file: ./resources/schedule.md
+
 
   exports:
     - format: pdf          # (recommended if you only want a PDF)
-      template: lapreprint-typst
-      output: exports/book.pdf
+      #template: lapreprint-typst
+      output: exports/phys349_notes.pdf
       id: output-pdf
       articles:
         - index.md
@@ -39,9 +46,15 @@ project:
 site:
   template: book-theme
   options:
+  #  style: ./style/custom.css  # Not working as of 1/2026
     logo: ./figures/PU-H-logo.jpg
+    favicon: ./figures/PU-H-logo.jpg
     folders: true
 
+
+# This creates a button in the header
   actions:
     - title: Brightspace
-      url: https://purdue.brightspace.com
+      url: https://purdue.brightspace.com/ # <--- Tip: Use the direct link to your course ID
+    - title: Gradescope
+      url: https://www.gradescope.com
