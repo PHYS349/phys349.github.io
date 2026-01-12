@@ -45,7 +45,7 @@ project:
       id: output-pdf
       articles:
         #- index.md
-        - lectures/01_lecture.md
+        #- lectures/01_lecture.md
         #- homework/01_homework.md
 
 site:
