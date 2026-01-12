@@ -8,7 +8,7 @@ project:
     - name: Jonathan Hood
       affiliation: Purdue University
   #date: 2026-01-07 # ${BUILD_DATE}
-  github: https://github.com/PHYS349/phys349.github.io
+  #github: https://github.com/PHYS349/phys349.github.io
   keywords:
     - quantum computing
     - physics
@@ -22,6 +22,11 @@ project:
     - title: Lectures
       children:
         - file: lectures/01_lecture.md
+        #- file: lectures/02_lecture.md
+        #- file: lectures/03_lecture.md
+        #- file: lectures/04_lecture.md
+        #- file: lectures/05_lecture.md
+
     - title: Homework
       children:
         - file: homework/01_homework.md
@@ -34,14 +39,14 @@ project:
 
 
   exports:
-    - format: pdf          # (recommended if you only want a PDF)
-      #template: lapreprint-typst
+    - format: typst          # (recommended if you only want a PDF)
+      template: typst/myst/plain_typst_book
       output: exports/phys349_notes.pdf
       id: output-pdf
       articles:
-        - index.md
+        #- index.md
         - lectures/01_lecture.md
-        - homework/01_homework.md
+        #- homework/01_homework.md
 
 site:
   template: book-theme

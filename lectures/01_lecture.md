@@ -35,7 +35,8 @@ Two famous examples:
 
 Both results were impossible to explain classically.
 Between 1900 and 1905, Max Planck and Albert Einstein independently introduced a revolutionary idea:
-> **Energy is not continuous. It comes in discrete packets.**
+
+Energy is not continuous. It comes in discrete packets.
 Planck proposed that electromagnetic radiation can only exchange energy in multiples of  
 $$
 E = \hbar \omega,  
