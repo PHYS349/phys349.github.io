@@ -1,0 +1,72 @@
+
+
+<svg viewBox="0 0 850 250" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <rect width="850" height="250" fill="white"/>
+
+  <g transform="translate(50, 40)">
+    <text x="0" y="0" font-size="20" fill="black">Waves</text>
+    <path d="M 70 -5 L 110 -5" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <text x="130" y="0" font-size="20" fill="black">Resonances</text>
+    <path d="M 250 -5 L 290 -5" stroke="black" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <text x="310" y="0" font-size="20" fill="black">Discrete / Bound states</text>
+  </g>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="black" />
+    </marker>
+  </defs>
+
+  <text x="50" y="90" font-size="18" fill="#333">Particle-in-a-box</text>
+  <text x="330" y="90" font-size="18" fill="#333">Hydrogen</text>
+  <text x="580" y="90" font-size="18" fill="#333">Harmonic Oscillator</text>
+
+  <g transform="translate(60, 110)">
+    <line x1="0" y1="0" x2="0" y2="60" stroke="black" stroke-width="2"/>
+    <line x1="60" y1="0" x2="60" y2="60" stroke="black" stroke-width="2"/>
+    <line x1="0" y1="60" x2="60" y2="60" stroke="black" stroke-width="2"/>
+    
+    <path d="M 0 60 Q 30 10 60 60" stroke="#d62828" stroke-width="2" fill="none"/>
+    
+    <text x="25" y="80" font-size="14" fill="#d62828">a</text>
+    <line x1="0" y1="65" x2="60" y2="65" stroke="#d62828" stroke-width="1"/>
+    
+    <text x="80" y="40" font-size="16" fill="#d62828">
+      E = <tspan font-family="serif">n</tspan><tspan dy="-5" font-size="10">2</tspan><tspan dy="5">π</tspan><tspan dy="-5" font-size="10">2</tspan><tspan dy="5">ℏ</tspan><tspan dy="-5" font-size="10">2</tspan><tspan dy="5"> / 2ma</tspan><tspan dy="-5" font-size="10">2</tspan>
+    </text>
+  </g>
+
+  <g transform="translate(350, 140)">
+    <circle cx="0" cy="0" r="30" stroke="#d62828" stroke-width="2" fill="none"/>
+    <circle cx="0" cy="0" r="3" fill="#0077b6"/>
+    <text x="-4" y="4" font-size="12" fill="white">+</text>
+    <circle cx="21" cy="-21" r="3" fill="#333"/>
+    <text x="25" y="-25" font-size="12">e⁻</text>
+    
+    <text x="50" y="10" font-size="16" fill="#d62828">
+      E = - R / <tspan font-family="serif">n</tspan><tspan dy="-5" font-size="10">2</tspan>
+    </text>
+  </g>
+
+  <g transform="translate(620, 110)">
+    <path d="M -30 0 Q 0 120 30 0" stroke="black" stroke-width="2" fill="none" transform="translate(30,0)"/>
+    
+    <line x1="15" y1="50" x2="45" y2="50" stroke="#0077b6" stroke-width="1.5"/>
+    <line x1="10" y1="35" x2="50" y2="35" stroke="#0077b6" stroke-width="1.5"/>
+    
+    <path d="M 15 50 Q 22 40 30 50 Q 38 60 45 50" stroke="#0077b6" stroke-width="1" fill="none"/>
+
+    <text x="70" y="40" font-size="16" fill="#0077b6">
+      E = ℏω(<tspan font-family="serif">n</tspan> + ½)
+    </text>
+  </g>
+</svg>
+
+
+
+
+
+
+

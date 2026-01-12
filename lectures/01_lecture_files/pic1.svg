@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="393" viewBox="0 0 1196 393">
+  <rect x="0" y="0" width="1196" height="393" fill="#ffffff"/>
+
+  <!-- Common styles -->
+  <defs>
+    <marker id="arrowBlack" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#000"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#d11"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT: Classical -->
+  <text x="175" y="55" font-size="44" font-family="Comic Sans MS, Segoe UI, Arial" fill="#000">Classical</text>
+  <path d="M90,72 C150,70 230,70 290,72" fill="none" stroke="#000" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Start dot -->
+  <circle cx="55" cy="135" r="12" fill="#000"/>
+
+  <!-- Classical trajectory -->
+  <path d="M75,135
+           C130,135 175,120 220,130
+           C260,140 245,175 225,185
+           C200,200 210,225 235,240
+           C255,252 258,290 245,300
+           C225,315 265,320 285,310
+           C305,300 305,300 315,305"
+        fill="none" stroke="#000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"
+        marker-end="url(#arrowBlack)"/>
+
+  <text x="305" y="160" font-size="34" font-family="Comic Sans MS, Segoe UI, Arial" fill="#000">x(t)</text>
+
+  <text x="45" y="355" font-size="34" font-family="Comic Sans MS, Segoe UI, Arial" fill="#000">
+    Well defined position
+  </text>
+
+  <!-- MIDDLE: Wave label -->
+  <text x="565" y="28" font-size="26" font-family="Comic Sans MS, Segoe UI, Arial" fill="#000">wave</text>
+  <path d="M560,35 C585,33 610,33 635,35" fill="none" stroke="#f0b000" stroke-width="6" stroke-linecap="round"/>
+  <path d="M585,48 C595,46 605,46 615,48" fill="none" stroke="#f0b000" stroke-width="6" stroke-linecap="round"/>
+  <path d="M600,60 C604,58 608,58 612,60" fill="none" stroke="#f0b000" stroke-width="6" stroke-linecap="round"/>
+
+  <path d="M625,45 C632,60 640,70 650,78" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"
+        marker-end="url(#arrowBlack)"/>
+
+  <text x="645" y="105" font-size="36" font-family="Comic Sans MS, Segoe UI, Arial" fill="#000">ψ(x,t)</text>
+
+  <!-- RIGHT: Quantum -->
+  <text x="835" y="55" font-size="44" font-family="Comic Sans MS, Segoe UI, Arial" fill="#000">Quantum</text>
+  <path d="M780,72 C850,70 940,70 1010,72" fill="none" stroke="#000" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Red "wavefunction" loops -->
+  <path d="M760,145
+           C820,95 975,90 1030,150
+           C1080,205 1035,285 955,300
+           C860,318 770,270 770,205
+           C770,170 790,155 820,150"
+        fill="none" stroke="#d11" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M830,165
+           C875,130 955,130 990,170
+           C1025,210 990,255 925,255
+           C865,255 830,220 840,190"
+        fill="none" stroke="#d11" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M885,185
+           C910,170 945,172 960,195
+           C975,218 955,240 920,238
+           C895,236 883,220 888,205"
+        fill="none" stroke="#d11" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Center dot -->
+  <circle cx="922" cy="205" r="11" fill="#000"/>
+  <circle cx="922" cy="205" r="4" fill="#fff"/>
+
+  <!-- Red arrows around -->
+  <path d="M1045,170 C1070,175 1085,175 1100,170"
+        fill="none" stroke="#d11" stroke-width="5" stroke-linecap="round"
+        marker-end="url(#arrowRed)"/>
+
+  <path d="M825,305 C800,315 790,330 795,345"
+        fill="none" stroke="#d11" stroke-width="5" stroke-linecap="round"
+        marker-end="url(#arrowRed)"/>
+
+  <path d="M1000,300 C1015,320 1022,335 1025,350"
+        fill="none" stroke="#d11" stroke-width="5" stroke-linecap="round"
+        marker-end="url(#arrowRed)"/>
+
+  <!-- Bottom-right caption -->
+  <text x="720" y="330" font-size="30" font-family="Comic Sans MS, Segoe UI, Arial" fill="#000">
+    superposition of multiple
+  </text>
+  <text x="930" y="360" font-size="30" font-family="Comic Sans MS, Segoe UI, Arial" fill="#000">
+    positions
+  </text>
+</svg>
+
