@@ -156,7 +156,7 @@ Spin, combined with the Pauli exclusion principle and electron interactions, exp
 
 Once again, collective quantum behavior—not individual particles—was the key.
 
-![[Pasted image 20260108094107.png]]
+%![[Pasted image 20260108094107.png]]
 ### Quantum-enabled technologies (1940s–1980s)
 With the foundations in place, the mid-20th century marks a decisive shift:  
 quantum mechanics moves from explanation to engineering.
@@ -292,7 +292,9 @@ We will begin answering these questions in the next lecture.
 
 
 
-# Homework
+# Homework (Due  1/21 Midnight )
+Submit by GradeScope.  There will also be questions from Lecture 1/15. 
+
 
 #### Why did classical physics fail?  
 Answer in **3–6 sentences each**:
