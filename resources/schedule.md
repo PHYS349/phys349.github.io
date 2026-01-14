@@ -4,7 +4,7 @@ Subject to change.
 |    Week    | Dates               | Topic                   | Readings / Assignments | Notes                          |
 | :--------: | :------------------ | :---------------------- | :--------------------- | :----------------------------- |
 |   **1**    | Jan 12 - Jan 16     | 2nd Quantum Revolution  | HW1 - Due 1/21 12:59PM                 | Classes Begin Jan 12           |
-|   **2**    | Jan 19 - Jan 23     | The Qubit               |                     | **NO CLASS: MLK Day (Jan 19)** |
+|   **2**    | Jan 19 - Jan 23     | The Qubit               |                        | ** MLK Day (Jan 19)** |
 |   **3**    | Jan 26 - Jan 30     | The Qubit               |                        |                                |
 |   **4**    | Feb 02 - Feb 06     | Entanglement            |                        |                                |
 |   **5**    | Feb 09 - Feb 13     | QKD                     |                        |                                |

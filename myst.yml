@@ -21,10 +21,10 @@ project:
     # - file: syllabus.md
     - title: Lectures
       children:
-        - file: lectures/01_lecture.md
-        #- file: lectures/02_lecture.md
-        #- file: lectures/03_lecture.md
-        #- file: lectures/04_lecture.md
+        - file: lectures/01_01_lecture.md
+        - file: lectures/01_02_lecture.md
+        #- file: lectures/01_03_lecture.md
+        #- file: lectures/01_04_lecture.md
         #- file: lectures/05_lecture.md
 
     - title: Homework
