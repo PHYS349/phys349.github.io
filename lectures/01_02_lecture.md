@@ -319,12 +319,12 @@ drama_matrix = np.array([
 
 - How many did it have to search?
 
-#### Part D:  The Hero Problem, 100 Guests
-This part is a competition.  Whoever gets the lowest drama score gets 5 extra points on the first exam.  Please bring your $s$ with you to class on Tuesday XXX.  I will have a python file with the drama matrix on GitHub for you to download. 
+#### Part D:  The Hero Problem, 30 Guests
+This part is a competition.  Whoever gets the lowest drama score gets 5 extra points on the first exam.  Please bring your $s$ and lowest drama with you to class on Thursday 1/22 .  I will have a python file with the drama matrix on GitHub for you to download. 
 
 - How many possible solutions are there?  Brute force becomes impossible quickly.  
 
-- What strategies can you come up with besides using raw compute power?  Feel free to ask LLM's for help.  Use any Python library you want.  This is an optimization problem, but gradient descent optimization algorithms will not help because your input is discrete.  Maybe look into simulated annealing as a place to start?     
+- What strategies can you come up with besides using raw compute power?  Feel free to ask LLM's for help.  Use any Python library you want.  This is an optimization problem, but gradient descent optimization algorithms will not help because your input is discrete.  
 
 #### Hints:
 If you want to make your own drama matrix for testing, use this:
@@ -334,7 +334,7 @@ import numpy as np
 # Set the seed so every student gets the EXACT same numbers
 np.random.seed(42)
 
-N = 30  # Number of guests
+N = 10  # Number of guests
 
 # Generate the upper triangle with -1 to 1
 upper = np.triu(np.random.uniform(-1, 1, (N, N)), k=1)
