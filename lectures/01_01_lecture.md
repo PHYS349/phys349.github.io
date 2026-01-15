@@ -12,7 +12,7 @@ In this era, we are moving from "understanding" to "control." We have stopped ju
 
 This is where it gets interesting. In a classical bit, you are either in state 0 or state 1. In a qubit, because it is a single quantum particle, you can exist in a superposition. But more importantly, you can store information in the relative phase between those states. Imagine the "0" and "1" are like two waves. If they are in sync, they mean one thing; if they are out of sync, they mean something else. This gives us a new "knob" to turn that classical computers simply do not have.
 
-In this section we will cover the history of quantum theory, how it lead to the first quantum revolution, and how we are entering a new age.
+In this section we will cover the history of quantum theory, how it led to the first quantum revolution, and how we are entering a new age.
 ## The First Quantum Revolution
 
 ### End of the 19th Century: The Failures of Classical Theory
@@ -295,6 +295,7 @@ We will begin answering these questions in the next lecture.
 # Homework (Due  1/21 Midnight )
 Submit by GradeScope.  There will also be questions from Lecture 1/15. 
 
+[Homework 1 Announcement](../homework/01_homework.md)
 
 #### Why did classical physics fail?  
 Answer in **3–6 sentences each**:

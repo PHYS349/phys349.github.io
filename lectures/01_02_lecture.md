@@ -69,6 +69,416 @@ The cost scales as:
 $$O(N^2)   $$
 Again: polynomial scaling.
 
+
+Here's a draft section to add. This would fit well right after you discuss matrix-vector multiplication and before you mention GPUs being good at this:
+
+---
+
+## How Fast Is Your Computer?
+
+Before we can understand what problems are hard, we need to understand what computers actually *do*—and how fast they do it.
+
+### The CPU: One Thing at a Time
+
+At its core, a CPU (Central Processing Unit) is surprisingly simple. It has:
+
+- **Registers**: small memory slots that hold numbers (e.g., 32-bit or 64-bit values)
+- **An ALU** (Arithmetic Logic Unit): the circuit that actually adds, multiplies, etc.
+
+A single operation looks like this:
+
+$$
+R_0, R_1 \xrightarrow{\text{ALU}} R_2
+$$
+
+Take two numbers from registers, do one arithmetic operation, store the result.
+
+How fast can this happen? A modern CPU runs at roughly 3 GHz—that's $3 \times 10^9$ clock cycles per second. If we assume (optimistically) one operation per cycle, that gives us:
+
+$$
+\text{CPU} \sim 3 \times 10^9 \text{ operations/second}
+$$
+
+That sounds fast. But for large simulations, it's not nearly enough.
+
+### The GPU: Many Things at Once
+
+A GPU (Graphics Processing Unit) takes a different approach. Instead of one very fast ALU, it has *thousands* of smaller ALUs running in parallel.
+
+A modern GPU like the NVIDIA RTX 4090 has:
+
+$$
+\sim 16{,}384 \text{ cores}
+$$
+
+Each core can do roughly $3 \times 10^9$ operations per second. Running in parallel:
+
+$$
+3 \times 10^9 \times 16{,}384 \approx 50 \times 10^{12} \text{ operations/second}
+$$
+
+This is measured in **FLOPS** (Floating Point Operations Per Second):
+
+$$
+\text{GPU} \sim 30\text{–}80 \text{ TFLOPS} \quad (10^{12} \text{ FLOPS})
+$$
+
+That's roughly 10,000 times faster than a single CPU core—but only for problems that can be split into many independent calculations.
+
+### Why This Matters
+
+Remember our classical simulation:
+
+- Update $N$ particles
+- Each update is the same operation with different data
+- Perfect for parallelization
+
+This is why GPUs dominate:
+- Physics simulations
+- Movie CGI and video games
+- Training neural networks (matrix multiplications)
+
+Classical computers aren't just "fast." They're fast *at specific things*: problems that decompose into many independent, repeated operations.
+
+
+Here's a draft section that could follow the CPU/GPU discussion:
+
+---
+
+## Example: How Does an LLM Work?
+
+You've probably used ChatGPT or Claude. These are **Large Language Models** (LLMs). Let's peek under the hood and estimate how much computation goes into generating a single word.
+
+### Step 1: Words Become Vectors
+
+When you type a prompt like:
+
+> "How long do fish live?"
+
+The model doesn't see words—it sees numbers. Each word (or "token") is converted into a vector through an **encoding** process.
+
+A typical embedding dimension is around $N \sim 10{,}000$. So the word "fish" becomes a vector:
+
+$$
+\vec{x}_{\text{fish}} = \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_{10,000} \end{bmatrix}
+$$
+
+These 10,000 numbers encode the "meaning" of the word in a high-dimensional space—words with similar meanings end up as similar vectors.
+
+### Step 2: Attention—Which Words Matter?
+
+Here's where it gets interesting. The model needs to understand relationships between words.
+
+In "How long do fish live?", the answer depends heavily on "fish." But in "How long do stars live?", the same question has a completely different answer.
+
+The **attention mechanism** computes weights between every pair of words:
+
+> How much should word $i$ "pay attention to" word $j$?
+
+This requires comparing every word to every other word—an $N \times N$ operation for each layer.
+
+### Step 3: Many Layers
+
+The model doesn't just do this once. A modern LLM has roughly **80 layers**, each performing:
+
+- Attention calculations
+- Matrix multiplications
+- Nonlinear transformations
+
+Each layer refines the representation, building up from simple word meanings to complex reasoning.
+
+### Step 4: Predict the Next Word
+
+The final output is a vector of probabilities over the entire vocabulary—typically $\sim 80{,}000$ possible words:
+
+$$
+\vec{p} = \begin{bmatrix} P(\text{"the"}) \\ P(\text{"about"}) \\ P(\text{"fish"}) \\ \vdots \end{bmatrix}
+$$
+
+The model samples from this distribution to pick the next word, then repeats the whole process.
+
+### Counting Operations
+
+Let's estimate the computational cost for generating **one token**:
+
+| Step | Operations |
+|------|------------|
+| Matrix multiply per layer | $(10{,}000)^2 = 10^8$ |
+| Number of layers | $\sim 80$ |
+| **Total** | $\sim 8 \times 10^9$ |
+
+With a GPU running at $\sim 30$ TFLOPS ($30 \times 10^{12}$ ops/sec):
+
+$$
+\text{Time per token} \sim \frac{8 \times 10^9}{30 \times 10^{12}} \sim 0.3 \text{ ms}
+$$
+
+In practice, with memory bottlenecks and overhead:
+
+$$
+\boxed{\sim 1 \text{ ms per word}}
+$$
+
+That's why ChatGPT can type at roughly the speed you read—it's generating hundreds of words per second, each requiring billions of operations.
+
+### The Takeaway
+
+An LLM is essentially:
+- Massive matrix multiplications
+- Repeated 80 times per token
+- Perfectly suited for GPUs
+
+This is classical computing at its finest: huge linear algebra problems, embarrassingly parallel, running on hardware designed exactly for this task.
+
+
+The question we'll tackle next: **Are there problems where this strategy fails?**
+
+Here's a draft section that transitions to "what classical computers are bad at":
+
+---
+
+## Why Do We Need a Quantum Computer?
+
+We've seen that classical computers—especially GPUs—are extraordinarily powerful. Matrix multiplications, particle simulations, neural networks: all conquered by brute-force parallelism.
+
+But are there problems where this strategy fails completely?
+
+### The Traveling Salesman Problem
+
+Imagine you're a salesman who needs to visit 30 cities across the country. You want to find the shortest route that visits every city exactly once and returns home.
+
+```{image} ./01_02_lecture_files/traveling_salesman.svg
+:alt: Traveling Salesman Problem
+:width: 500px
+```
+
+
+This is the famous **Traveling Salesman Problem** (TSP).
+
+How hard could it be? Let's count the possibilities.
+
+For $N$ cities, the number of possible routes is:
+$$
+N! \quad \text{(}N \text{ factorial)}
+$$
+
+Let's make a table. Assume a CPU checking $10^9$ routes per second:
+
+| $N$ cities | Possible routes | Time to check all (CPU) |
+|------------|-----------------|-------------------------|
+| 10 | $10! \sim 4 \times 10^6$ | ~4 ms |
+| 20 | $20! \sim 2 \times 10^{18}$ | ~80 years |
+| 50 | $50! \sim 3 \times 10^{64}$ | ~$10^{48}$ years |
+
+Wait—$10^{48}$ years? How long is that?
+
+### Cosmic Perspective
+
+| Event | Time |
+|-------|------|
+| Big Bang | 0 |
+| **Now** | $1.4 \times 10^{10}$ years |
+| Sun engulfs Earth | $\sim 5 \times 10^{9}$ years from now |
+| Last stars burn out | $\sim 10^{14}$ years |
+| Heat death of universe | $\sim 10^{100}$ years |
+
+For 50 cities, the brute-force calculation would take $10^{48}$ years—longer than all stars will exist, but still far short of heat death.
+
+By Stirling's approximation:
+$$
+N! \approx \sqrt{2\pi N} \left(\frac{N}{e}\right)^N \sim \left(\frac{N}{e}\right)^N
+$$
+
+This is faster than exponential. It's not $2^N$—it's closer to $N^N$.
+
+### The Problem
+
+The traveling salesman problem isn't exotic. Problems with this structure appear everywhere:
+
+- **Logistics**: Delivery routes, airline scheduling
+- **Biology**: Protein folding, gene sequencing
+- **Finance**: Portfolio optimization
+- **Manufacturing**: Circuit board drilling, job scheduling
+
+These are problems where:
+- The number of possibilities grows as $N!$ or $2^N$
+- There's no shortcut—you can't decompose it into independent parallel tasks
+- Classical computers hit a wall, no matter how fast
+
+This is what classical computers are bad at: problems where the search space grows exponentially (or faster) and the structure doesn't allow for parallelization.
+
+
+Here's the revised section with the new framing:
+
+---
+
+## Simulating Quantum Matter: The Spin Problem
+
+So far we've looked at the traveling salesman—a classical optimization problem. Let's now consider something that feels more inherently quantum: **simulating actual quantum materials**.
+
+This isn't an abstract puzzle. It's a problem that directly maps to real physics: How do the magnetic moments in a material align? What is the lowest energy state of a chunk of iron, or a high-temperature superconductor, or a quantum magnet?
+
+### Why Do We Care About the Lowest Energy?
+
+Here's a deep fact about nature: **systems tend toward their lowest energy state**.
+
+Heat up a chicken, and what happens? It eventually cools off. The thermal energy dissipates into the environment until the chicken equilibrates with room temperature.
+
+This happens everywhere, constantly:
+- A hot cup of coffee cools down
+- A vibrating tuning fork goes silent
+- An excited atom emits a photon and relaxes
+
+Nature is always "computing" the answer to the question: *What is the lowest energy configuration?*
+
+When you cool a material down, the atoms and electrons rearrange themselves, settle into lower and lower energy states, and eventually approach the **ground state**—the configuration with the absolute minimum energy.
+
+Nature does this effortlessly. For a classical computer trying to predict the answer? It can be impossibly hard.
+
+### Spins: Tiny Bar Magnets
+
+Many particles have a property called **spin**. For our purposes, think of each particle as a tiny bar magnet that can point either **up** (↑) or **down** (↓).
+
+$$
+\text{Spin states:} \quad |\uparrow\rangle \quad \text{or} \quad |\downarrow\rangle
+$$
+
+Now imagine a line of these tiny magnets:
+
+$$
+\uparrow \quad \downarrow \quad \uparrow \quad \downarrow \quad \uparrow \quad \downarrow \quad \uparrow \quad \downarrow
+$$
+
+### The Interaction: Neighbors Want to Anti-Align
+
+If you've played with bar magnets, you know: opposite poles attract. Two neighboring magnets "want" to point in opposite directions:
+
+$$
+\uparrow \downarrow \quad \text{(happy—low energy)}
+$$
+$$
+\uparrow \uparrow \quad \text{(unhappy—high energy)}
+$$
+
+If this were the only rule, the ground state would be easy to find:
+
+$$
+\uparrow \downarrow \uparrow \downarrow \uparrow \downarrow \uparrow \downarrow \quad \text{(alternating)}
+$$
+
+Simple! Polynomial complexity—just alternate.
+
+### The Complication: External Magnetic Field
+
+Now turn on an external magnetic field $\vec{B}$ pointing up. This field wants all spins to align with it:
+
+$$
+\uparrow \uparrow \uparrow \uparrow \uparrow \uparrow \uparrow \uparrow \quad \text{(all aligned with } B \text{)}
+$$
+
+But wait—now we have **competing demands**:
+
+- **Neighbors** want to anti-align: ↑↓↑↓↑↓
+- **External field** wants all aligned: ↑↑↑↑↑↑
+
+What configuration actually minimizes the total energy?
+
+### Why This Is Hard
+
+Unlike the alternating pattern, there's no obvious answer. The ground state depends on:
+- The strength of the neighbor-neighbor interaction
+- The strength of the external field
+- The geometry (1D chain? 2D grid? 3D lattice?)
+
+To find the true minimum, we might need to check all possible configurations.
+
+How many configurations are there?
+
+Each spin has **2 choices**: ↑ or ↓
+
+| $N$ spins | Configurations |
+|-----------|----------------|
+| 1 | $2$ |
+| 2 | $2 \times 2 = 4$ |
+| 3 | $2 \times 2 \times 2 = 8$ |
+| $N$ | $2^N$ |
+
+For $N$ spins:
+$$
+\text{Configurations} = \underbrace{2 \times 2 \times 2 \times \cdots \times 2}_{N \text{ times}} = 2^N
+$$
+
+Let's put numbers to this:
+
+| $N$ spins | Configurations | Memory to store all |
+|-----------|----------------|---------------------|
+| 10 | $2^{10} \sim 10^3$ | ~16 KB |
+| 30 | $2^{30} \sim 10^9$ | ~16 GB |
+| 50 | $2^{50} \sim 10^{15}$ | ~16,000 TB |
+| 100 | $2^{100} \sim 10^{30}$ | More than atoms on Earth |
+
+### Polynomial vs. Exponential
+
+This is the key distinction:
+
+| Complexity | Scaling | Example | Tractable? |
+|------------|---------|---------|------------|
+| **Polynomial** | $N^2$, $N^3$, etc. | Non-interacting spins | ✓ Yes |
+| **Exponential** | $2^N$, $N!$, etc. | Interacting spins | ✗ No |
+
+For polynomial scaling, doubling $N$ makes the problem harder by a constant factor (4×, 8×, etc.).
+
+For exponential scaling, **adding one spin doubles the problem size**.
+
+$$
+N \to N+1 \implies 2^N \to 2^{N+1} = 2 \times 2^N
+$$
+
+This is why interacting quantum systems are fundamentally hard to simulate classically.
+
+### Nature as a Computer
+Is there a fundamentally different way to compute?
+
+Could we build a machine that explores many possibilities simultaneously—not by having more processors, but by exploiting the physics of superposition itself?
+
+This is the promise of quantum computing.
+
+
+
+Here's the remarkable thing: while we struggle to simulate 50 spins on a classical computer, _nature does it effortlessly_.
+
+Every piece of iron, every magnetic material, every superconductor contains $10^{23}$ interacting quantum particles—and nature "computes" the ground state every time the material cools down.
+
+Nature is a simulator doing calculations we could never do.
+
+This raises a tantalizing question: *Could we harness the quantumness of nature itself as our computer?*
+
+We'll explore that idea in the next lecture.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+
+
+
+
 We have now entered the age of AI.  Machine learning is almost nothing but repeated matrix–vector multiplications.
 
 %![[Pasted image 20260108124117.png|300]]
@@ -96,7 +506,7 @@ For example, an NVIDIA GeForce RTX 4090 has 16,384 CUDA cores and peak throughpu
 
 Classical physics and linear algebra maps _beautifully_ onto classical hardware.
 
-
+ -->
 
 
 %For later: 
@@ -190,7 +600,8 @@ Assume you have a computer with 16 GB of usable RAM.
 
 
 ---
-### Homework: Wedding Planning
+# Homework: Wedding Planning
+**This is the second part of the first homework.  It is due Wed at 11:59PM with Part I in Gradescope.**
 
 The goal of this homework is to show that “hard” problems are not unique to quantum mechanics. Even in the classical world, there are problems where the number of possibilities explodes so fast that “just try them all” becomes impossible.
 
@@ -207,8 +618,7 @@ In this problem you will use Python to find the optimum, the solution solution t
 
 *Please see the GitHub page Python Resources for help getting started with Python if you are new to it.  LLM's are great for learning coding - just make sure you know what it is doing - for example don't just put this whole problem in and ask for a solution - but it is fine if you ask "How do I make a random matrix in Python ?"  **
 
-*For Homework submission, upload your python code converted to a PDF with comments.
-*
+**For Homework submission, upload your python code converted to a PDF with comments.**
 
 #### Part A: Setup
 To make our lives easy, we will seat guests all in a single line with positions i =  0 to N-1.   We will also only assume there are "interaction" preferences -  guest 1 does not want to sit next to guest 10, but not guest 1 wants to sit at seat 10.  
@@ -287,15 +697,15 @@ Check your function on at least two different settings for $N=5$.
 
 Check the drama score for
 ```python
- s = [1,4,2,0,3,5]
+ s = [1,4,2,0,3]
 ```
 
-If you get $E = XXX$ you are ready to go to the next section.
+If you get $E = -1$ you are ready to go to the next section. (check this and let me know if this is correct - Jon)
 
 
 #### Part B: Brute-force search
 Now for the $N=5$ example use brute force searching to find the minimum drama solution. 
-There is one seat $s$ that achieves it.
+There is one seating vector $s$ that achieves it.
 
 How many solutions did it have to search?
 
@@ -326,6 +736,22 @@ This part is a competition.  Whoever gets the lowest drama score gets 5 extra po
 
 - What strategies can you come up with besides using raw compute power?  Feel free to ask LLM's for help.  Use any Python library you want.  This is an optimization problem, but gradient descent optimization algorithms will not help because your input is discrete.  
 
+
+#### Link to the 30 x 30 drama matrix
+Here is the link to the 30 x 30 drama matrix.  It loads with gibberish string. Change name to ``drama_matrix.csv".  
+
+{download}`Download Drama Matrix CSV <./01_02_lecture_files/drama_matrix.csv>`
+
+Import with 
+```python
+# Load your drama matrix (or generate for testing)
+drama_matrix = np.loadtxt('drama_matrix.csv', delimiter=',', dtype=float)
+```
+
+%[Download Drama Matrix CSV](./01_02_lecture_files/drama_matrix.csv)     # need to add to YAML if do this 
+
+
+
 #### Hints:
 If you want to make your own drama matrix for testing, use this:
 ```python
@@ -345,17 +771,3 @@ drama_matrix = upper + upper.T
 
 print(drama_matrix)
 ```
-
-
-## Link to the 30 x 30 drama matrix
-Here is the link to the 30 x 30 drama matrix.  It loads with gibberish string. Change name to ``drama_matrix.csv".  
-
-{download}`Download Drama Matrix CSV <./01_02_lecture_files/drama_matrix.csv>`
-
-Import with 
-```python
-# Load your drama matrix (or generate for testing)
-drama_matrix = np.loadtxt('drama_matrix.csv', delimiter=',', dtype=float)
-```
-
-%[Download Drama Matrix CSV](./01_02_lecture_files/drama_matrix.csv)     # need to add to YAML if do this 
