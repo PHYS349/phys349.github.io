@@ -1,538 +1,647 @@
+# Lecture 5: Waves, Complex Numbers, and Interference
 
-# Lecture: The Qubit  
+## Why Complex Numbers?
 
-## Complex numbers are the natural language of waves
+In the last chapter, we saw that quantum mechanics is a "wave over configurations." Each configuration gets a complex amplitude, and these amplitudes can interfere.
 
-In the last lecture we hit the “exponential wall”: quantum systems are hard to simulate because they don’t sit in one configuration at a time. They exist in superposition—many configurations at once—each carrying an amplitude and a phase. Today we start building the formalism that makes that sentence precise.
+But why complex numbers? Why not just regular numbers?
 
-Before we can talk about qubits, we need one tool: complex numbers. Complex numbers are the cleanest way to represent waves, and quantum states behave like waves.
-
-In many parts of classical physics, we use complex numbers as a convenient representation of real waves. In quantum mechanics, complex amplitudes are not just a bookkeeping trick: the state is naturally described by complex numbers, and measurable outcomes depend on how those complex numbers add.
-
-### Real waves to complex waves
-
-A simple oscillation can be written as
-$$
-A\cos(\omega t + \phi).
-$$
-
-This has two independent pieces of information:
-
-- amplitude $A$: how big the wave is  
-- phase $\phi$: where you are in the cycle
-
-Using Euler’s formula,
-$$
-e^{i\theta}=\cos\theta+i\sin\theta,
-$$
-we can represent the same oscillation using a complex exponential:
-$$
-\psi(t)=A e^{i(\omega t+\phi)}.
-$$
-
-A complex number is naturally represented as an arrow in the complex plane:
-
-- the length of the arrow is the magnitude $|\psi|$ (here $|\psi| = A$)  
-- the angle is the phase $\arg(\psi)$ (here $\arg(\psi)=\omega t+\phi$)
-
-If you want the usual real wave, you can take the real part:
-$$
-A\cos(\omega t+\phi)=\mathrm{Re}\!\left(Ae^{i(\omega t+\phi)}\right).
-$$
-
-### Interference with complex waves
-
-%![[Pasted image 20260108130250.png]]
-
-%![[Pasted image 20260108131311.png]]
-
-Interference happens when multiple waves contribute to the same outcome, and the contributions add before you square.
-
-If two contributions arrive at the same place, the total is
-$$
-\psi_{\text{total}} = \psi_1 + \psi_2.
-$$
-
-For a prototypical interference setup (like the double slit), suppose an amplitude can arrive by two routes (two slits, two paths, two computational “branches”). Each route contributes a complex phase.
-
-Define the total amplitude
-$$
-\Psi = \frac{e^{i\theta_1} + e^{i\theta_2}}{2}.
-$$
-
-Then the observed probability is
-$$
-P = |\Psi|^2.
-$$
-
-Compute:
-$$
-|\Psi|^2
-= \frac{1}{4}\left|e^{i\theta_1} + e^{i\theta_2}\right|^2
-= \frac{1}{4}(e^{i\theta_1}+e^{i\theta_2})(e^{-i\theta_1}+e^{-i\theta_2}).
-$$
-
-Multiply out:
-$$
-|\Psi|^2
-= \frac{1}{4}\left(2 + e^{i(\theta_1-\theta_2)} + e^{-i(\theta_1-\theta_2)}\right).
-$$
-
-Using $e^{ix}+e^{-ix}=2\cos x$:
-$$
-P = |\Psi|^2 = \frac{1}{2}\big(1+\cos(\theta_1-\theta_2)\big)
-= \cos^2\!\left(\frac{\theta_1-\theta_2}{2}\right).
-$$
-
-So everything depends only on the phase difference
-$$
-\Delta\theta = \theta_1-\theta_2.
-$$
-
-- $\Delta\theta = 0$ gives $P=1$ (constructive interference)  
-- $\Delta\theta = \pi$ gives $P=0$ (destructive interference)
-
-Geometrically: each term is an arrow in the complex plane. Two arrows pointing the same direction add to a bigger arrow. Two arrows pointing opposite directions cancel.
-
-Interference is vector addition in the complex plane.
-
-What do we actually observe? For light we observe intensity; in quantum mechanics we observe probabilities. In both cases the rule has the same structure:
-$$
-I \propto |\Psi|^2
-\qquad \text{or} \qquad
-P = |\Psi|^2 \ \ (\text{after normalization}).
-$$
-
-Notice what happens for a single contribution:
-$$
-|A e^{i\theta}|^2 = A^2.
-$$
-
-So the phase of a single isolated term is not directly observable. Phase becomes observable only through comparisons—when multiple contributions can add and interfere.
-
-A preview of an important distinction we will return to:
-- changing all phases together (a global phase) does not change probabilities
-- changing phases relative to each other (a relative phase) does
-
-## Quantum computing is interference of configurations
-
-This is the first time we can say, precisely, what “quantum computation” is doing:
-
-- A quantum state assigns a complex number to each configuration.
-- Gates change those complex numbers (especially their relative phases).
-- At the end we measure probabilities using $|\cdot|^2$.
-- Algorithms work by engineering interference:
-  - wrong paths cancel  
-  - right paths add  
-
-In a wave on a string, the label might be position $x$: $\psi(x)$.  
-In quantum mechanics, the label might be a configuration: $|0\rangle$ or $|1\rangle$, and later $|00\rangle,|01\rangle,\ldots$
-
-The big idea we carry forward is:
-
-Every configuration gets a complex amplitude (a magnitude and a phase). Those amplitudes add and interfere.
-
-In the next section we will take the simplest possible configuration space—two configurations—and define the qubit.
-
-A general two-configuration quantum state will look like
-$$
-|\psi\rangle = c_0|0\rangle + c_1|1\rangle,
-$$
-where $c_0$ and $c_1$ are complex numbers.
-
-
-
-### States are vectors (Dirac notation)
-
-We choose a basis and label it
-$$
-|0\rangle,\quad |1\rangle.
-$$
-
-A general qubit state is a superposition:
-$$
-|\psi\rangle = \alpha|0\rangle + \beta|1\rangle,
-$$
-where $\alpha$ and $\beta$ are complex amplitudes.
-
-If we represent the state as a column vector in the $\{|0\rangle,|1\rangle\}$ basis,
-$$
-|0\rangle = \begin{pmatrix}1\\0\end{pmatrix},\quad
-|1\rangle = \begin{pmatrix}0\\1\end{pmatrix},
-$$
-then
-$$
-|\psi\rangle = \begin{pmatrix}\alpha\\\beta\end{pmatrix}.
-$$
-
-Dirac notation is useful because it reminds us that the state is abstract; the column vector is just its coordinates in a chosen basis.
-
-### Born rule (how probabilities appear)
-
-If we measure in the $\{|0\rangle,|1\rangle\}$ basis, the outcomes are $0$ or $1$.
-
-The Born rule says:
-$$
-P(0)=|\alpha|^2,\qquad P(1)=|\beta|^2.
-$$
-
-So the complex numbers $\alpha$ and $\beta$ are not probabilities. They are amplitudes. Probabilities come from magnitudes squared.
-
-This is also where we have to separate two ideas:
-
-- A classical probability distribution means the system is really in one state or the other, but we do not know which.
-- A quantum superposition means the state has both components at once, with a definite relative phase.
-
-Whether that relative phase is well defined (and remains stable) is what we call coherence. When the relative phase becomes scrambled by the environment, interference disappears.
-
-### Rule 1: normalization
-
-A physical quantum state must assign total probability 1:
-$$
-|\alpha|^2 + |\beta|^2 = 1.
-$$
-
-### Rule 2: global phase does not matter
-
-Consider two states
-$$
-|\psi\rangle \quad \text{and} \quad e^{i\gamma}|\psi\rangle.
-$$
-
-Multiplying the entire state by the same complex phase rotates every amplitude arrow together. It never changes any measurement probabilities, because
-$$
-|e^{i\gamma}\alpha|^2 = |\alpha|^2,\qquad |e^{i\gamma}\beta|^2 = |\beta|^2.
-$$
-
-So global phase is not physically observable.
-
-Even though overall phase is irrelevant, the relative phase between $\alpha$ and $\beta$ is real physics.
-
-A common way to write a general qubit state (after removing global phase) is:
-$$
-|\psi\rangle = \cos\frac{\theta}{2}\,|0\rangle + e^{i\phi}\sin\frac{\theta}{2}\,|1\rangle.
-$$
-Here:
-
-- $\theta$ sets the relative weights of $|0\rangle$ and $|1\rangle$
-- $\phi$ is the relative phase between the two components
-
-### Relative phase matters: $|+\rangle$ vs $|-\rangle$
-
-Consider these two states:
-$$
-|+\rangle = \frac{|0\rangle+|1\rangle}{\sqrt{2}},
-\qquad
-|-\rangle = \frac{|0\rangle-|1\rangle}{\sqrt{2}}.
-$$
-
-If you measure in the computational basis $\{|0\rangle,|1\rangle\}$, both give $50/50$ outcomes:
-$$
-P(0)=P(1)=\frac{1}{2}.
-$$
-
-The only difference is a relative minus sign (a relative phase shift of $\pi$). But they are not the same state. In fact, they are orthogonal:
-$$
-\langle +|-\rangle = 0.
-$$
-
-So there exists a measurement basis that distinguishes them perfectly. (In fact, $\{|+\rangle,|-\rangle\}$ is itself a measurement basis.)
-
-This is the first hint of how quantum information works:
-
->Quantum information is stored not just in probabilities, but in phase relationships that show up through interference.
-
-
-
-### The Bloch sphere (pure states of one qubit)
-
-We now have two key facts:
-
-1. The state must be normalized:
-$$
-|\alpha|^2+|\beta|^2=1.
-$$
-
-2. Global phase does not matter:
-$$
-|\psi\rangle \sim e^{i\gamma}|\psi\rangle.
-$$
-
-Together, these imply something powerful:
-
-A pure qubit state has only two physically meaningful continuous parameters.
-
-A convenient way to write any qubit state (after removing global phase) is
-$$
-|\psi\rangle = \cos\frac{\theta}{2}\,|0\rangle + e^{i\phi}\sin\frac{\theta}{2}\,|1\rangle,
-$$
-where
-- $\theta \in [0,\pi]$
-- $\phi \in [0,2\pi)$
-
-These are exactly the coordinates you would use to specify a point on a sphere.
-
-So the set of all pure qubit states can be represented as points on the surface of a sphere: the Bloch sphere.
+Today we'll answer that question. We'll see that complex numbers are the natural language of waves—they package amplitude and phase into a single object. And interference, the phenomenon at the heart of quantum computing, emerges naturally from how complex numbers add.
 
 ---
 
-#### Mapping a qubit to a point
+## Starting with a Real Wave
 
-Given
+Let's begin with something familiar: a wave.
+
+Think of a vibrating string, a sound wave, or light. At any point in space and time, the wave has some displacement or field value. 
+
+For light, Maxwell's equations reduce to the **wave equation**. In one dimension:
+
 $$
-|\psi\rangle = \cos\frac{\theta}{2}\,|0\rangle + e^{i\phi}\sin\frac{\theta}{2}\,|1\rangle,
-$$
-we associate it with the point on the unit sphere with coordinates
-$$
-x=\sin\theta\cos\phi,\qquad
-y=\sin\theta\sin\phi,\qquad
-z=\cos\theta.
+\frac{\partial^2 E}{\partial x^2} = \frac{1}{c^2} \frac{\partial^2 E}{\partial t^2}
 $$
 
-Interpretation:
+This equation says: the curvature in space is proportional to the curvature in time. We'll see equations like this again when we study the Schrödinger equation.
 
-- $\theta$ controls the relative weights of $|0\rangle$ and $|1\rangle$
-- $\phi$ is the relative phase between the two components
+A simple traveling wave that solves this equation looks like:
 
-Global phase is not shown on the sphere; it has been quotiented out.
+$$
+E(x,t) = A \cos(kx - \omega t + \phi)
+$$
+
+where:
+- $A$ is the **amplitude** (how big the wave is)
+- $k$ is the wave number ($k = 2\pi/\lambda$)
+- $\omega$ is the angular frequency ($\omega = 2\pi f$)
+- $\phi$ is the **phase** (where you are in the cycle)
+
+This wave has two independent pieces of information that matter for interference:
+- The **amplitude** $A$
+- The **phase** $\phi$
+
+These two numbers—amplitude and phase—will follow us throughout quantum mechanics.
 
 ---
 
-#### Landmarks on the sphere
+## The Complex Trick
 
-The computational basis states live at the poles:
+Here's a mathematical trick that physicists use constantly.
 
-- north pole: $|0\rangle$
-- south pole: $|1\rangle$
+Euler's formula says:
 
-The equator contains equal-weight superpositions. For example:
 $$
-|+\rangle = \frac{|0\rangle+|1\rangle}{\sqrt2},
-\qquad
-|-\rangle = \frac{|0\rangle-|1\rangle}{\sqrt2}.
+e^{i\theta} = \cos\theta + i\sin\theta
 $$
-These differ only by a relative phase of $\pi$, so they appear as opposite points on the equator.
 
-Another pair on the equator is
+This means we can write our wave as:
+
 $$
-|i+\rangle = \frac{|0\rangle+i|1\rangle}{\sqrt2},
-\qquad
-|i-\rangle = \frac{|0\rangle-i|1\rangle}{\sqrt2}.
+\tilde{E}(x,t) = A e^{i(kx - \omega t + \phi)}
 $$
+
+The tilde reminds us this is a complex quantity. The original real wave is recovered by taking the real part:
+
+$$
+E(x,t) = \text{Re}\left[\tilde{E}(x,t)\right] = A\cos(kx - \omega t + \phi)
+$$
+
+**Why bother?**
+
+At first this seems like extra work. But here's the payoff: in the complex representation, amplitude and phase are unified into a single complex number.
+
+The complex amplitude is:
+
+$$
+\tilde{A} = A e^{i\phi}
+$$
+
+This one object encodes both:
+- **Magnitude** $|\tilde{A}| = A$ (the amplitude)
+- **Angle** $\arg(\tilde{A}) = \phi$ (the phase)
+
+And crucially: when we add waves, the complex numbers add. When we multiply waves (or propagate them), the phases add. Everything becomes algebra.
 
 ---
 
-#### Measurement along an axis
+## Visualizing Complex Numbers
 
-The Bloch sphere also helps you visualize measurement.
+A complex number $z = x + iy$ can be visualized as an arrow in the complex plane:
 
-Measuring in the computational basis $\{|0\rangle,|1\rangle\}$ is “measuring along the $z$ axis.”
+```{figure} ./02_01_lecture_files/complex_plane.svg
+:width: 300px
+:name: complex-plane
 
-If
-$$
-|\psi\rangle = \cos\frac{\theta}{2}\,|0\rangle + e^{i\phi}\sin\frac{\theta}{2}\,|1\rangle,
-$$
-then
-$$
-P(0)=\cos^2\frac{\theta}{2},\qquad
-P(1)=\sin^2\frac{\theta}{2}.
-$$
+A complex number as an arrow in the complex plane.
+```
 
-Notice that these probabilities depend only on $\theta$ (how far north/south you are), not on $\phi$.
-The phase $\phi$ becomes visible when you measure in a different basis (for example the $\{|+\rangle,|-\rangle\}$ basis, which corresponds to the $x$ axis).
-
-This connects directly to the earlier lesson:
-- phase is not directly observable in a single basis
-- phase shows up through interference when you choose the right measurement
-
-
-## Connection to polarization (a very concrete qubit)
-
-A photon’s polarization is one of the cleanest “real life” qubits because the complex amplitudes are literally the two components of the electric field.
-
-### Polarization as a two-configuration wave
-
-Fix a propagation direction (say the photon travels along $z$). Then the electric field lives in the transverse plane and can be decomposed into two basis directions. A common choice is horizontal/vertical:
-$$
-|0\rangle \equiv |H\rangle,\qquad |1\rangle \equiv |V\rangle.
-$$
-
-A general polarization state is
-$$
-|\psi\rangle = \alpha|H\rangle + \beta|V\rangle,
-\qquad |\alpha|^2+|\beta|^2=1,
-$$
-where $\alpha$ and $\beta$ are complex.
-
-If you like a more “waves first” picture, you can think of a classical polarization (Jones vector) as
-$$
-\mathbf{E}(t) = \mathrm{Re}\!\left[
-\begin{pmatrix}\alpha\\ \beta\end{pmatrix}
-e^{-i\omega t}
-\right].
-$$
-The key point for us: the *relative phase* between $\alpha$ and $\beta$ controls the shape of the polarization (linear vs elliptical vs circular). This makes phase feel physically real.
-
-### Special qubit states become familiar polarizations
-
-The equal-weight superpositions with different relative phases correspond to standard polarization states.
-
-Diagonal/anti-diagonal (the “plus/minus” states):
-$$
-|D\rangle = \frac{|H\rangle+|V\rangle}{\sqrt{2}},
-\qquad
-|A\rangle = \frac{|H\rangle-|V\rangle}{\sqrt{2}}.
-$$
-
-Right/left circular (the “$\pm i$” states):
-$$
-|R\rangle = \frac{|H\rangle+i|V\rangle}{\sqrt{2}},
-\qquad
-|L\rangle = \frac{|H\rangle-i|V\rangle}{\sqrt{2}}.
-$$
-
-Notice what this says:
-- $|D\rangle$ and $|A\rangle$ differ only by a relative phase of $\pi$ (a minus sign).
-- $|R\rangle$ and $|L\rangle$ differ by a relative phase of $\pm\pi/2$.
-
-So polarization is already teaching you the core lesson of qubits:
-relative phase changes the physics, even when $|\alpha|^2$ and $|\beta|^2$ stay the same.
-
-### A single-photon measurement makes the probabilities feel real
-
-Here is the cleanest experiment.
-
-Prepare a photon in the state $|H\rangle$. Now measure in the diagonal basis $\{|D\rangle,|A\rangle\}$.  
-A diagonal polarizer is exactly this measurement: it transmits the $|D\rangle$ component and blocks the orthogonal $|A\rangle$ component.
-
-To see the probabilities, rewrite $|H\rangle$ in the $\{|D\rangle,|A\rangle\}$ basis. Using
-$$
-|D\rangle = \frac{|H\rangle+|V\rangle}{\sqrt{2}},
-\qquad
-|A\rangle = \frac{|H\rangle-|V\rangle}{\sqrt{2}},
-$$
-we can invert to get
-$$
-|H\rangle = \frac{|D\rangle+|A\rangle}{\sqrt{2}},
-\qquad
-|V\rangle = \frac{|D\rangle-|A\rangle}{\sqrt{2}}.
-$$
-
-So if the photon starts in $|H\rangle$, its amplitudes in the diagonal basis are
-$$
-\alpha_D=\frac{1}{\sqrt{2}},\qquad \alpha_A=\frac{1}{\sqrt{2}}.
-$$
-The Born rule then says
-$$
-P(D)=|\alpha_D|^2=\frac{1}{2},\qquad
-P(A)=|\alpha_A|^2=\frac{1}{2}.
-$$
-
-This is the moment where the “wave picture” becomes unavoidable:
-
-- For a bright laser beam, you see about half the intensity transmitted.
-- For a *single photon*, you do not get “half a photon.”
-
-You get a definite outcome:
-- the photon is transmitted (a $D$ outcome), or
-- it is absorbed/blocked (an $A$ outcome),
-
-and which one happens is fundamentally probabilistic, with probabilities set by $|\cdot|^2$.
-
-After the measurement, the state is no longer $|H\rangle$. If the photon is transmitted, its post-measurement state is
-$$
-|\psi\rangle \rightarrow |D\rangle.
-$$
-If it is blocked, the experiment ends for that photon.
-
-This is a good way to say it in one line:
-
-> A polarizer is a measurement device: it produces a classical outcome and it prepares the post-measurement state.
-
-### The three-polarizer “paradox” (how inserting a measurement can increase transmission)
-
-Now a classic demonstration that students remember.
-
-Start with light prepared in $|H\rangle$ and send it through two polarizers:
-1. a horizontal polarizer ($H$),
-2. then a vertical polarizer ($V$).
-
-Since $|H\rangle$ and $|V\rangle$ are orthogonal, essentially no light gets through the second one.
-
-Now insert a third polarizer at $45^\circ$ in between, i.e. a $D$ polarizer:
+The same number can be written in polar form:
 
 $$
-H \;\rightarrow\; D \;\rightarrow\; V.
+z = r e^{i\theta}
 $$
 
-Suddenly, some light gets through.
+where:
+- $r = |z| = \sqrt{x^2 + y^2}$ is the length of the arrow
+- $\theta = \arg(z)$ is the angle from the positive real axis
 
-What happened?
+**Key operations:**
 
-The middle polarizer is a measurement in the $\{|D\rangle,|A\rangle\}$ basis. If a photon is transmitted by the $D$ polarizer, its state becomes $|D\rangle$. But $|D\rangle$ is *not* orthogonal to $|V\rangle$:
-$$
-|D\rangle=\frac{|H\rangle+|V\rangle}{\sqrt{2}}
-\quad\Rightarrow\quad
-\langle V|D\rangle = \frac{1}{\sqrt{2}}.
-$$
-So a photon in state $|D\rangle$ has probability
-$$
-P(V\ \text{after}\ D)=|\langle V|D\rangle|^2=\frac{1}{2}
-$$
-to pass the final vertical polarizer.
+| Operation | What it does |
+|-----------|--------------|
+| $z_1 + z_2$ | Vector addition (tip-to-tail) |
+| $z_1 \cdot z_2$ | Multiply magnitudes, add phases |
+| $\|z\|^2 = z^* z$ | Square of the length |
 
-If you want the overall probability (starting from $|H\rangle$):
+The last one is especially important. If $z = re^{i\theta}$, then:
 
-- $|H\rangle \rightarrow D$ succeeds with probability $|\langle D|H\rangle|^2=1/2$
-- then $D \rightarrow |V\rangle$ succeeds with probability $|\langle V|D\rangle|^2=1/2$
-
-So
 $$
-P(\text{pass all three})=\frac{1}{2}\cdot\frac{1}{2}=\frac{1}{4}.
+|z|^2 = z^* z = (re^{-i\theta})(re^{i\theta}) = r^2
 $$
 
-With crossed polarizers alone it was (ideally) $0$. With the middle polarizer it becomes $1/4$.
+The phase disappears when we take $|z|^2$. This will connect directly to probabilities in quantum mechanics.
 
-The key lesson is not “a trick polarizer lets light sneak through.” The key lesson is:
+---
 
-> Each measurement changes the state. Changing the measurement basis changes what components exist for the next step.
+## Interference: Why Complex Numbers Matter
 
-This is exactly the logic we will use in quantum circuits:
-rotate the basis (a gate), then measure.
+Now let's see why this formalism is so powerful.
 
-### The Poincaré sphere is the Bloch sphere (for polarization)
+### The Double Slit
 
-Optics has been using the Bloch-sphere geometry for a long time under a different name: the **Poincaré sphere**.
+Consider the classic double-slit experiment — first performed by Thomas Young in 1801, demonstrating that light is a wave. A wave approaches a barrier with two slits, and we want to know the intensity at a point P on a screen behind the barrier.
 
-A pure polarization state corresponds to a point on a sphere:
-- the north/south poles are $|H\rangle$ and $|V\rangle$ (with our convention)
-- points on the equator are equal-weight superpositions (linear polarizations at different angles)
-- opposite points correspond to orthogonal polarizations
+```{figure} ./02_01_lecture_files/double_slit.svg
+:width: 400px
+:name: double-slit
 
-A useful bridge formula is that the Bloch vector components can be written directly from amplitudes:
+The double-slit experiment: a wave passes through two slits and interferes.
+```
+
+The wave can reach P by two paths:
+- Path 1: through the top slit (distance $r_1$)
+- Path 2: through the bottom slit (distance $r_2$)
+
+If the source emits a wave $e^{i(kx - \omega t)}$, then the amplitude arriving at P from each path is:
+
 $$
-x = 2\,\mathrm{Re}(\alpha^*\beta),\qquad
-y = 2\,\mathrm{Im}(\alpha^*\beta),\qquad
-z = |\alpha|^2-|\beta|^2.
+\psi_1 = \frac{1}{\sqrt{2}} e^{ikr_1}, \qquad \psi_2 = \frac{1}{\sqrt{2}} e^{ikr_2}
 $$
-These are (up to naming/sign conventions) exactly the normalized Stokes parameters used in optics.
 
-So the same picture we use for abstract qubits is already a standard picture in polarization.
+(We've dropped the time dependence since it's the same for both paths, and the $1/\sqrt{2}$ accounts for the wave splitting between two slits.)
 
-### Measurements and optical elements (why this is such a good model)
+### The Key Step: Amplitudes Add
 
-- A polarizing beam splitter (PBS) or polarizer performs a measurement in the $\{|H\rangle,|V\rangle\}$ basis.
-- Rotate the polarizer by $45^\circ$ and you measure in the $\{|D\rangle,|A\rangle\}$ basis.
-- With waveplates + a PBS you can effectively measure in the circular basis $\{|R\rangle,|L\rangle\}$.
+The total amplitude at P is the **sum** of the contributions:
 
-Waveplates are “gates”:
-- a quarter-wave plate changes relative phase and can convert linear $\leftrightarrow$ circular polarization
-- a half-wave plate rotates linear polarization direction
+$$
+\psi_{\text{total}} = \psi_1 + \psi_2 = \frac{1}{\sqrt{2}}\left(e^{ikr_1} + e^{ikr_2}\right)
+$$
 
-On the Poincaré/Bloch sphere, these optical elements correspond to rotations of the state vector. That is exactly the picture we will use for single-qubit gates.
+This is where the magic happens. We're adding complex numbers—arrows in the complex plane.
 
-**Figure idea (later):** a Poincaré/Bloch sphere labeled both ways:
-- Bloch: $|0\rangle,|1\rangle,|+\rangle,|-\rangle,|+i\rangle,|-i\rangle$
-- Polarization: $|H\rangle,|V\rangle,|D\rangle,|A\rangle,|R\rangle,|L\rangle$
-emphasizing that it is the same sphere with different names.
+### What We Observe: Intensity
 
+The intensity (or probability, in quantum mechanics) is the magnitude squared:
+
+$$
+I = |\psi_{\text{total}}|^2 = \psi_{\text{total}}^* \psi_{\text{total}}
+$$
+
+Let's compute this. Define the phase difference:
+
+$$
+\Delta\phi = k(r_1 - r_2) = \frac{2\pi}{\lambda}(r_1 - r_2)
+$$
+
+Then:
+
+$$
+\psi_{\text{total}} = \frac{1}{\sqrt{2}} e^{ikr_1}\left(1 + e^{-i\Delta\phi}\right)
+$$
+
+The intensity is:
+
+$$
+I = |\psi_{\text{total}}|^2 = \frac{1}{2}\left|1 + e^{-i\Delta\phi}\right|^2
+$$
+
+Let's expand this:
+
+$$
+\left|1 + e^{-i\Delta\phi}\right|^2 = (1 + e^{i\Delta\phi})(1 + e^{-i\Delta\phi})
+$$
+
+$$
+= 1 + e^{i\Delta\phi} + e^{-i\Delta\phi} + 1 = 2 + 2\cos(\Delta\phi)
+$$
+
+So:
+
+$$
+\boxed{I = 1 + \cos(\Delta\phi) = 2\cos^2\left(\frac{\Delta\phi}{2}\right)}
+$$
+
+### The Physics
+
+This result contains everything:
+
+| Path difference | Phase difference $\Delta\phi$ | Intensity $I$ | What happens |
+|-----------------|------------------------------|---------------|--------------|
+| $0, \lambda, 2\lambda, ...$ | $0, 2\pi, 4\pi, ...$ | 2 (maximum) | Constructive interference |
+| $\lambda/2, 3\lambda/2, ...$ | $\pi, 3\pi, ...$ | 0 (minimum) | Destructive interference |
+
+When the two waves arrive **in phase** ($\Delta\phi = 0$), they add constructively—the arrows point the same direction.
+
+When they arrive **out of phase** ($\Delta\phi = \pi$), they cancel—the arrows point opposite directions.
+
+```{figure} ./02_01_lecture_files/interference_arrows.svg
+:width: 400px
+:name: interference-arrows
+
+Interference as vector addition: in-phase arrows add, out-of-phase arrows cancel.
+```
+
+This is interference, and it emerges directly from the addition of complex numbers.
+
+```{admonition} The Quantum Mystery
+:class: note
+
+Remarkably, this interference pattern appears even when we send photons through one at a time. Each individual photon lands at a single spot on the screen — but after thousands of photons, the spots build up the interference pattern. 
+
+Each photon interferes with *itself* — it travels through both slits simultaneously. This is the quantum mystery we'll explore in coming lectures.
+```
+
+---
+
+## The Cross Term: Where Interference Lives
+
+Let's look at the intensity calculation another way. Write:
+
+$$
+I = |\psi_1 + \psi_2|^2 = (\psi_1^* + \psi_2^*)(\psi_1 + \psi_2)
+$$
+
+Expanding:
+
+$$
+I = |\psi_1|^2 + |\psi_2|^2 + \psi_1^*\psi_2 + \psi_2^*\psi_1
+$$
+
+The first two terms are just the individual intensities. The last two terms are the **cross terms**:
+
+$$
+I = I_1 + I_2 + 2\text{Re}(\psi_1^*\psi_2)
+$$
+
+If we just had $I = I_1 + I_2$, there would be no interference—just two independent waves adding their intensities.
+
+The cross term $2\text{Re}(\psi_1^*\psi_2)$ is where the phases meet. It's positive when the phases align (constructive) and negative when they oppose (destructive).
+
+```{admonition} Key Insight
+:class: important
+
+**Interference is the cross term.**
+
+It appears because we add amplitudes first, then square.
+```
+
+```{admonition} The Fundamental Difference
+:class: warning
+
+**Classical particles:** Probabilities add. If two paths lead to the same outcome, $P = P_1 + P_2$.
+
+**Waves and quantum systems:** Amplitudes add, then square. $P = |c_1 + c_2|^2 \neq |c_1|^2 + |c_2|^2$.
+
+The cross term $2\text{Re}(c_1^* c_2)$ is what makes quantum mechanics different from classical probability.
+```
+
+This is profoundly different from classical probability, where you would add probabilities (intensities) directly.
+
+---
+
+## Interferometers: Precision Instruments from Interference
+
+The double-slit experiment spreads interference across many points in space. But we can also engineer interference to happen at a single point, with all the "which path" information encoded in a controlled phase difference.
+
+These devices are called **interferometers**, and they're some of the most precise instruments ever built.
+
+### The Michelson Interferometer
+
+The Michelson interferometer splits a beam into two perpendicular arms, reflects them back with mirrors, and recombines them.
+
+```{figure} ./02_01_lecture_files/michelson.svg
+:width: 350px
+:name: michelson
+
+The Michelson interferometer: a beam splitter, two mirrors, and a detector.
+```
+
+Here's how it works:
+1. Light hits a 50/50 beam splitter at 45°
+2. Half goes to mirror 1 (distance $L_1$), half to mirror 2 (distance $L_2$)
+3. Both beams return and recombine at the beam splitter
+4. The detector sees the interference
+
+The phase difference comes from the path length difference:
+
+$$
+\Delta\phi = \frac{2\pi}{\lambda} \cdot 2(L_1 - L_2)
+$$
+
+(The factor of 2 is because light travels to the mirror and back.)
+
+The intensity at the detector:
+
+$$
+I = I_0 \cos^2\left(\frac{\Delta\phi}{2}\right) = I_0 \cos^2\left(\frac{2\pi (L_1 - L_2)}{\lambda}\right)
+$$
+
+**Why this matters:** The Michelson interferometer can detect length changes smaller than the wavelength of light. Move one mirror by $\lambda/4 \approx 125$ nm and the output swings from maximum to zero.
+
+```{admonition} LIGO: Gravitational Wave Detection
+:class: note
+
+The LIGO detectors that discovered gravitational waves in 2015 are Michelson interferometers with 4 km arms. They detected length changes of $10^{-19}$ meters—about 1/10,000 the diameter of a proton. This is interference as a precision measurement tool.
+```
+
+### The Mach-Zehnder Interferometer
+
+The Mach-Zehnder interferometer is similar but uses two separate beam splitters—one to split, one to recombine. The beams travel in the same direction rather than bouncing back.
+
+```{figure} ./02_01_lecture_files/mach_zehnder.svg
+:width: 400px
+:name: mach-zehnder
+
+The Mach-Zehnder interferometer: split, propagate, phase shift, recombine.
+```
+
+The setup:
+1. First beam splitter splits the input into upper and lower paths
+2. Light propagates through both arms
+3. A phase shifter adds controlled phase $\phi$ to one arm
+4. Second beam splitter recombines the beams
+5. Two detectors measure the outputs D1 and D2
+
+Let's trace the amplitudes. After the first beam splitter:
+
+$$
+|in\rangle \to \frac{1}{\sqrt{2}}|upper\rangle + \frac{1}{\sqrt{2}}|lower\rangle
+$$
+
+After the phase shifter (on the lower arm):
+
+$$
+\frac{1}{\sqrt{2}}|upper\rangle + \frac{e^{i\phi}}{\sqrt{2}}|lower\rangle
+$$
+
+At the second beam splitter, each path splits again. Importantly, reflection at a beam splitter adds a phase of $\pi$ (a minus sign). The transformation is:
+
+$$
+|upper\rangle \to \frac{1}{\sqrt{2}}(|D1\rangle + |D2\rangle)
+$$
+
+$$
+|lower\rangle \to \frac{1}{\sqrt{2}}(|D1\rangle - |D2\rangle)
+$$
+
+Combining everything:
+
+$$
+|\psi_{out}\rangle = \frac{1}{2}\left[(1 + e^{i\phi})|D1\rangle + (1 - e^{i\phi})|D2\rangle\right]
+$$
+
+The probabilities are:
+
+$$
+P(D1) = \left|\frac{1 + e^{i\phi}}{2}\right|^2 = \cos^2\left(\frac{\phi}{2}\right)
+$$
+
+$$
+P(D2) = \left|\frac{1 - e^{i\phi}}{2}\right|^2 = \sin^2\left(\frac{\phi}{2}\right)
+$$
+
+Notice: $P(D1) + P(D2) = 1$. All the light goes somewhere—it's just a question of which detector.
+
+| Phase $\phi$ | $P(D1)$ | $P(D2)$ | What happens |
+|--------------|---------|---------|--------------|
+| $0$ | 1 | 0 | All light to D1 |
+| $\pi/2$ | 0.5 | 0.5 | Equal split |
+| $\pi$ | 0 | 1 | All light to D2 |
+| $2\pi$ | 1 | 0 | Back to D1 |
+
+The phase shift controls where the light goes. This is interference as a **switch**.
+
+### The MZI as a Quantum Circuit
+
+Here's something remarkable. The Mach-Zehnder interferometer has the same structure as a quantum circuit:
+
+| MZI Component | Quantum Circuit |
+|---------------|-----------------|
+| First beam splitter | Hadamard gate $H$ |
+| Phase shifter | $R_z(\phi)$ gate |
+| Second beam splitter | Hadamard gate $H$ |
+| Detectors | Measurement in Z basis |
+
+The quantum circuit $H \to R_z(\phi) \to H$ is mathematically identical to an MZI.
+
+This isn't a coincidence. Both are doing the same thing:
+1. **Split** into a superposition of two paths/states
+2. **Accumulate phase** between the paths
+3. **Recombine** and let interference determine the outcome
+
+This is the template for quantum algorithms: split, phase, recombine, measure.
+
+---
+
+## From Classical Waves to Quantum States
+
+We've seen that complex numbers are *convenient* for describing classical waves like light. But in quantum mechanics, they're not just convenient — they're *fundamental*. Quantum amplitudes are irreducibly complex.
+
+In the double-slit experiment, the "configurations" were the two paths — through slit 1 or through slit 2. Each configuration got a complex amplitude, and we summed them before squaring.
+
+In quantum mechanics, we'll have configurations like:
+- A spin pointing up or down
+- A photon polarized horizontally or vertically
+- A particle on the left or right
+
+Each configuration gets a complex amplitude:
+
+$$
+|\psi\rangle = c_1 |\text{config 1}\rangle + c_2 |\text{config 2}\rangle
+$$
+
+The same rule applies: add amplitudes first, then square to get probabilities. The cross term — the interference — is what makes quantum mechanics powerful.
+
+```{admonition} The Core Idea of Quantum Computing
+:class: important
+
+**Quantum computing is the art of engineering the cross term.**
+
+We arrange for wrong answers to interfere destructively (cancel) and right answers to interfere constructively (amplify).
+```
+
+---
+
+## Summary
+
+Today we established the mathematical foundation for everything that follows:
+
+1. **Waves satisfy a wave equation** — and have two key properties: amplitude and phase
+
+2. **Complex numbers package both** — $z = Ae^{i\phi}$ encodes amplitude $A$ and phase $\phi$
+
+3. **Interference is addition of complex numbers** — arrows add in the complex plane
+
+4. **What we observe is $|z|^2$** — the phase disappears, but only after the cross term has done its work
+
+5. **The cross term is where interference lives** — it's positive or negative depending on relative phase
+
+6. **Interferometers harness interference for precision** — Michelson (LIGO), Mach-Zehnder (quantum circuits)
+
+Next lecture, we'll see these ideas in action with polarized light—a qubit you can hold in your hands.
+
+---
+
+## Homework
+
+### Problem 1: Complex Number Warm-Up
+
+For each of the following, express in both Cartesian ($x + iy$) and polar ($re^{i\theta}$) form:
+
+**(a)** $z = 1 + i$
+
+**(b)** $z = -2$
+
+**(c)** $z = 3e^{i\pi/3}$
+
+**(d)** Compute $|z|^2$ for each.
+
+---
+
+### Problem 2: Adding Waves
+
+Two waves with equal amplitude arrive at a point:
+
+$$
+\psi_1 = e^{i\phi_1}, \qquad \psi_2 = e^{i\phi_2}
+$$
+
+**(a)** Show that the total intensity is:
+
+$$
+I = |\psi_1 + \psi_2|^2 = 2(1 + \cos(\phi_1 - \phi_2))
+$$
+
+**(b)** What is $I$ when $\phi_1 - \phi_2 = 0$? When $\phi_1 - \phi_2 = \pi$? When $\phi_1 - \phi_2 = \pi/2$?
+
+**(c)** Sketch $I$ as a function of $\phi_1 - \phi_2$ from $0$ to $4\pi$.
+
+---
+
+### Problem 3: Three Waves
+
+Now suppose three waves arrive at a point:
+
+$$
+\psi_{\text{total}} = e^{i\phi_1} + e^{i\phi_2} + e^{i\phi_3}
+$$
+
+**(a)** For the symmetric case $\phi_1 = 0$, $\phi_2 = 2\pi/3$, $\phi_3 = 4\pi/3$, draw the three arrows in the complex plane. What is $\psi_{\text{total}}$? What is the intensity $I$?
+
+**(b)** For $\phi_1 = \phi_2 = \phi_3 = 0$, what is the intensity?
+
+**(c)** In general, what phase relationship maximizes the intensity? What minimizes it?
+
+---
+
+### Problem 4: Mach-Zehnder Variations
+
+In lecture, we derived the MZI output probabilities:
+
+$$
+P(D1) = \cos^2(\phi/2), \qquad P(D2) = \sin^2(\phi/2)
+$$
+
+**(a)** **Verify the algebra:** Starting from the state after the phase shifter,
+
+$$
+|\psi\rangle = \frac{1}{\sqrt{2}}|upper\rangle + \frac{e^{i\phi}}{\sqrt{2}}|lower\rangle
+$$
+
+apply the second beam splitter transformation and show that you get $P(D1) = \cos^2(\phi/2)$.
+
+**(b)** **Unequal beam splitter:** Suppose the first beam splitter sends fraction $r$ of the amplitude to the upper arm and $t = \sqrt{1-r^2}$ to the lower arm:
+
+$$
+|in\rangle \to r|upper\rangle + t|lower\rangle
+$$
+
+Keep the second beam splitter 50/50. Derive the new expression for $P(D1)$ as a function of $\phi$ and $r$. 
+
+**(c)** For what value of $r$ do you get the maximum contrast (difference between max and min of $P(D1)$)?
+
+**(d)** **Phase in both arms:** Now suppose both arms have phase shifters: $\phi_1$ in the upper arm and $\phi_2$ in the lower arm. Show that the output only depends on the phase *difference* $\phi_1 - \phi_2$, not the individual phases.
+
+**(e)** **Connection to quantum circuits:** The MZI is equivalent to the circuit H → Rz(φ) → H. In this analogy:
+- What does the "upper path" correspond to in the qubit?
+- What does "all light goes to D1" mean in terms of the qubit state?
+
+---
+
+### Problem 5: Double-Slit Simulation (Coding)
+
+Use the provided Python code to simulate the double-slit experiment.
+
+```{code-block} python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def double_slit_intensity(y, d, L, wavelength):
+    """
+    Calculate intensity pattern for double slit.
+    
+    Parameters:
+    y : array of positions on screen
+    d : slit separation
+    L : distance to screen
+    wavelength : wavelength of light
+    
+    Returns:
+    intensity at each position y
+    """
+    # Path difference (small angle approximation)
+    delta_r = d * y / L
+    
+    # Phase difference
+    delta_phi = 2 * np.pi * delta_r / wavelength
+    
+    # Intensity (normalized)
+    intensity = (np.cos(delta_phi / 2))**2
+    
+    return intensity
+
+# Parameters
+L = 1.0  # distance to screen (meters)
+d = 0.1e-3  # slit separation (0.1 mm)
+wavelength = 500e-9  # green light (500 nm)
+
+# Screen positions
+y = np.linspace(-0.02, 0.02, 1000)  # +/- 2 cm
+
+# Calculate and plot
+I = double_slit_intensity(y, d, L, wavelength)
+
+plt.figure(figsize=(10, 5))
+plt.plot(y * 1000, I, 'b-', linewidth=1.5)
+plt.xlabel('Position on screen (mm)', fontsize=12)
+plt.ylabel('Intensity (normalized)', fontsize=12)
+plt.title('Double-Slit Interference Pattern', fontsize=14)
+plt.grid(True, alpha=0.3)
+plt.show()
+```
+
+**(a)** Run the code with the default parameters. How many bright fringes do you see in the central 20 mm?
+
+**(b)** Double the wavelength to 1000 nm (infrared). What happens to the fringe spacing?
+
+**(c)** Double the slit separation to 0.2 mm. What happens?
+
+**(d)** The fringe spacing is approximately $\Delta y = \lambda L / d$. Verify this formula using your simulations.
+
+**(e)** What happens if you make the wavelength very large compared to the slit separation? What does the pattern look like? Explain physically.
+
+---
+
+### Problem 6: Why Not Real Numbers? (Conceptual)
+
+Someone argues: "I can describe interference using real numbers. Just track the amplitude and phase separately. Why do we need complex numbers?"
+
+Write 1-2 paragraphs explaining the advantage of complex numbers. Your answer should address:
+- What happens when you multiply two waves (e.g., propagation)
+- What happens when you add two waves (e.g., interference)
+- Why a single complex number is more natural than two real numbers
+
+---
+
+### Problem 7: The Michelson Interferometer and LIGO
+
+A Michelson interferometer has arms of length $L_1$ and $L_2$.
+
+**(a)** The output intensity is $I = I_0 \cos^2\left(\frac{2\pi (L_1 - L_2)}{\lambda}\right)$. Starting from $L_1 = L_2$, how much do you need to change $L_1$ to go from maximum intensity to zero intensity? Express your answer in terms of $\lambda$.
+
+**(b)** For green light ($\lambda = 500$ nm), what is this distance in nanometers?
+
+**(c)** LIGO uses infrared light with $\lambda = 1064$ nm. The detector can measure intensity changes corresponding to a phase shift of $\delta\phi \sim 10^{-10}$ radians. What length change $\delta L$ does this correspond to?
+
+**(d)** LIGO's arms are $L = 4$ km long. A gravitational wave causes a fractional length change (strain) of $h = \delta L / L$. Using your answer from (c), what is the smallest strain LIGO can detect?
+
+**(e)** The gravitational wave event GW150914 (the first detection) had a strain of about $h \sim 10^{-21}$. Is this detectable according to your answer in (d)? What does this tell you about the additional techniques LIGO must use?
+
+---
+
+## Looking Ahead
+
+Next lecture, we'll see interference in action with polarized light. A polarizer is a measurement device—it projects onto a basis and gives a definite outcome. And we'll see the surprising three-polarizer effect, where adding a measurement can *increase* transmission.
+
+This will be our first real qubit.
