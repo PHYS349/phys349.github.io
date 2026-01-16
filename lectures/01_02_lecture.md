@@ -1,4 +1,4 @@
-# Lecture 2: What Classical Computers Are Bad At?
+# Lecture 2: What Are Classical Computers Bad At?
 
 **Goals of today**:
 1. What are classical computers good at?
@@ -153,7 +153,7 @@ You've probably used ChatGPT or Claude. These are **Large Language Models** (LLM
 
 When you type a prompt like:
 
-> "How long do fish live?"
+> "How long should I cook raw chicken in the air fryer?"
 
 The model doesn't see words—it sees numbers. Each word (or "token") is converted into a vector through an **encoding** process.
 
@@ -251,7 +251,7 @@ Imagine you're a salesman who needs to visit 30 cities across the country. You w
 :alt: Traveling Salesman Problem
 :width: 500px
 ```
-
+(I know this image is horrible - someone want to make a better SVG???)
 
 This is the famous **Traveling Salesman Problem** (TSP).
 
