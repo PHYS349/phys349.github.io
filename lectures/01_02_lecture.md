@@ -251,7 +251,7 @@ Imagine you're a salesman who needs to visit 30 cities across the country. You w
 :alt: Traveling Salesman Problem
 :width: 500px
 ```
-(I know this image is horrible - someone want to make a better SVG???)
+(I know this image is horrible - someone want to make a better SVG code???)
 
 This is the famous **Traveling Salesman Problem** (TSP).
 
