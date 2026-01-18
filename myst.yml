@@ -55,6 +55,8 @@ site:
     logo: ./figures/PU-H-logo.jpg
     favicon: ./figures/PU-H-logo.jpg
     folders: true
+  analytics:
+    google: G-2E6M6M1FBL
 
 
 # This creates a button in the header
