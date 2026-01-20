@@ -1,15 +1,12 @@
-# Lecture 3: The Quantum Computer as a Configuration Interferer
+# Lecture 3: What Makes Quantum Hard?
 
-## What Makes Quantum Hard?
+## From seating arrangements to quantum spins
 
 Last lecture, you wrestled with the wedding seating problem. You discovered that even with just 30 guests, brute-force search was impossible—there were simply too many arrangements to check.
 
-Today we'll see that this problem was actually a physics problem in disguise. And understanding *why* it was hard will lead us directly to the core idea of quantum computing.
-<!--  -->
-### The Explosion of Configurations
+Today we'll see that this problem was actually a physics problem in disguise. And understanding why it was hard will lead us directly to the core idea of quantum computing. <!--  --> \### The Explosion of Configurations
 
-Recall the wedding problem: you had $N$ guests and needed to find the seating arrangement that minimized drama. The number of possible arrangements was:
- $$
+Recall the wedding problem: you had $N$ guests and needed to find the seating arrangement that minimized drama. The number of possible arrangements was: $$
 N! = N \times (N-1) \times (N-2) \times \cdots \times 1
 $$
 
@@ -21,8 +18,7 @@ $$
 \uparrow \quad \downarrow \quad \uparrow \quad \uparrow \quad \downarrow \quad \downarrow \quad \uparrow \quad \downarrow \quad \uparrow \quad \downarrow
 $$
 
-We can encode this as a list of numbers: $s_i = +1$ for up, $s_i = -1$ for down:
-$$
+We can encode this as a list of numbers: $s_i = +1$ for up, $s_i = -1$ for down: $$
 s = [+1, -1, +1, +1, -1, -1, +1, -1, +1, -1]
 $$
 
@@ -42,33 +38,32 @@ This is exponential growth:
 | 50  | \~$10^{15}$ | Exceeds all computers       |
 | 300 | \~$10^{90}$ | More than atoms in universe |
 
-The wedding problem ($N!$) is even worse than $2^N$, but both are **intractable** for large $N$. No classical algorithm can search through all possibilities.
+The wedding problem ($N!$) is even worse than $2^N$, but both are intractable for large $N$. No classical algorithm can search through all possibilities.
 
 This is the first key insight:
 
 > **The number of configurations grows exponentially with the number of particles.**
 
-## Energy as a Cost Function
-
 In the wedding problem, you had a "drama matrix" $D_{ij}$ that told you how much two guests disliked sitting together. You minimized the total drama.
 
-Physics has exactly the same structure—but we call the cost function **energy**, and we call the drama matrix the **Hamiltonian**.
+Physics has exactly the same structure—but we call the cost function energy, and we call the drama matrix the **Hamiltonian**.
 
-### Why Energy?
+#### Why Energy?
 
-Nature has a deep tendency to minimize energy: - Hot coffee cools down (energy flows to the environment) - Balls roll downhill (gravitational potential energy decreases) - Crystals form from liquid (atoms find low-energy arrangements) - Magnets align with external fields (magnetic energy decreases)
+Nature has a deep tendency to minimize energy:
+
+- Hot coffee cools down (energy flows to the environment) - Balls roll downhill (gravitational potential energy decreases)
+
+- Crystals form from liquid (atoms find low-energy arrangements)
+
+- Magnets align with external fields (magnetic energy decreases)
 
 When a system reaches its lowest possible energy, we call that the **ground state**.
 
 Finding the ground state of a physical system is exactly like finding the optimal seating arrangement: you're searching for the configuration that minimizes a cost function.
 
-### The Hamiltonian
 
-In physics, the cost function is called the **Hamiltonian**, denoted $H$. It's the "energy operator"—given a configuration, it tells you the energy.
-
-For spins, we'll build up the Hamiltonian in two pieces.
-
-## Spins in a Magnetic Field
+#### Spins in a Magnetic Field
 
 Let's start with the simplest case: a single spin in an external magnetic field $B$.
 
@@ -92,7 +87,7 @@ The ground state is obvious: all spins point up (if $B > 0$), giving energy $H =
 
 This is too easy. The interesting physics comes when spins interact with *each other*.
 
-## Spin-Spin Interactions: The Ising Model
+#### Spin-Spin Interactions: The Ising Model
 
 Real materials aren't just spins in a field—neighboring spins also interact with each other. An electron's spin on one atom can influence the spin on a neighboring atom.
 
@@ -100,10 +95,7 @@ We model this with the **Ising model**, one of the most important models in phys
 H = -J \sum_{i=1}^{N-1} s_i s_{i+1} - B \sum_{i=1}^{N} s_i
 $$
 
-Let's unpack each term.
-
-### The Interaction Term
-
+Let's unpack each term.  We still have the interaction of each spin with the external B-field.  But now we also have an interaction term for interactions between spins:
 $$
 -J \sum_{i=1}^{N-1} s_i s_{i+1}
 $$
@@ -119,8 +111,6 @@ What about the sign of $J$?
 **If** $J < 0$ (antiferromagnetic): - Aligned spins: $H = -J(+1) = +|J|$ (high energy) - Anti-aligned spins: $H = -J(-1) = -|J|$ (low energy ✓) - Spins **want to anti-align**
 
 This is exactly the drama matrix from the wedding problem! Positive $J$ means the spins "get along" (want to be the same); negative $J$ means they "fight" (want to be different).
-
-### Visualizing the Interactions
 
 For a 1D chain, we can visualize the coupling:
 
@@ -144,7 +134,7 @@ $$
 
 Compare this to the drama matrix from the wedding problem—same structure, different physical interpretation.
 
-### The Competition
+#### The Competition
 
 The interesting physics happens when the two terms compete.
 
@@ -158,7 +148,8 @@ Which wins? It depends on the relative strength of $|J|$ versus $B$.
 
 The crossover between these regimes is called a **phase transition**. You'll explore this in the homework.
 
-## How Would You Solve This Classically?
+
+## Nature's strategy: Simulated Annealing
 
 You now have a well-defined optimization problem:
 
@@ -168,8 +159,6 @@ For small $N$, you can try all $2^N$ configurations. But for $N = 50$, that's $1
 
 Is there a smarter approach?
 
-### Nature's Strategy: Simulated Annealing
-
 Think about how nature actually solves this problem. When you cool a material slowly, the atoms don't instantly jump to the ground state. Instead:
 
 1.  At high temperature, atoms jiggle around randomly
@@ -178,7 +167,7 @@ Think about how nature actually solves this problem. When you cool a material sl
 
 This process is called **annealing**, and we can simulate it on a computer.
 
-### The Simulated Annealing Algorithm
+Here is the simulated annealing algorithm.
 
 **Step 1: Start hot**
 
@@ -190,52 +179,58 @@ At high temperature, any configuration is acceptable.
 
 **Step 2: Propose a change**
 
-Pick a random spin and flip it. Calculate the energy change: $$
+Here we randomly change the system.  This could be swapping two neighboring spins.  It could be by randomly flipping any single spin.  This is supposed to model the randomness intrinsic to hot systems - they are constantly changing.  We make the change.  Then we calculate the energy change: 
+$$
 \Delta E = E_{\text{new}} - E_{\text{old}}
 $$
 
 **Step 3: Accept or reject**
 
-Here's the key insight from statistical mechanics:
+Here’s the standard Metropolis acceptance rule:
 
--   If $\Delta E < 0$ (energy decreases): **always accept** the flip
--   If $\Delta E > 0$ (energy increases): **accept with probability** $e^{-\Delta E / T}$
+Let \(\Delta E = E_{\text{new}} - E_{\text{old}}\).
 
-At high temperature $T$, the probability $e^{-\Delta E / T}$ is close to 1, so we accept almost anything—the system explores freely.
+- If \(\Delta E \le 0\) (energy decreases or stays the same): **always accept** the move  
+- If \(\Delta E > 0\) (energy increases): **accept with probability**  
+  \[
+  p = e^{-\Delta E / T}
+  \]
 
-At low temperature $T$, the probability $e^{-\Delta E / T}$ is close to 0, so we only accept downhill moves—the system gets trapped in low-energy states.
+In practice: draw \(u \sim \text{Uniform}(0,1)\). Accept the move if \(u < e^{-\Delta E/T}\).
+
+At high temperature \(T\), \(e^{-\Delta E/T}\) is closer to 1, so the algorithm often accepts uphill moves and explores widely.
+
+At low temperature \(T\), \(e^{-\Delta E/T}\) becomes very small for \(\Delta E>0\), so the algorithm rarely accepts uphill moves and tends to get stuck in low-energy states.
 
 **Step 4: Cool down and repeat**
 
-Gradually lower the temperature while repeating steps 2-3. The system will (hopefully) settle into a low-energy configuration.
+Gradually lower the temperature while repeating steps 2–3. The system will (hopefully) settle into a low-energy configuration.
+
+
 
 ```         
-Algorithm: Simulated Annealing
-─────────────────────────────
-1. Initialize random configuration s
-2. Set initial temperature T = T_high
-3. While T > T_low:
-   a. Pick random spin i
-   b. Compute ΔE if we flip spin i
-   c. If ΔE < 0: flip the spin
-      Else: flip with probability exp(-ΔE/T)
-   d. Lower T slightly (e.g., T → 0.99 × T)
-4. Return final configuration
+Algorithm: Simulated Annealing (Metropolis)
+───────────────────────────────────────────
+
+Initialize random configuration s
+
+Set initial temperature T = T_high
+
+While T > T_low:
+a. Pick random spin i
+b. Compute ΔE if we flip spin i
+c. If ΔE ≤ 0: flip the spin
+Else:
+Draw u ~ Uniform(0,1)
+If u < exp(-ΔE/T): flip the spin
+d. Lower T slightly (e.g., T → 0.99 × T)
+
+Return final configuration
 ```
 
-This is a **heuristic**—it doesn't guarantee the global minimum, but it often finds good solutions. It's inspired directly by how nature finds ground states.
+This is a heuristic—it doesn't guarantee the global minimum, but it often finds good solutions. It's inspired directly by how nature finds ground states.  Simulated annealing is clever, but it's still classical. It explores configurations one at a time, making local changes and hoping to find the global minimum. For some problems, this works well. For others, the energy landscape has many local minima, and the algorithm gets stuck.
 
-### The Limitation
-
-Simulated annealing is clever, but it's still classical. It explores configurations one at a time, making local changes and hoping to find the global minimum.
-
-For some problems, this works well. For others, the energy landscape has many local minima, and the algorithm gets stuck.
-
-Is there a fundamentally different approach?
-
-What if, instead of exploring configurations one at a time, we could explore *all configurations simultaneously*?
-
-This is exactly what quantum mechanics allows.
+Is there a fundamentally different approach? What if, instead of exploring configurations one at a time, we could explore all configurations simultaneously?  This is exactly what quantum mechanics allows.
 
 ------------------------------------------------------------------------
 
@@ -271,7 +266,9 @@ Let's give this a name: each possible position $x$ is a **configuration**. The w
 
 ### Complex Amplitudes and Interference
 
-What is a "complex amplitude"? It's a complex number $c = a + bi$, which has two parts: - **Magnitude** $|c| = \sqrt{a^2 + b^2}$: how "much" of that configuration - **Phase** $\phi$: the "angle" of the complex number (from $0$ to $2\pi$)
+What is a "complex amplitude"? It's a complex number $c =a + i b =  |c| e^{i \phi}$, which has two parts: 
+- **Magnitude** $|c| = \sqrt{a^2 + b^2}$: how "much" of that configuration 
+- **Phase** $\phi$: the "angle" of the complex number (from $0$ to $2\pi$)
 
 You can visualize a complex amplitude as a little arrow (or clock hand): the length is the magnitude, and the direction is the phase.
 
@@ -301,6 +298,7 @@ CONSTRUCTIVE (same phase):       DESTRUCTIVE (opposite phase):
     BIG amplitude                    ZERO amplitude
     (high probability)               (low probability)
 ```
+(Sorry this figure is awful)
 
 This is the heart of quantum mechanics: amplitudes with the same phase add up (constructive interference), while amplitudes with opposite phases cancel (destructive interference).
 
@@ -308,7 +306,7 @@ We'll explore complex numbers more next week. For now, just remember: each confi
 
 ### Simplifying: Two Positions
 
-Continuous position space is complicated. Let's simplify to the extreme: imagine a particle that can only be in **two positions**, Left or Right.
+Continuous position space is complicated. Let's simplify to the extreme: imagine a particle that can only be in two positions, Left or Right.
 
 **Classical:** The particle is either at L or at R. Even if we're uncertain, it's definitely one or the other.
 
@@ -316,11 +314,12 @@ Continuous position space is complicated. Let's simplify to the extreme: imagine
 |\psi\rangle = c_L |L\rangle + c_R |R\rangle
 $$
 
-where: - $c_L$ is the amplitude to be on the left - $c_R$ is the amplitude to be on the right - $|L\rangle$ and $|R\rangle$ are the two configurations
+where: 
+- $c_L$ is the amplitude to be on the left 
+- $c_R$ is the amplitude to be on the right 
+- $|L\rangle$ and $|R\rangle$ are the two configurations
 
 This is called a **superposition**. The particle isn't at L *or* R—it's in both configurations simultaneously, with amplitudes $c_L$ and $c_R$.
-
-### Normalization
 
 There's one constraint: the total probability must equal 1. Since probability is the magnitude squared: $$
 |c_L|^2 + |c_R|^2 = 1
@@ -340,7 +339,7 @@ $$
 
 This is mathematically identical to the two-position system: - Two configurations: $|\uparrow\rangle$ and $|\downarrow\rangle$ - Two complex amplitudes: $c_\uparrow$ and $c_\downarrow$ - Normalization: $|c_\uparrow|^2 + |c_\downarrow|^2 = 1$
 
-We can represent the quantum state as a **vector**: $$
+We can represent the quantum state as a vector: $$
 |\psi\rangle = \begin{pmatrix} c_\uparrow \\ c_\downarrow \end{pmatrix}
 $$
 
@@ -350,14 +349,16 @@ This is called the **state vector**. For a two-configuration system, it's a vect
 
 How does a quantum state change in time?
 
-Recall classical mechanics: position updates via velocity. $$
+Recall classical mechanics: position updates via velocity. 
+$$
 x(t + \Delta t) = x(t) + v \cdot \Delta t
 $$
 
-In quantum mechanics, the state vector updates via **matrix multiplication**: $$
+In quantum mechanics, the state vector updates via matrix multiplication:
+ 
+$$
 \begin{pmatrix} c_\uparrow(t+\Delta t) \\ c_\downarrow(t+\Delta t) \end{pmatrix}
-=
-\begin{pmatrix} U_{00} & U_{01} \\ U_{10} & U_{11} \end{pmatrix}
+=\begin{pmatrix} U_{00} & U_{01} \\ U_{10} & U_{11} \end{pmatrix}
 \begin{pmatrix} c_\uparrow(t) \\ c_\downarrow(t) \end{pmatrix}
 $$
 
@@ -381,9 +382,9 @@ $$
 
 Each configuration gets its own complex amplitude—its own magnitude and phase.
 
-**A note on notation:** Here the subscripts like $\uparrow\uparrow$ are labels for configurations. This is different from the classical Ising model where we used $s_i = \pm 1$ as numerical values. In the quantum case, $c_{\uparrow\uparrow}$ is a complex number (the amplitude), while $|\uparrow\uparrow\rangle$ is a basis state (the configuration).
+**A note on notation:** Here the subscripts like $\uparrow\uparrow$ are labels for configurations. This is different from the classical Ising model where we used $s_i = \pm 1$ as numerical values. In the quantum case, $c_{\uparrow\uparrow}$ is a complex number (the amplitude), while $|\uparrow\uparrow \rangle$ is a basis state (the configuration).
 
-The state vector now has **4 components**: $$
+The state vector now has 4 components: $$
 |\psi\rangle = \begin{pmatrix} c_{\uparrow\uparrow} \\ c_{\uparrow\downarrow} \\ c_{\downarrow\uparrow} \\ c_{\downarrow\downarrow} \end{pmatrix}
 $$
 
@@ -472,7 +473,7 @@ $$
 
 In this case, $P(\uparrow) = P(\downarrow) = 1/2$. It's a coin flip.
 
-After measurement, the state **collapses** to the measured outcome: - If we measure $\uparrow$, the state becomes $|\uparrow\rangle$ - If we measure $\downarrow$, the state becomes $|\downarrow\rangle$
+After measurement, the state collapses to the measured outcome: - If we measure $\uparrow$, the state becomes $|\uparrow\rangle$ - If we measure $\downarrow$, the state becomes $|\downarrow\rangle$
 
 The superposition is destroyed. This is one of the deep mysteries of quantum mechanics—but for now, we take it as a rule.
 
@@ -549,7 +550,9 @@ Just a string of 0s and 1s.
 
 ### The Goal
 
-The art of quantum algorithms is designing the gates so that: - **Wrong answers** interfere **destructively** → low probability - **Right answers** interfere **constructively** → high probability
+The art of quantum algorithms is designing the gates so that: 
+- **Wrong answers** interfere **destructively** → low probability 
+-  **Right answers** interfere **constructively** → high probability
 
 When you measure, you're likely to get the right answer.
 
@@ -567,18 +570,15 @@ This is not magic. It's engineering interference patterns in a $2^N$-dimensional
 | **Exploration** | One path at a time | All paths simultaneously |
 | **Output** | Deterministic | Probabilistic (via interference) |
 
-The exponential state space is both the **source of quantum power** and the **reason quantum systems are hard to simulate classically**.
+The exponential state space is both the source of quantum power and the reason quantum systems are hard to simulate classically.
 
-### What's Next?
 
-In the coming lectures, we'll see specific algorithms that exploit this structure: - **Deutsch-Jozsa**: determining global properties of functions - **Grover's algorithm**: searching unsorted databases with quadratic speedup\
-- **Shor's algorithm**: factoring integers exponentially faster than any known classical method
 
-These algorithms are not just "faster classical algorithms"—they use interference in fundamentally new ways.
+
 
 ------------------------------------------------------------------------
 
-# Homework (Part of HW 2)
+# Homework
 
 ## Problem 1: Ising Energy by Hand
 
@@ -692,68 +692,69 @@ plt.title('Simulated Annealing')
 plt.show()
 ```
 
-## Problem 4: Quantum State Vectors
+% ## Problem 4: Quantum State Vectors
 
-**(a)** A single spin is in the state: $$
-|\psi\rangle = \frac{1}{2}|\uparrow\rangle + \frac{\sqrt{3}}{2}|\downarrow\rangle
-$$ - Verify this state is normalized. - What is the probability of measuring spin up? Spin down? - If you measured 1000 spins prepared in this state, how many would you expect to find spin up?
+% **(a)** A single spin is in the state: $$
+% |\psi\rangle = \frac{1}{2}|\uparrow\rangle + \frac{\sqrt{3}}{2}|\downarrow\rangle
+% $$ - Verify this state is normalized. - What is the probability of measuring spin up? Spin down? - If you measured 1000 spins prepared in this state, how many would you expect to find spin up?
 
-**(b)** Write out the state vector for two spins where: - The first spin is $|\uparrow\rangle$ - The second spin is in equal superposition: $\frac{1}{\sqrt{2}}(|\uparrow\rangle + |\downarrow\rangle)$
+% **(b)** Write out the state vector for two spins where: - The first spin is $|\uparrow\rangle$ - The second spin is in equal superposition: $\frac{1}{\sqrt{2}}(|\uparrow\rangle + |\downarrow\rangle)$
 
-The combined state of two independent systems is their **tensor product**: $|\psi_1\rangle \otimes |\psi_2\rangle$. This means you multiply every amplitude of the first system by every amplitude of the second.
+% The combined state of two independent systems is their **tensor product**: $|\psi_1\rangle \otimes |\psi_2\rangle$. This means you multiply every amplitude of the first system by every amplitude of the second.
 
-Express your answer as a 4-component vector in the basis $\{|\uparrow\uparrow\rangle, |\uparrow\downarrow\rangle, |\downarrow\uparrow\rangle, |\downarrow\downarrow\rangle\}$.
+% Express your answer as a 4-component vector in the basis $\{|\uparrow\uparrow\rangle, |\uparrow\downarrow\rangle, |\downarrow\uparrow\rangle, |\downarrow\downarrow\rangle\}$.
 
-**(c)** How many complex amplitudes are needed to describe: - 5 spins? - 10 spins? - 50 spins?
+% **(c)** How many complex amplitudes are needed to describe: - 5 spins? - 10 spins? - 50 spins?
 
-**(d)** If each complex amplitude requires 16 bytes to store (8 bytes for the real part, 8 for imaginary), how much memory is needed to store the state vector for 30 spins? Compare to your computer's RAM.
+% **(d)** If each complex amplitude requires 16 bytes to store (8 bytes for the real part, 8 for imaginary), how much memory is needed to store the state vector for 30 spins? Compare to your computer's RAM.
 
-## Problem 5: Why Unitary?
+% ## Problem 5: Why Unitary?
 
-Time evolution in quantum mechanics must preserve probability. Let's prove that this requires the evolution matrix to be unitary.
+% Time evolution in quantum mechanics must preserve probability. Let's prove that this requires the evolution matrix to be unitary.
 
-A single spin has state: $$
-|\psi\rangle = \begin{pmatrix} c_0 \\ c_1 \end{pmatrix}
-$$
+% A single spin has state: $$
+% |\psi\rangle = \begin{pmatrix} c_0 \\ c_1 \end{pmatrix}
+% $$
 
-The normalization condition is $|c_0|^2 + |c_1|^2 = 1$.
+% The normalization condition is $|c_0|^2 + |c_1|^2 = 1$.
 
-After time evolution by matrix $U$: $$
-\begin{pmatrix} c_0' \\ c_1' \end{pmatrix} = \begin{pmatrix} U_{00} & U_{01} \\ U_{10} & U_{11} \end{pmatrix} \begin{pmatrix} c_0 \\ c_1 \end{pmatrix}
-$$
+% After time evolution by matrix $U$: $$
+% \begin{pmatrix} c_0' \\ c_1' \end{pmatrix} = \begin{pmatrix} U_{00} & U_{01} \\ U_{10} & U_{11} \end{pmatrix} \begin{pmatrix} c_0 \\ c_1 \end{pmatrix}
+% $$
 
-**(a)** Write out $c_0'$ and $c_1'$ in terms of the matrix elements $U_{ij}$ and the original amplitudes.
+% **(a)** Write out $c_0'$ and $c_1'$ in terms of the matrix elements $U_{ij}$ and the original amplitudes.
 
-**(b)** For probability to be conserved (i.e., $|c_0'|^2 + |c_1'|^2 = 1$) for *any* normalized initial state, what conditions must the columns of $U$ satisfy?
+% **(b)** For probability to be conserved (i.e., $|c_0'|^2 + |c_1'|^2 = 1$) for *any* normalized initial state, what conditions must the columns of $U$ satisfy?
 
-*Hint: Try specific initial states like* $|\psi\rangle = (1, 0)^T$ and $|\psi\rangle = (0, 1)^T$ first.
+% *Hint: Try specific initial states like* $|\psi\rangle = (1, 0)^T$ and $|\psi\rangle = (0, 1)^T$ first.
 
-**(c)** Show that the condition from (b) can be written as $U^\dagger U = I$, where $U^\dagger$ is the conjugate transpose (transpose, then complex conjugate each entry). A matrix satisfying this is called **unitary**.
+% **(c)** Show that the condition from (b) can be written as $U^\dagger U = I$, where $U^\dagger$ is the conjugate transpose (transpose, then complex conjugate each entry). A matrix satisfying this is called **unitary**.
 
-**(d)** Verify that the following matrix is unitary: $$
-H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}
-$$
+% **(d)** Verify that the following matrix is unitary: $$
+% H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}
+% $$
 
-This is called the **Hadamard gate**—one of the most important gates in quantum computing.
+% This is called the **Hadamard gate**—one of the most important gates in quantum computing.
 
-l3t' \## Problem 6: The Exponential Wall (Short Essay)
+% ## Problem 6: The Exponential Wall (Short Essay)
 
-In approximately half a page, answer the following:
+% In approximately half a page, answer the following:
 
-**(a)** Why can't classical computers efficiently simulate large quantum systems? Be specific about what scales exponentially.
+% **(a)** Why can't classical computers efficiently simulate large quantum systems? Be specific about what scales exponentially.
 
-**(b)** Nature simulates quantum systems effortlessly—every molecule is constantly evolving quantum mechanically. Why can't we just "use nature" to solve computational problems? What's the key property that a quantum computer has that a random molecule doesn't?
+% **(b)** Nature simulates quantum systems effortlessly—every molecule is constantly evolving quantum mechanically. Why can't we just "use nature" to solve computational problems? What's the key property that a quantum computer has that a random molecule doesn't?
 
-**(c)** A quantum computer with 50 qubits has a state vector with $2^{50} \approx 10^{15}$ amplitudes. But when we measure, we only get 50 bits of output. Explain how this is useful for computation. Your answer should include the word "interference."
+% **(c)** A quantum computer with 50 qubits has a state vector with $2^{50} \approx 10^{15}$ amplitudes. But when we measure, we only get 50 bits of output. Explain how this is useful for computation. Your answer should include the word "interference."
 
-\% \## Problem 7: The Wedding Problem Revisited (Optional Challenge)
 
-\% Apply simulated annealing to the 30-guest wedding problem from last week.
+% \## Problem 7: The Wedding Problem Revisited (Optional Challenge)
 
-\% **(a)** Adapt your code to work with permutations instead of spin flips. A natural "move" is to swap two randomly chosen guests.
+% Apply simulated annealing to the 30-guest wedding problem from last week.
 
-\% **(b)** Compare your best result from simulated annealing to your best result from last week. Did you do better?
+% **(a)** Adapt your code to work with permutations instead of spin flips. A natural "move" is to swap two randomly chosen guests.
 
-\% **(c)** In 2-3 sentences: why might the wedding problem (\$N!\$ configurations) be harder for simulated annealing than the spin problem (\$2\^N\$ configurations)?
+% **(b)** Compare your best result from simulated annealing to your best result from last week. Did you do better?
 
-\% *Hint: Think about what happens when you swap two guests vs. flip one spin. How much does the energy typically change? How "rough" is the energy landscape?*
+% **(c)** In 2-3 sentences: why might the wedding problem (\$N!\$ configurations) be harder for simulated annealing than the spin problem (\$2\^N\$ configurations)?
+
+% *Hint: Think about what happens when you swap two guests vs. flip one spin. How much does the energy typically change? How "rough" is the energy landscape?*
