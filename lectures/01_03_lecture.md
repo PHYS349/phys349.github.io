@@ -115,9 +115,8 @@ This is exactly the drama matrix from the wedding problem! Positive $J$ means th
 For a 1D chain, we can visualize the coupling:
 
 $$
-\uparrow \quad \downarrow \quad \uparrow \quad \downarrow \quad \uparrow
-$$ $$
-\underset{J}{\smile} \quad \underset{J}{\smile} \quad \underset{J}{\smile} \quad \underset{J}{\smile}
+\uparrow \quad \downarrow \quad \uparrow \quad \downarrow \quad \uparrow   \\
+\underset{J_{01}}{\smile} \,\,\,\, \underset{J_{12}}{\smile} \,\,\,\, \underset{J_{23}}{\smile} \,\, \underset{J_{34}}{\smile}
 $$
 
 If we wanted to write this as a matrix (like the drama matrix), it would have a simple structure—only the entries just off the diagonal are nonzero:

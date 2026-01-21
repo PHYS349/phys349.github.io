@@ -24,12 +24,13 @@ project:
         - file: lectures/01_01_lecture.md
         - file: lectures/01_02_lecture.md
         - file: lectures/01_03_lecture.md
-        #- file: lectures/01_04_lecture.md
+        - file: lectures/01_04_lecture.md
         #- file: lectures/05_lecture.md
 
     - title: Homework
       children:
         - file: homework/01_homework.md
+        - file: homework/02_homework.md
     - title: Resources
       children:
         - file: ./resources/syllabus.md
