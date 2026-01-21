@@ -96,7 +96,7 @@ These three properties let us detect and fix errors. But quantum mechanics break
 
 In a classical computer, information is stored in definite states: the bit is 0 or 1.
 
-In a quantum computer, information is stored in **superpositions**, and the **phase** between amplitudes is crucial.
+In a quantum computer, information is stored in superpositions, and the phase between amplitudes is crucial.
 
 ### One Qubit
 
@@ -119,7 +119,7 @@ $$
 |\psi\rangle = c_{000\cdots0}|000\cdots0\rangle + c_{000\cdots1}|000\cdots1\rangle + \cdots + c_{111\cdots1}|111\cdots1\rangle
 $$
 
-Each coefficient $c_i$ is a complex number with a magnitude and a phase. For interference to work correctly, **all $2^N$ phases must remain coherent**—they must maintain their precise relationships with each other.
+Each coefficient $c_i$ is a complex number with a magnitude and a phase. For interference to work correctly, all $2^N$ phases must remain coherent—they must maintain their precise relationships with each other.
 
 If anything scrambles these phases, the interference patterns are destroyed, and the quantum computer becomes useless.
 
@@ -167,7 +167,7 @@ But if you put a detector at one slit to measure "which path" the particle took:
        ════╝  slit  │░░░░│
 ```
 
-**The interference pattern vanishes.** The act of measurement destroys the superposition.
+The interference pattern vanishes. The act of measurement destroys the superposition.
 
 A photon scatters off your qubit and flies away into the room. That photon now carries information about your qubit's state. The universe has "measured" your qubit, even if no human ever looks at that photon.
 
@@ -197,28 +197,7 @@ The qubit loses energy to the environment and physically transitions from $|1\ra
 
 Example: An excited atom spontaneously emits a photon and drops to the ground state. The qubit that was in a superposition is now definitely in $|0\rangle$.
 
-### All Three Destroy Interference
-
-| Error type | Information leaves? | Population changes? | Effect |
-|------------|--------------------|--------------------|--------|
-| Environment measurement | Yes | Maybe | Collapse |
-| Phase scrambling | No | No | Random phase |
-| Decay | Yes | Yes | State resets |
-
-Despite their differences, all three have the same consequence: **the interference patterns are scrambled, and the quantum computation fails.**
-
-### Timescales
-
-Physicists characterize these errors with two timescales:
-
-- **$T_1$** (relaxation time): How long before $|1\rangle$ decays to $|0\rangle$
-- **$T_2$** (coherence time): How long before the phase becomes randomized
-
-Typically $T_2 \leq 2T_1$ (you can't maintain phase coherence if the state has already decayed).
-
-For superconducting qubits, $T_2 \sim 100$ microseconds. A single gate takes ~20 nanoseconds. That means you can do roughly **1000–5000 gates** before decoherence kills your computation.
-
-The race is on: **you must finish your computation before decoherence destroys your quantum state.**
+All three mechanisms have the same consequence: the interference patterns are scrambled, and the quantum computation fails. The race is on—you must finish your computation before decoherence destroys your quantum state.
 
 ---
 
@@ -246,57 +225,43 @@ But measuring a qubit in superposition collapses it to $|0\rangle$ or $|1\rangle
 
 ### The Error Rate Problem
 
-Current quantum gates have error rates of about **1% per operation** (or $\sim 10^{-2}$ to $10^{-3}$).
+Quantum gates come in two types: **single-qubit gates** (rotating one qubit) and **two-qubit gates** (entangling two qubits).
 
-A useful quantum algorithm might require millions of gates. If each gate has a 1% error rate, errors compound rapidly and you have essentially no chance of getting the right answer.
+Single-qubit gates can be extremely good—fidelities of 99.99% or better (four nines). You're just shining a pulse of light or microwaves on one atom. Not much can go wrong.
 
-### The Solution: Logical Qubits
+Two-qubit gates are the hard part. Here's the fundamental tension:
 
-Despite these obstacles, quantum error correction is possible. The breakthrough, developed in the 1990s:
+> To have long-lived, coherent qubits, you want them completely isolated from everything.
+>
+> To do a two-qubit gate, you need two qubits to interact with each other—but nothing else.
 
-Encode one **logical qubit** across many **physical qubits** in such a way that you can detect errors without measuring the encoded information.
+You need to briefly turn on a controlled interaction between exactly two qubits, then turn it off completely. Any coupling to the environment, any imperfection in the interaction, causes errors.
 
-> **Physical qubit:** A single hardware device—one trapped ion, one superconducting circuit, one atom.
+Current two-qubit gate fidelities are around 99%–99.9% (two to three nines)—roughly 10 to 100 times worse than single-qubit gates. This is improving rapidly, with the best systems now reaching 99.99%.
 
-> **Logical qubit:** An error-corrected qubit encoded across many physical qubits.
+A useful quantum algorithm might require millions of gates. Even at 99.9% fidelity per gate, errors compound rapidly. This is why error correction is essential.
 
-How does this avoid the measurement problem? The trick is to measure *correlations* between physical qubits (called "syndromes") rather than the qubits themselves. These measurements reveal whether an error occurred and where, without revealing the encoded quantum information.
+### The Solution: Quantum Error Correction
 
-The overhead is substantial. Current estimates suggest:
+Despite the obstacles of no-cloning and measurement collapse, quantum error correction is possible. The breakthrough, developed in the 1990s:
 
-$$
-\sim 1000 \text{ physical qubits per logical qubit}
-$$
-
-There's a crucial threshold: if your physical qubit error rate is below ~1%, adding more physical qubits makes the logical qubit *better*, not worse. Above threshold, more qubits just means more noise. Below threshold, more qubits means more protection.
-
-We're currently right at this threshold—which is why improving gate fidelity is the central challenge.
-
----
-
-
-
-### The Solution: Logical Qubits
-
-Despite these obstacles, quantum error correction is possible. The breakthrough, developed in the 1990s:
-
-Encode one **logical qubit** across many **physical qubits** in such a way that you can detect errors without measuring the encoded information.
+Encode one **logical qubit** across multiple **physical qubits** in such a way that you can detect errors without measuring the encoded information.
 
 > **Physical qubit:** A single hardware device—one trapped ion, one superconducting circuit, one atom.
 
-> **Logical qubit:** An error-corrected qubit encoded across many physical qubits.
+> **Logical qubit:** An error-corrected qubit encoded across several physical qubits.
 
-How does this avoid the measurement problem? The trick is to measure *correlations* between physical qubits (called "syndromes") rather than the qubits themselves. These measurements reveal whether an error occurred and where, without revealing the encoded quantum information.
+How does this avoid the measurement problem? The trick is to measure *correlations* (called "syndromes") rather than the qubits themselves.
 
-The overhead is substantial. Current estimates suggest:
+Here's the intuition. Suppose you encode your logical qubit across several physical qubits. You add extra "ancilla" qubits that get entangled with your data qubits in a clever way. When you measure the ancilla, you learn things like: "Did qubits 1 and 2 have the same parity (both 0 or both 1)?" and "Did qubits 2 and 3 have the same parity?"
 
-$$
-\sim 1000 \text{ physical qubits per logical qubit}
-$$
+If an error flips one of your qubits, the parity checks will fail, telling you *which* qubit flipped—without ever revealing what the actual qubit values are. You can then correct the error.
 
-There's a crucial threshold: if your physical qubit error rate is below ~1%, adding more physical qubits makes the logical qubit *better*, not worse. Above threshold, more qubits just means more noise. Below threshold, more qubits means more protection.
+The overhead depends on your physical error rate and the code you use. Early estimates suggested ~1000 physical qubits per logical qubit, but recent theoretical advances (especially new codes like qLDPC) have dramatically reduced this. With high-fidelity gates (~99.9%), you might need only **10–100 physical qubits per logical qubit**. Companies like QuEra are pursuing schemes where small groups of atoms encode logical qubits directly.
 
-We're currently right at this threshold—which is why improving gate fidelity is the central challenge.
+The key threshold: if your physical error rate is below ~1%, adding more physical qubits for error correction makes things *better*. Above threshold, more qubits just means more noise.
+
+We're right at this threshold now—which is why the push for higher gate fidelity is so important.
 
 ---
 
@@ -308,33 +273,40 @@ There are several competing approaches to building physical qubits. Each has dif
 
 **Companies:** IBM, Google, Rigetti, IQM
 
-**How it works:**
-- Tiny circuits made of superconducting metal (usually aluminum) on a silicon chip
-- The **transmon** qubit: a capacitor in parallel with a **Josephson junction** (a thin insulating barrier between superconductors)
-- The Josephson junction provides nonlinearity, creating an **anharmonic oscillator**—the energy levels are not evenly spaced, so you can address just the lowest two levels as $|0\rangle$ and $|1\rangle$
-- The qubit states correspond to different numbers of Cooper pairs (paired electrons) oscillating across the junction
-- Cooled to ~15 millikelvin in a dilution refrigerator (colder than outer space!)
+Superconducting qubits are built from electrical circuits, but with a quantum twist. The key is to use superconducting metals—typically aluminum—which conduct electricity with zero resistance. No resistance means no energy loss, which is essential for maintaining fragile quantum states.
+
+Start with a simple LC circuit: a capacitor and an inductor connected in a loop. This is a harmonic oscillator for electrical current—the charge sloshes back and forth between the capacitor plates at a resonant frequency, just like a mass on a spring. Quantum mechanically, this oscillator has discrete energy levels, evenly spaced like a ladder.
+
+The problem is that a harmonic oscillator has *too many* levels. If you try to use the bottom two rungs as your $|0\rangle$ and $|1\rangle$, a pulse meant to drive $|0\rangle \to |1\rangle$ might accidentally push you up to $|2\rangle$ or higher. You can't address just two levels.
+
+The solution is to replace the inductor with a **Josephson junction**: a thin insulating barrier (just a few atoms thick) sandwiched between two superconductors. The junction acts as a nonlinear inductor. This breaks the even spacing of the energy levels—the ladder rungs become unevenly spaced. Now the frequency for $|0\rangle \to |1\rangle$ is different from $|1\rangle \to |2\rangle$, and you can selectively address just the qubit transition. This is called an anharmonic oscillator, and the resulting qubit is called a **transmon**.
+
+What are the physical qubit states? In a superconductor, electrons pair up into "Cooper pairs" that move without resistance. The $|0\rangle$ and $|1\rangle$ states of a transmon correspond to different numbers of Cooper pairs that have quantum-tunneled across the Josephson junction. It's a collective excitation of the superconducting condensate.
+
+The whole circuit must be cooled to about 15 millikelvin—colder than outer space—using a dilution refrigerator. At this temperature, thermal fluctuations are negligible compared to the qubit energy spacing.
+
+[FIGURE: Superconducting qubit circuit and energy levels]
 
 **Gates:**
 - **Single-qubit gates:** Microwave pulses at the qubit's resonant frequency (~5 GHz) rotate the state on the Bloch sphere. Gate time ~20 ns.
-- **Two-qubit gates:** Neighboring qubits are coupled through a resonator or tunable coupler. Turning on the coupling allows energy exchange, creating entanglement. Gate time ~50-200 ns.
+- **Two-qubit gates:** Neighboring qubits are coupled through a resonator or tunable coupler. Turning on the coupling allows energy exchange, creating entanglement. Gate time ~50–200 ns.
 
-**State of the art (2025-2026):**
+**State of the art (2025–2026):**
 - Single-qubit gate fidelity: ~99.9%
 - Two-qubit gate fidelity: ~99.5% (median), up to ~99.9% on best qubit pairs
-- Coherence time $T_2$: ~100-600 μs
+- Coherence times: ~100–600 μs
 - Largest systems: IBM has 1000+ physical qubits; Google Willow has 105 high-quality qubits
 - Google demonstrated error correction below threshold (logical qubits improve as code distance increases)
 
 **Advantages:**
-- Very fast gates (~20-100 ns)
+- Very fast gates (~20–100 ns)
 - Fabricated using standard lithography—leverages semiconductor industry
 - Flexible chip design
 
 **Disadvantages:**
 - Requires extreme cooling (dilution refrigerators are expensive and complex)
 - Each qubit is slightly different due to fabrication variation
-- Relatively short coherence times
+- Relatively short coherence times compared to atoms
 - Nearest-neighbor connectivity on chip (long-range coupling is harder)
 
 ---
@@ -343,33 +315,37 @@ There are several competing approaches to building physical qubits. Each has dif
 
 **Companies:** IonQ, Quantinuum, Oxford Ionics (now part of IonQ)
 
-**How it works:**
-- Individual ions (charged atoms, typically ytterbium Yb⁺ or barium Ba⁺) suspended in vacuum using oscillating electric fields (Paul trap or linear trap)
-- Each ion is a qubit—two internal energy levels (hyperfine or optical states) encode $|0\rangle$ and $|1\rangle$
-- Ions are laser-cooled to near absolute zero
-- All ions of the same species are **identical**—no fabrication variation
+An ion is just an atom with one electron removed, leaving it with a net positive charge. Because it's charged, you can push it around with electric fields—and crucially, you can trap it in place using oscillating electric fields (called a Paul trap or linear trap). A typical trapped-ion quantum computer holds a row of ions suspended in vacuum, spaced a few micrometers apart, floating in an electromagnetic "bottle."
 
-**Gates:**
-- **Single-qubit gates:** Focused laser or microwave pulses drive transitions between $|0\rangle$ and $|1\rangle$. Fidelity >99.99%.
-- **Two-qubit gates:** Ions interact through their **shared motion** (phonons). A laser pulse entangles the ions' internal states with the collective vibrational mode of the ion chain, then disentangles the motion, leaving the spins entangled (Mølmer-Sørensen gate). Gate time ~10-100 μs.
+The qubit is encoded in the internal states of each ion. Like the hydrogen atom you studied in intro quantum, the electron in an ion has discrete energy levels. Typically, we use two very long-lived states—either two hyperfine ground states (split by the interaction between the electron and nuclear spin) or two levels connected by an optical transition. Call them $|0\rangle$ and $|1\rangle$. The energy difference corresponds to a microwave or optical frequency.
 
-**State of the art (2025-2026):**
+The beautiful thing about ions is that every ion of the same species is exactly identical. There's no fabrication variation, no defects. Nature gives you perfect qubits for free. Furthermore, isolated atoms in vacuum have very long coherence times—seconds to minutes—because there's almost nothing for them to interact with.
+
+Single-qubit gates are straightforward: shine a laser (or microwave) pulse tuned to the $|0\rangle \leftrightarrow |1\rangle$ transition. The pulse rotates the qubit state, just like an NMR pulse rotates a nuclear spin.
+
+Two-qubit gates are more subtle. The ions don't naturally interact—they're just sitting there, each in its own potential well. But they *are* connected through something: the collective motion of the ion chain. The ions repel each other electrostatically, so if you push one ion, the whole chain responds. The vibrational modes of the chain—the phonons—act as a quantum bus that can transfer information between ions.
+
+Here's how a two-qubit gate works (the Mølmer-Sørensen gate): You shine laser beams that couple the ions' internal states to the collective motion. The first ion's spin gets entangled with the phonon mode; then the phonon mode gets entangled with the second ion's spin. With a carefully designed pulse, the motion disentangles at the end, but the two spins remain entangled. It's as if you shook the lattice in a precise way that correlated the two spins without leaving any trace in the motion.
+
+[FIGURE: Trapped ion chain and phonon-mediated interaction]
+
+**State of the art (2025–2026):**
 - Single-qubit gate fidelity: >99.99%
 - Two-qubit gate fidelity: **99.99%** (IonQ, October 2025—world record)
 - Quantinuum Helios: 98 qubits, 99.92% two-qubit fidelity
-- Coherence times: seconds to minutes (!)
+- Coherence times: seconds to minutes
 - All-to-all connectivity (any qubit can interact with any other by shuttling ions)
 
 **Advantages:**
 - Highest gate fidelities of any platform
 - Very long coherence times
 - Every qubit is identical
-- Flexible connectivity (can rearrange ions)
+- Flexible connectivity (can rearrange ions by shuttling them around the trap)
 
 **Disadvantages:**
 - Slow gate times compared to superconducting (~1000× slower)
 - Difficult to scale beyond ~100 ions in a single trap
-- Complex laser systems and vacuum requirements
+- Complex laser systems and ultra-high vacuum requirements
 - Ion shuttling takes time
 
 ---
@@ -378,28 +354,36 @@ There are several competing approaches to building physical qubits. Each has dif
 
 **Companies:** QuEra, Pasqal, Atom Computing
 
-**How it works:**
-- Individual neutral atoms (rubidium, cesium, or ytterbium) held in place by tightly focused laser beams called **optical tweezers**
-- Qubits encoded in hyperfine ground states (long-lived) or nuclear spin states
-- Atoms can be arranged in arbitrary 2D or 3D arrays and **rearranged dynamically**
-- Atoms don't interact in their ground states—they're independent until you want them to interact
+Neutral atoms are the newest platform but are generating enormous excitement. The idea is similar to trapped ions—use individual atoms as qubits, taking advantage of the fact that all atoms of the same species are identical. But there's a key difference: neutral atoms have no net charge, so you can't trap them with electric fields.
 
-**Gates:**
-- **Single-qubit gates:** Raman laser pulses or microwave pulses drive transitions. Fidelity ~99.97%.
-- **Two-qubit gates:** Excite atoms to **Rydberg states**—highly excited states where the electron is far from the nucleus, giving the atom a huge electric dipole moment. Two nearby Rydberg atoms interact strongly via van der Waals forces. The **Rydberg blockade** prevents both atoms from being excited simultaneously, enabling controlled-Z gates. Gate time ~1 μs.
+Instead, we use **optical tweezers**: tightly focused laser beams that create a tiny potential well through the AC Stark effect. An atom feels a force pulling it toward the bright spot at the laser focus. By creating an array of these focused beams (using a spatial light modulator), you can trap hundreds or thousands of individual atoms in a precisely controlled grid. And you can rearrange them dynamically—move atoms around to put them where you need them.
 
-**State of the art (2025-2026):**
+The qubit is encoded in long-lived internal states of the atom, typically hyperfine ground states (like in ions) or nuclear spin states. These have coherence times of seconds because ground-state atoms barely interact with anything. The atoms just sit there in their tweezers, minding their own business.
+
+Single-qubit gates are similar to trapped ions: shine a laser or microwave pulse that drives the $|0\rangle \leftrightarrow |1\rangle$ transition.
+
+Two-qubit gates are where neutral atoms get interesting. In their ground states, neutral atoms essentially don't interact—they're too far apart and have no charge. To create entanglement, we temporarily excite the atoms to **Rydberg states**: extremely high-energy states where the electron orbits far from the nucleus.
+
+A Rydberg atom is huge—the electron can be thousands of times farther from the nucleus than in the ground state. This gives the atom an enormous electric dipole moment. Two nearby Rydberg atoms interact very strongly through the van der Waals force between their dipoles.
+
+This leads to a remarkable effect: the **Rydberg blockade**. If one atom is excited to a Rydberg state, the interaction shifts the energy levels of nearby atoms so much that they *can't* be excited to the Rydberg state—the laser is now off-resonant. This "blockade" is the basis for two-qubit gates: whether one atom can be excited depends on the state of its neighbor, giving you conditional logic.
+
+The Rydberg states are short-lived (they decay in ~100 μs), so you have to do the gate quickly and return to the ground state. But the ground states are very long-lived, so you can store qubits safely between gates.
+
+[FIGURE: Optical tweezer array and Rydberg interaction]
+
+**State of the art (2025–2026):**
 - Single-qubit gate fidelity: >99.9%
 - Two-qubit gate fidelity: ~99.5% (demonstrated on 60 atoms in parallel)
 - **Largest arrays: 6,100 qubits** (Caltech, September 2025)—far more than any other platform
-- Coherence times: ~1-10 seconds in ground states; Rydberg states are short-lived (~100 μs)
+- Coherence times: ~1–10 seconds in ground states; Rydberg states are short-lived (~100 μs)
 - Demonstrated error correction and logical qubit operations
 
 **Advantages:**
 - Massive scalability—can trap thousands of atoms with optical tweezers
 - Flexible, reconfigurable arrays (atoms can be moved)
 - All atoms are identical
-- No cryogenics required (operates at room temperature with laser cooling)
+- No cryogenics required (operates near room temperature with laser cooling)
 - Native multi-qubit gates possible via Rydberg blockade
 
 **Disadvantages:**
@@ -445,5 +429,87 @@ We are in a pivotal moment. The key milestones:
 - Neutral atoms are betting on massive parallelism and flexibility
 
 All three approaches have crossed important thresholds in the past two years. The question is no longer "can we build a quantum computer?" but "how soon can we build a *useful* one?"
+
+---
+
+## Summary
+
+1. **Decoherence** is the fundamental enemy—any interaction with the environment (measurement, phase scrambling, or decay) destroys the quantum information needed for interference.
+
+2. **Classical error correction** uses redundancy and majority voting. This works because classical bits can be copied and measured freely.
+
+3. **Quantum error correction** is harder: no-cloning prevents copying, and measurement destroys superposition. The solution is encoding logical qubits across multiple physical qubits and measuring only error syndromes (correlations), not the qubits themselves.
+
+4. **Single-qubit gates** can reach 99.99% fidelity. **Two-qubit gates** are harder (~99–99.9%) because you need controlled interaction while maintaining isolation—this is the key challenge.
+
+5. **Three main platforms** are competing:
+   - **Superconducting:** LC circuits with Josephson junctions create anharmonic oscillators; fast gates but needs extreme cooling
+   - **Trapped ions:** Charged atoms in electromagnetic traps; phonon-mediated gates give highest fidelity but slow
+   - **Neutral atoms:** Optical tweezers hold atoms; Rydberg interactions enable gates; massive scalability
+
+6. **We are at the threshold.** Error correction is starting to work. Fault-tolerant quantum computing is likely 5–10 years away.
+
+---
+
+## Homework: Quantum Hardware Industry Report
+
+In this assignment, you will research two quantum computing companies using different hardware platforms and write a 2–3 page report (single-spaced).
+
+**A note on process:** A report like this would take many hours to write from scratch. I encourage you to use AI assistants (Claude, ChatGPT, etc.) to help you. Use them to explain technical jargon, summarize web pages, and draft sections of your report. The goal is to learn how the technology works and practice translating technical claims into accessible language—not to spend 10 hours reading whitepapers.
+
+Be skeptical of both company marketing and AI outputs. When in doubt, cross-reference.
+
+**Choose one company from two different platforms:**
+
+| Superconducting | Trapped Ions | Neutral Atoms |
+|-----------------|--------------|---------------|
+| IBM | IonQ | QuEra |
+| Google | Quantinuum | Pasqal |
+| Rigetti | | Atom Computing |
+
+**For each company, answer as many of the following as you can find information for:**
+
+*Technology:*
+- What type of qubit do they use? What physical system encodes the $|0\rangle$ and $|1\rangle$?
+- How do they implement single-qubit gates? Two-qubit gates?
+- What are their reported gate fidelities (single-qubit and two-qubit)?
+- How many qubits do their current systems have?
+- What are the coherence times?
+- What cooling or vacuum requirements does the system have?
+
+*Current status:*
+- What is their most advanced publicly available system?
+- What benchmarks do they report (quantum volume, circuit layer operations per second, etc.)?
+- Have they demonstrated error correction? Logical qubits?
+- Do they have cloud access? Who are their customers or partners?
+
+*Roadmap:*
+- What are they promising for 2026? 2028? 2030?
+- How many qubits? What fidelities? Logical qubits?
+- What applications are they targeting (optimization, chemistry, machine learning, cryptography)?
+
+*Business and ecosystem:*
+- How much funding have they raised? Are they public or private?
+- Who are their major partners or customers?
+- What is their path to revenue—cloud access, hardware sales, consulting?
+
+**Deliverable:**
+
+Write a 2–3 page report (single-spaced) aimed at a non-physicist—for example, a business analyst, investor, or policy maker trying to understand whether quantum computing will affect their industry in the next 5–10 years.
+
+Your report should include:
+- A plain-language summary of each company's technology
+- A comparison of their approaches
+- Your assessment of the credibility of their roadmaps
+- A conclusion: which approach seems more promising, and for what applications?
+
+**Useful starting points:**
+- IBM Quantum: https://www.ibm.com/quantum
+- Google Quantum AI: https://quantumai.google/
+- IonQ: https://ionq.com/
+- Quantinuum: https://www.quantinuum.com/
+- QuEra: https://www.quera.com/
+- Pasqal: https://www.pasqal.com/
+
 
 
