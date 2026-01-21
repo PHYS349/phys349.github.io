@@ -1,0 +1,3 @@
+# Making figures for the lectures
+
+The lectures are in markdown.  I don't have time this semester to make good figures for the online notes.  If you'd like to help by making one, I'll put them in the lectures.  They just need to be in SVG format.  You can use a LLM to help make the SVG code or you can use the software Inkscape which has SVG as the native language.  Send it to me by email and I will link it.  

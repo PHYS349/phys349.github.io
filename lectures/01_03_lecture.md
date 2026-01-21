@@ -297,7 +297,9 @@ CONSTRUCTIVE (same phase):       DESTRUCTIVE (opposite phase):
     BIG amplitude                    ZERO amplitude
     (high probability)               (low probability)
 ```
-(Sorry this figure is awful)
+(Sorry these figures are awful. These are all new lectures. If you'd like to help with svg figures please see these [instructions](../resources/figure_instruction.md). )
+
+
 
 This is the heart of quantum mechanics: amplitudes with the same phase add up (constructive interference), while amplitudes with opposite phases cancel (destructive interference).
 

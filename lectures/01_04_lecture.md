@@ -167,6 +167,8 @@ But if you put a detector at one slit to measure "which path" the particle took:
        ════╝  slit  │░░░░│
 ```
 
+(Sorry these figures are awful. These are all new lectures. If you'd like to help with svg figures please see these [instructions](../resources/figure_instruction.md). )
+
 The interference pattern vanishes. The act of measurement destroys the superposition.
 
 A photon scatters off your qubit and flies away into the room. That photon now carries information about your qubit's state. The universe has "measured" your qubit, even if no human ever looks at that photon.
