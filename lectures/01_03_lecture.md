@@ -1,4 +1,4 @@
-# Lecture 3: What Makes Quantum Hard?
+# Lecture 1.3: What Makes Quantum Hard?
 
 ## From seating arrangements to quantum spins
 
@@ -538,6 +538,8 @@ Path 2:  A ──────→ B   (phase φ₂)
 If φ₁ = φ₂:  amplitudes ADD      → high probability
 If φ₁ = φ₂ + π: amplitudes CANCEL → low probability
 ```
+(Sorry these figures are awful. These are all new lectures. If you'd like to help with svg figures please see these [instructions](../resources/figure_instruction.md). )
+
 
 This is exactly like the double-slit experiment, but now it's happening in the abstract space of all $2^N$ configurations.
 
@@ -597,15 +599,15 @@ with $J = 1$ (ferromagnetic) and $B = 0.5$.
 
 **(d)** What is the ground state if $B = 0$? (Hint: there may be more than one!) Explain physically why there is degeneracy.
 
-**(e)** What is the ground state for $B=−0.5$? Compare to $B=+0.5$. Explain why only the sign matters here.
+**(e)** What is the ground state if $B = 10$? Why is it unique now?
 
 ## Problem 2: Phase Transition in the Antiferromagnet
 
 Now consider an **antiferromagnetic** chain with $N = 10$ spins: $$
-H = -J \sum_{i=1}^{N} s_i s_{i+1} - B \sum_{i=1}^{N} s_i
+H = -J \sum_{i=1}^{N-1} s_i s_{i+1} - B \sum_{i=1}^{N} s_i
 $$
 
-with $J = -1$ (antiferromagnetic, so neighboring spins want to anti-align) and $s_{N+1}=s_{1}$.
+with $J = -1$ (antiferromagnetic, so neighboring spins want to anti-align).
 
 **(a)** What is the ground state when $B = 0$? What is its energy? (Note: there may be two degenerate ground states—list both if so.)
 
@@ -759,3 +761,21 @@ plt.show()
 % **(c)** In 2-3 sentences: why might the wedding problem (\$N!\$ configurations) be harder for simulated annealing than the spin problem (\$2\^N\$ configurations)?
 
 % *Hint: Think about what happens when you swap two guests vs. flip one spin. How much does the energy typically change? How "rough" is the energy landscape?*
+
+
+
+
+
+
+**(e)** What is the ground state for $B=−0.5$? Compare to $B=+0.5$. Explain why only the sign matters here.
+**(e)** What is the ground state if $B = 10$? Why is it unique now?
+
+## Problem 2: Phase Transition in the Antiferromagnet
+
+Now consider an **antiferromagnetic** chain with $N = 10$ spins: $$
+H = -J \sum_{i=1}^{N} s_i s_{i+1} - B \sum_{i=1}^{N} s_i
+H = -J \sum_{i=1}^{N-1} s_i s_{i+1} - B \sum_{i=1}^{N} s_i
+$$
+
+with $J = -1$ (antiferromagnetic, so neighboring spins want to anti-align) and $s_{N+1}=s_{1}$.
+with $J = -1$ (antiferromagnetic, so neighboring spins want to anti-align).
