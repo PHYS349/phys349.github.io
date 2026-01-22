@@ -1,0 +1,225 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#c00"/>
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="900" height="500" fill="#fafafa"/>
+  
+  <!-- Title -->
+  <text x="450" y="30" font-family="Georgia, serif" font-size="20" fill="#333" text-anchor="middle" font-weight="bold">Quantum Computation in Configuration Space</text>
+  
+  <!-- Stage labels -->
+  <text x="80" y="65" font-family="Georgia, serif" font-size="14" fill="#555" text-anchor="middle">Initialize</text>
+  <text x="250" y="65" font-family="Georgia, serif" font-size="14" fill="#555" text-anchor="middle">Single-qubit</text>
+  <text x="250" y="80" font-family="Georgia, serif" font-size="14" fill="#555" text-anchor="middle">gates</text>
+  <text x="420" y="65" font-family="Georgia, serif" font-size="14" fill="#555" text-anchor="middle">Two-qubit</text>
+  <text x="420" y="80" font-family="Georgia, serif" font-size="14" fill="#555" text-anchor="middle">gates</text>
+  <text x="590" y="65" font-family="Georgia, serif" font-size="14" fill="#555" text-anchor="middle">Interference</text>
+  <text x="760" y="65" font-family="Georgia, serif" font-size="14" fill="#555" text-anchor="middle">Measure</text>
+  
+  <!-- Arrows between stages -->
+  <line x1="130" y1="72" x2="180" y2="72" stroke="#999" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="300" y1="72" x2="350" y2="72" stroke="#999" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="470" y1="72" x2="520" y2="72" stroke="#999" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  <line x1="640" y1="72" x2="690" y2="72" stroke="#999" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+  
+  <!-- Qubit representations at top -->
+  <!-- Initial qubits - all |0⟩ -->
+  <g transform="translate(55, 105)">
+    <circle cx="0" cy="0" r="12" fill="none" stroke="#333" stroke-width="2"/>
+    <line x1="0" y1="0" x2="0" y2="-10" stroke="#333" stroke-width="2"/>
+    <text x="0" y="30" font-family="Georgia, serif" font-size="11" fill="#333" text-anchor="middle">|0⟩</text>
+  </g>
+  <g transform="translate(80, 105)">
+    <circle cx="0" cy="0" r="12" fill="none" stroke="#333" stroke-width="2"/>
+    <line x1="0" y1="0" x2="0" y2="-10" stroke="#333" stroke-width="2"/>
+    <text x="0" y="30" font-family="Georgia, serif" font-size="11" fill="#333" text-anchor="middle">|0⟩</text>
+  </g>
+  <g transform="translate(105, 105)">
+    <circle cx="0" cy="0" r="12" fill="none" stroke="#333" stroke-width="2"/>
+    <line x1="0" y1="0" x2="0" y2="-10" stroke="#333" stroke-width="2"/>
+    <text x="0" y="30" font-family="Georgia, serif" font-size="11" fill="#333" text-anchor="middle">|0⟩</text>
+  </g>
+  
+  <!-- COLUMN 1: Initial state |000⟩ -->
+  <g transform="translate(30, 160)">
+    <!-- Bracket -->
+    <path d="M 0,0 L 10,0 L 10,5 M 10,0 L 10,250 M 10,245 L 10,250 L 0,250" fill="none" stroke="#333" stroke-width="1.5"/>
+    <path d="M 100,0 L 90,0 L 90,5 M 90,0 L 90,250 M 90,245 L 90,250 L 100,250" fill="none" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Configuration labels and amplitudes -->
+    <text x="25" y="20" font-family="monospace" font-size="11" fill="#333">|000⟩</text>
+    <circle cx="75" cy="15" r="10" fill="#c00" stroke="#900" stroke-width="1.5"/>
+    <line x1="75" y1="15" x2="75" y2="7" stroke="white" stroke-width="2"/>
+    
+    <text x="25" y="50" font-family="monospace" font-size="11" fill="#888">|001⟩</text>
+    <circle cx="75" cy="45" r="10" fill="none" stroke="#ccc" stroke-width="1"/>
+    
+    <text x="25" y="80" font-family="monospace" font-size="11" fill="#888">|010⟩</text>
+    <circle cx="75" cy="75" r="10" fill="none" stroke="#ccc" stroke-width="1"/>
+    
+    <text x="25" y="110" font-family="monospace" font-size="11" fill="#888">|011⟩</text>
+    <circle cx="75" cy="105" r="10" fill="none" stroke="#ccc" stroke-width="1"/>
+    
+    <text x="35" y="145" font-family="monospace" font-size="14" fill="#888">⋮</text>
+    <text x="75" y="145" font-family="monospace" font-size="14" fill="#888">⋮</text>
+    
+    <text x="25" y="185" font-family="monospace" font-size="11" fill="#888">|110⟩</text>
+    <circle cx="75" cy="180" r="10" fill="none" stroke="#ccc" stroke-width="1"/>
+    
+    <text x="25" y="215" font-family="monospace" font-size="11" fill="#888">|111⟩</text>
+    <circle cx="75" cy="210" r="10" fill="none" stroke="#ccc" stroke-width="1"/>
+    
+    <text x="25" y="245" font-family="Georgia, serif" font-size="10" fill="#666" font-style="italic">2ᴺ states</text>
+  </g>
+  
+  <!-- COLUMN 2: After single-qubit gates - some spreading -->
+  <g transform="translate(200, 160)">
+    <path d="M 0,0 L 10,0 L 10,5 M 10,0 L 10,250 M 10,245 L 10,250 L 0,250" fill="none" stroke="#333" stroke-width="1.5"/>
+    <path d="M 100,0 L 90,0 L 90,5 M 90,0 L 90,250 M 90,245 L 90,250 L 100,250" fill="none" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Amplitudes spread to some states -->
+    <text x="25" y="20" font-family="monospace" font-size="11" fill="#333">|000⟩</text>
+    <circle cx="75" cy="15" r="10" fill="#c00" fill-opacity="0.7" stroke="#900" stroke-width="1.5"/>
+    <line x1="75" y1="15" x2="75" y2="7" stroke="white" stroke-width="2"/>
+    
+    <text x="25" y="50" font-family="monospace" font-size="11" fill="#333">|001⟩</text>
+    <circle cx="75" cy="45" r="10" fill="#c00" fill-opacity="0.7" stroke="#900" stroke-width="1.5"/>
+    <line x1="75" y1="45" x2="82" y2="40" stroke="white" stroke-width="2"/>
+    
+    <text x="25" y="80" font-family="monospace" font-size="11" fill="#888">|010⟩</text>
+    <circle cx="75" cy="75" r="10" fill="none" stroke="#ccc" stroke-width="1"/>
+    
+    <text x="25" y="110" font-family="monospace" font-size="11" fill="#888">|011⟩</text>
+    <circle cx="75" cy="105" r="10" fill="none" stroke="#ccc" stroke-width="1"/>
+    
+    <text x="35" y="145" font-family="monospace" font-size="14" fill="#888">⋮</text>
+    <text x="75" y="145" font-family="monospace" font-size="14" fill="#888">⋮</text>
+    
+    <text x="25" y="185" font-family="monospace" font-size="11" fill="#888">|110⟩</text>
+    <circle cx="75" cy="180" r="10" fill="none" stroke="#ccc" stroke-width="1"/>
+    
+    <text x="25" y="215" font-family="monospace" font-size="11" fill="#888">|111⟩</text>
+    <circle cx="75" cy="210" r="10" fill="none" stroke="#ccc" stroke-width="1"/>
+  </g>
+  
+  <!-- COLUMN 3: After two-qubit gates - more spreading with entanglement -->
+  <g transform="translate(370, 160)">
+    <path d="M 0,0 L 10,0 L 10,5 M 10,0 L 10,250 M 10,245 L 10,250 L 0,250" fill="none" stroke="#333" stroke-width="1.5"/>
+    <path d="M 100,0 L 90,0 L 90,5 M 90,0 L 90,250 M 90,245 L 90,250 L 100,250" fill="none" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Amplitudes spread more, different phases -->
+    <text x="25" y="20" font-family="monospace" font-size="11" fill="#333">|000⟩</text>
+    <circle cx="75" cy="15" r="10" fill="#c00" fill-opacity="0.5" stroke="#900" stroke-width="1.5"/>
+    <line x1="75" y1="15" x2="75" y2="7" stroke="white" stroke-width="2"/>
+    
+    <text x="25" y="50" font-family="monospace" font-size="11" fill="#333">|001⟩</text>
+    <circle cx="75" cy="45" r="10" fill="#c00" fill-opacity="0.5" stroke="#900" stroke-width="1.5"/>
+    <line x1="75" y1="45" x2="68" y2="40" stroke="white" stroke-width="2"/>
+    
+    <text x="25" y="80" font-family="monospace" font-size="11" fill="#333">|010⟩</text>
+    <circle cx="75" cy="75" r="10" fill="#c00" fill-opacity="0.5" stroke="#900" stroke-width="1.5"/>
+    <line x1="75" y1="75" x2="83" y2="80" stroke="white" stroke-width="2"/>
+    
+    <text x="25" y="110" font-family="monospace" font-size="11" fill="#333">|011⟩</text>
+    <circle cx="75" cy="105" r="10" fill="#c00" fill-opacity="0.5" stroke="#900" stroke-width="1.5"/>
+    <line x1="75" y1="105" x2="75" y2="113" stroke="white" stroke-width="2"/>
+    
+    <text x="35" y="145" font-family="monospace" font-size="14" fill="#c00">⋮</text>
+    <text x="75" y="145" font-family="monospace" font-size="14" fill="#c00">⋮</text>
+    
+    <text x="25" y="185" font-family="monospace" font-size="11" fill="#333">|110⟩</text>
+    <circle cx="75" cy="180" r="10" fill="#c00" fill-opacity="0.5" stroke="#900" stroke-width="1.5"/>
+    <line x1="75" y1="180" x2="68" y2="185" stroke="white" stroke-width="2"/>
+    
+    <text x="25" y="215" font-family="monospace" font-size="11" fill="#333">|111⟩</text>
+    <circle cx="75" cy="210" r="10" fill="#c00" fill-opacity="0.5" stroke="#900" stroke-width="1.5"/>
+    <line x1="75" y1="210" x2="82" y2="205" stroke="white" stroke-width="2"/>
+  </g>
+  
+  <!-- COLUMN 4: Interference - some amplitudes cancel -->
+  <g transform="translate(540, 160)">
+    <path d="M 0,0 L 10,0 L 10,5 M 10,0 L 10,250 M 10,245 L 10,250 L 0,250" fill="none" stroke="#333" stroke-width="1.5"/>
+    <path d="M 100,0 L 90,0 L 90,5 M 90,0 L 90,250 M 90,245 L 90,250 L 100,250" fill="none" stroke="#333" stroke-width="1.5"/>
+    
+    <!-- Interference: some cancel (small), some amplify (large) -->
+    <text x="25" y="20" font-family="monospace" font-size="11" fill="#888">|000⟩</text>
+    <circle cx="75" cy="15" r="4" fill="#c00" fill-opacity="0.3" stroke="#c99" stroke-width="1"/>
+    
+    <text x="25" y="50" font-family="monospace" font-size="11" fill="#888">|001⟩</text>
+    <circle cx="75" cy="45" r="3" fill="#c00" fill-opacity="0.2" stroke="#c99" stroke-width="1"/>
+    
+    <text x="25" y="80" font-family="monospace" font-size="11" fill="#333">|010⟩</text>
+    <circle cx="75" cy="75" r="12" fill="#c00" fill-opacity="0.9" stroke="#900" stroke-width="2"/>
+    <line x1="75" y1="75" x2="75" y2="65" stroke="white" stroke-width="2"/>
+    
+    <text x="25" y="110" font-family="monospace" font-size="11" fill="#888">|011⟩</text>
+    <circle cx="75" cy="105" r="2" fill="#c00" fill-opacity="0.1" stroke="#ccc" stroke-width="1"/>
+    
+    <text x="35" y="145" font-family="monospace" font-size="14" fill="#888">⋮</text>
+    <text x="75" y="145" font-family="monospace" font-size="14" fill="#888">⋮</text>
+    
+    <text x="25" y="185" font-family="monospace" font-size="11" fill="#888">|110⟩</text>
+    <circle cx="75" cy="180" r="3" fill="#c00" fill-opacity="0.2" stroke="#c99" stroke-width="1"/>
+    
+    <text x="25" y="215" font-family="monospace" font-size="11" fill="#888">|111⟩</text>
+    <circle cx="75" cy="210" r="4" fill="#c00" fill-opacity="0.3" stroke="#c99" stroke-width="1"/>
+    
+    <!-- Annotation -->
+    <text x="50" y="240" font-family="Georgia, serif" font-size="9" fill="#c00" font-style="italic">constructive</text>
+    <line x1="65" y1="235" x2="75" y2="87" stroke="#c00" stroke-width="0.5" stroke-dasharray="2,2"/>
+  </g>
+  
+  <!-- COLUMN 5: Measurement result -->
+  <g transform="translate(710, 160)">
+    <!-- Classical result box -->
+    <rect x="10" y="55" width="80" height="40" fill="#e8f4e8" stroke="#393" stroke-width="2" rx="5"/>
+    <text x="50" y="82" font-family="monospace" font-size="16" fill="#262" text-anchor="middle" font-weight="bold">010</text>
+    
+    <!-- Measured qubits -->
+    <g transform="translate(25, -50)">
+      <circle cx="0" cy="0" r="12" fill="none" stroke="#393" stroke-width="2"/>
+      <line x1="0" y1="0" x2="0" y2="-10" stroke="#393" stroke-width="2"/>
+      <text x="0" y="25" font-family="Georgia, serif" font-size="10" fill="#393" text-anchor="middle">↑</text>
+    </g>
+    <g transform="translate(50, -50)">
+      <circle cx="0" cy="0" r="12" fill="none" stroke="#393" stroke-width="2"/>
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#393" stroke-width="2"/>
+      <text x="0" y="25" font-family="Georgia, serif" font-size="10" fill="#393" text-anchor="middle">↓</text>
+    </g>
+    <g transform="translate(75, -50)">
+      <circle cx="0" cy="0" r="12" fill="none" stroke="#393" stroke-width="2"/>
+      <line x1="0" y1="0" x2="0" y2="-10" stroke="#393" stroke-width="2"/>
+      <text x="0" y="25" font-family="Georgia, serif" font-size="10" fill="#393" text-anchor="middle">↑</text>
+    </g>
+    
+    <!-- Arrow showing collapse -->
+    <text x="50" y="130" font-family="Georgia, serif" font-size="11" fill="#666" text-anchor="middle" font-style="italic">Classical</text>
+    <text x="50" y="145" font-family="Georgia, serif" font-size="11" fill="#666" text-anchor="middle" font-style="italic">N-bit answer</text>
+  </g>
+  
+  <!-- Legend for amplitude circles -->
+  <g transform="translate(30, 440)">
+    <text x="0" y="0" font-family="Georgia, serif" font-size="12" fill="#333" font-weight="bold">Amplitude representation:</text>
+    
+    <circle cx="180" cy="-5" r="12" fill="#c00" fill-opacity="0.7" stroke="#900" stroke-width="1.5"/>
+    <line x1="180" y1="-5" x2="188" y2="-10" stroke="white" stroke-width="2"/>
+    <text x="200" y="0" font-family="Georgia, serif" font-size="11" fill="#555">= complex amplitude cₖ = |cₖ|e^(iθ)</text>
+    
+    <text x="420" y="0" font-family="Georgia, serif" font-size="11" fill="#555">Circle size = magnitude |cₖ|</text>
+    <text x="620" y="0" font-family="Georgia, serif" font-size="11" fill="#555">Arrow angle = phase θ</text>
+  </g>
+  
+  <!-- Bottom annotation -->
+  <g transform="translate(30, 475)">
+    <text x="0" y="0" font-family="Georgia, serif" font-size="11" fill="#666" font-style="italic">
+      The quantum state is a wave in 2ᴺ-dimensional configuration space. Gates spread and rotate amplitudes. Interference concentrates probability on the answer.
+    </text>
+  </g>
+</svg>

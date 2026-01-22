@@ -24,7 +24,22 @@ $$
 
 **The goal:** Design the gates so that wrong answers interfere destructively and the right answer interferes constructively. When you measure, you're likely to get what you want.
 
-This all sounds great in principle. But there's a catch.
+
+%![Quantum Configuration Space](01_04_lecture_files/quantum_config_space.svg)
+
+```{figure} 01_04_lecture_files/quantum_config_space.svg
+:name: quantum-config-fig
+:alt: Quantum Configuration Space
+:width: 600px
+:align: center
+
+This is the caption for the image.
+```
+
+%See    {ref}`quantum-config-fig`
+
+
+
 
 ---
 
@@ -139,35 +154,12 @@ This is called **decoherence**: the loss of definite phase relationships between
 
 Remember the double-slit experiment. A particle goes through both slits simultaneously, and the two paths interfere to create a pattern on the screen.
 
-```
-                    │░░░░│
-       ════╗        │    │        ░░░░░
-           ║  slit  │    │      ░░    ░░
-  source   ║========│    │    ░░        ░░
-     •     ║        │    │    ░░        ░░
-           ║========│    │      ░░    ░░
-           ║  slit  │    │        ░░░░░
-       ════╝        │░░░░│
-                   barrier      interference
-                               pattern on screen
-```
-
 The interference pattern exists because the particle takes both paths, and the amplitudes from each path combine. Where they're in phase, you get bright bands; where they're out of phase, you get dark bands.
 
-But if you put a detector at one slit to measure "which path" the particle took:
+But if you put a detector at one slit to measure "which path" the particle took.
 
-```
-                    │░░░░│
-       ════╗        │    │        
-           ║  slit  │    │      ░░░░░░░░
-  source   ║===●====│    │      ░░░░░░░░  ← no pattern!
-     •     ║   ↑    │    │      ░░░░░░░░    just blur
-           ║detector│    │      ░░░░░░░░
-           ║========│    │        
-       ════╝  slit  │░░░░│
-```
-
-(Sorry these figures are awful. These are all new lectures. If you'd like to help with svg figures please see these [instructions](../resources/figure_instruction.md). )
+<!-- 
+(Sorry these figures are awful. These are all new lectures. If you'd like to help with svg figures please see these [instructions](../resources/figure_instruction.md). ) -->
 
 The interference pattern vanishes. The act of measurement destroys the superposition.
 
@@ -329,7 +321,7 @@ Two-qubit gates are more subtle. The ions don't naturally interact—they're jus
 
 Here's how a two-qubit gate works (the Mølmer-Sørensen gate): You shine laser beams that couple the ions' internal states to the collective motion. The first ion's spin gets entangled with the phonon mode; then the phonon mode gets entangled with the second ion's spin. With a carefully designed pulse, the motion disentangles at the end, but the two spins remain entangled. It's as if you shook the lattice in a precise way that correlated the two spins without leaving any trace in the motion.
 
-[FIGURE: Trapped ion chain and phonon-mediated interaction]
+%[FIGURE: Trapped ion chain and phonon-mediated interaction]
 
 **State of the art (2025–2026):**
 - Single-qubit gate fidelity: >99.99%
@@ -372,7 +364,7 @@ This leads to a remarkable effect: the **Rydberg blockade**. If one atom is exci
 
 The Rydberg states are short-lived (they decay in ~100 μs), so you have to do the gate quickly and return to the ground state. But the ground states are very long-lived, so you can store qubits safely between gates.
 
-[FIGURE: Optical tweezer array and Rydberg interaction]
+%[FIGURE: Optical tweezer array and Rydberg interaction]
 
 **State of the art (2025–2026):**
 - Single-qubit gate fidelity: >99.9%
@@ -455,9 +447,9 @@ All three approaches have crossed important thresholds in the past two years. Th
 
 ## Homework: Quantum Hardware Industry Report
 
-In this assignment, you will research two quantum computing companies using different hardware platforms and write a 2–3 page report (single-spaced).
+In this assignment, you will research two quantum computing companies using different hardware platforms and write a 2–3 page report (single-spaced). 
 
-**A note on process:** A report like this would take many hours to write from scratch. I encourage you to use AI assistants (Claude, ChatGPT, etc.) to help you. Use them to explain technical jargon, summarize web pages, and draft sections of your report. The goal is to learn how the technology works and practice translating technical claims into accessible language—not to spend 10 hours reading whitepapers.
+**A note on process:** A report like this would take many hours to write from scratch. I encourage you to use AI assistants (Claude, ChatGPT, etc.) to help you. Use them to explain technical jargon, summarize web pages, and draft sections of your report. The goal is to learn how the technology works and practice translating technical claims into accessible language—not to spend 10 hours reading whitepapers. My goal is for you to spend  ~2-3 hours on this.  
 
 Be skeptical of both company marketing and AI outputs. When in doubt, cross-reference.
 
@@ -469,39 +461,32 @@ Be skeptical of both company marketing and AI outputs. When in doubt, cross-refe
 | Google | Quantinuum | Pasqal |
 | Rigetti | | Atom Computing |
 
-**For each company, answer as many of the following as you can find information for:**
+**For each company, here are examples of questions you could try to answer:**
 
 *Technology:*
 - What type of qubit do they use? What physical system encodes the $|0\rangle$ and $|1\rangle$?
 - How do they implement single-qubit gates? Two-qubit gates?
 - What are their reported gate fidelities (single-qubit and two-qubit)?
-- How many qubits do their current systems have?
-- What are the coherence times?
-- What cooling or vacuum requirements does the system have?
+- How many physical and logical qubits do their current systems have?
+- Have they demonstrate error correction?
+- Do they have cloud access to the quantum computer?
 
-*Current status:*
-- What is their most advanced publicly available system?
-- What benchmarks do they report (quantum volume, circuit layer operations per second, etc.)?
-- Have they demonstrated error correction? Logical qubits?
-- Do they have cloud access? Who are their customers or partners?
 
 *Roadmap:*
-- What are they promising for 2026? 2028? 2030?
+- What are they promising for 2026?  2030?
 - How many qubits? What fidelities? Logical qubits?
 - What applications are they targeting (optimization, chemistry, machine learning, cryptography)?
 
 *Business and ecosystem:*
 - How much funding have they raised? Are they public or private?
 - Who are their major partners or customers?
-- What is their path to revenue—cloud access, hardware sales, consulting?
 
 **Deliverable:**
 
-Write a 2–3 page report (single-spaced) aimed at a non-physicist—for example, a business analyst, investor, or policy maker trying to understand whether quantum computing will affect their industry in the next 5–10 years.
+Write a 2–3 page report (single-spaced) aimed at a non-physicist—for example, a business analyst, investor, or policy maker trying to understand whether quantum computing will affect their industry in the next 5 years.
 
 Your report should include:
 - A plain-language summary of each company's technology
-- A comparison of their approaches
 - Your assessment of the credibility of their roadmaps
 - A conclusion: which approach seems more promising, and for what applications?
 
@@ -512,6 +497,14 @@ Your report should include:
 - Quantinuum: https://www.quantinuum.com/
 - QuEra: https://www.quera.com/
 - Pasqal: https://www.pasqal.com/
+
+
+
+
+
+
+
+
 
 
 

@@ -1,647 +1,467 @@
-# Lecture 5: Waves, Complex Numbers, and Interference
+# Lecture 5: Interference
 
-## Why Complex Numbers?
+## Why Are We Here?
 
-In the last chapter, we saw that quantum mechanics is a "wave over configurations." Each configuration gets a complex amplitude, and these amplitudes can interfere.
+In the last chapter, we saw that quantum mechanics assigns complex amplitudes to configurations, and these amplitudes can interfere. But we haven't yet asked the deeper question:
 
-But why complex numbers? Why not just regular numbers?
+> **Why complex numbers?**
 
-Today we'll answer that question. We'll see that complex numbers are the natural language of waves—they package amplitude and phase into a single object. And interference, the phenomenon at the heart of quantum computing, emerges naturally from how complex numbers add.
+Today we'll see that complex numbers aren't just a convenient trick—they're the natural language for systems with amplitude and phase. And we'll see that quantum mechanics is *fundamentally* complex in a way that classical physics is not.
+
+{ i want ot make this intro more about the interference the interfoermeter - see an interfereometer as a simple qubit operation. }
 
 ---
 
-## Starting with a Real Wave
+## Two Wave Equations: A Tale of Real vs Complex
 
-Let's begin with something familiar: a wave.
+### The Classical Wave Equation
 
-Think of a vibrating string, a sound wave, or light. At any point in space and time, the wave has some displacement or field value. 
-
-For light, Maxwell's equations reduce to the **wave equation**. In one dimension:
+In classical physics—light, sound, water waves—the wave equation is:
 
 $$
 \frac{\partial^2 E}{\partial x^2} = \frac{1}{c^2} \frac{\partial^2 E}{\partial t^2}
 $$
 
-This equation says: the curvature in space is proportional to the curvature in time. We'll see equations like this again when we study the Schrödinger equation.
+This is a *real* equation. The solutions are real functions like $E(x,t) = A\cos(kx - \omega t)$.
 
-A simple traveling wave that solves this equation looks like:
+When we use complex exponentials to solve this equation:
 
 $$
-E(x,t) = A \cos(kx - \omega t + \phi)
+\tilde{E}(x,t) = A e^{i(kx - \omega t)}
 $$
 
-where:
-- $A$ is the **amplitude** (how big the wave is)
-- $k$ is the wave number ($k = 2\pi/\lambda$)
-- $\omega$ is the angular frequency ($\omega = 2\pi f$)
-- $\phi$ is the **phase** (where you are in the cycle)
+this is a **trick**. We always take the real part at the end to get the physical field. The complex numbers are bookkeeping.
 
-This wave has two independent pieces of information that matter for interference:
-- The **amplitude** $A$
-- The **phase** $\phi$
+### The Schrödinger Equation
 
-These two numbers—amplitude and phase—will follow us throughout quantum mechanics.
+Now compare the Schrödinger equation:
+
+$$
+i\hbar \frac{\partial \psi}{\partial t} = -\frac{\hbar^2}{2m}\frac{\partial^2 \psi}{\partial x^2} + V\psi
+$$
+
+Notice the $i$ on the left side. This is not a trick—it's built into the equation. The wavefunction $\psi$ is *irreducibly complex*. If you try to use only real numbers, the equation doesn't work.
+
+```{admonition} The Key Difference
+:class: important
+
+**Classical waves:** Complex numbers are a convenient trick. Real part is physical.
+
+**Quantum mechanics:** Complex numbers are fundamental. The $i$ in Schrödinger's equation is essential.
+```
+
+Why does nature use complex numbers at the quantum level? We'll build toward an answer over the next few lectures. For now, let's understand what complex numbers *do*.
 
 ---
 
-## The Complex Trick
+## Complex Numbers: Amplitude and Phase in One Package
 
-Here's a mathematical trick that physicists use constantly.
+A complex number $z$ can be written two ways:
 
-Euler's formula says:
+**Cartesian form:** $z = x + iy$ (real and imaginary parts)
+
+**Polar form:** $z = re^{i\theta}$ (magnitude and angle)
+
+The connection is Euler's formula:
 
 $$
 e^{i\theta} = \cos\theta + i\sin\theta
 $$
 
-This means we can write our wave as:
+So a complex number encodes two pieces of information:
+- **Magnitude:** $r = |z| = \sqrt{x^2 + y^2}$
+- **Phase:** $\theta = \arg(z)$
 
-$$
-\tilde{E}(x,t) = A e^{i(kx - \omega t + \phi)}
-$$
+**Figure:** [Draw complex plane with arrow from origin to point $z$, showing $r$ as length and $\theta$ as angle from real axis]
 
-The tilde reminds us this is a complex quantity. The original real wave is recovered by taking the real part:
+### Why This Packaging Matters
 
-$$
-E(x,t) = \text{Re}\left[\tilde{E}(x,t)\right] = A\cos(kx - \omega t + \phi)
-$$
+The beautiful thing about polar form is how operations work:
 
-**Why bother?**
+| Operation | Result |
+|-----------|--------|
+| $z_1 \cdot z_2$ | Multiply magnitudes, **add phases**: $r_1 r_2 e^{i(\theta_1 + \theta_2)}$ |
+| $z_1 + z_2$ | Vector addition in the complex plane |
+| $\|z\|^2 = z^* z$ | $r^2$ (phase disappears!) |
 
-At first this seems like extra work. But here's the payoff: in the complex representation, amplitude and phase are unified into a single complex number.
+The last one is crucial: when we compute $|z|^2$, the phase vanishes. But if we *add* two complex numbers first, their phases interact before we square.
 
-The complex amplitude is:
-
-$$
-\tilde{A} = A e^{i\phi}
-$$
-
-This one object encodes both:
-- **Magnitude** $|\tilde{A}| = A$ (the amplitude)
-- **Angle** $\arg(\tilde{A}) = \phi$ (the phase)
-
-And crucially: when we add waves, the complex numbers add. When we multiply waves (or propagate them), the phases add. Everything becomes algebra.
+This is interference.
 
 ---
 
-## Visualizing Complex Numbers
+## Aside: Complex Numbers as Rotations (Group Theory Preview)
 
-A complex number $z = x + iy$ can be visualized as an arrow in the complex plane:
+Here's a deeper way to think about phase.
 
-```{figure} ./02_01_lecture_files/complex_plane.svg
-:width: 300px
-:name: complex-plane
-
-A complex number as an arrow in the complex plane.
-```
-
-The same number can be written in polar form:
+Multiplying by $e^{i\theta}$ rotates a complex number by angle $\theta$:
 
 $$
-z = r e^{i\theta}
+z \mapsto e^{i\theta} z
 $$
 
-where:
-- $r = |z| = \sqrt{x^2 + y^2}$ is the length of the arrow
-- $\theta = \arg(z)$ is the angle from the positive real axis
-
-**Key operations:**
-
-| Operation | What it does |
-|-----------|--------------|
-| $z_1 + z_2$ | Vector addition (tip-to-tail) |
-| $z_1 \cdot z_2$ | Multiply magnitudes, add phases |
-| $\|z\|^2 = z^* z$ | Square of the length |
-
-The last one is especially important. If $z = re^{i\theta}$, then:
+The set of all such rotations forms a **group**—specifically, the group $SO(2)$ of rotations in 2D:
 
 $$
-|z|^2 = z^* z = (re^{-i\theta})(re^{i\theta}) = r^2
-$$
-
-The phase disappears when we take $|z|^2$. This will connect directly to probabilities in quantum mechanics.
-
----
-
-## Interference: Why Complex Numbers Matter
-
-Now let's see why this formalism is so powerful.
-
-### The Double Slit
-
-Consider the classic double-slit experiment — first performed by Thomas Young in 1801, demonstrating that light is a wave. A wave approaches a barrier with two slits, and we want to know the intensity at a point P on a screen behind the barrier.
-
-```{figure} ./02_01_lecture_files/double_slit.svg
-:width: 400px
-:name: double-slit
-
-The double-slit experiment: a wave passes through two slits and interferes.
-```
-
-The wave can reach P by two paths:
-- Path 1: through the top slit (distance $r_1$)
-- Path 2: through the bottom slit (distance $r_2$)
-
-If the source emits a wave $e^{i(kx - \omega t)}$, then the amplitude arriving at P from each path is:
-
-$$
-\psi_1 = \frac{1}{\sqrt{2}} e^{ikr_1}, \qquad \psi_2 = \frac{1}{\sqrt{2}} e^{ikr_2}
-$$
-
-(We've dropped the time dependence since it's the same for both paths, and the $1/\sqrt{2}$ accounts for the wave splitting between two slits.)
-
-### The Key Step: Amplitudes Add
-
-The total amplitude at P is the **sum** of the contributions:
-
-$$
-\psi_{\text{total}} = \psi_1 + \psi_2 = \frac{1}{\sqrt{2}}\left(e^{ikr_1} + e^{ikr_2}\right)
-$$
-
-This is where the magic happens. We're adding complex numbers—arrows in the complex plane.
-
-### What We Observe: Intensity
-
-The intensity (or probability, in quantum mechanics) is the magnitude squared:
-
-$$
-I = |\psi_{\text{total}}|^2 = \psi_{\text{total}}^* \psi_{\text{total}}
-$$
-
-Let's compute this. Define the phase difference:
-
-$$
-\Delta\phi = k(r_1 - r_2) = \frac{2\pi}{\lambda}(r_1 - r_2)
-$$
-
-Then:
-
-$$
-\psi_{\text{total}} = \frac{1}{\sqrt{2}} e^{ikr_1}\left(1 + e^{-i\Delta\phi}\right)
-$$
-
-The intensity is:
-
-$$
-I = |\psi_{\text{total}}|^2 = \frac{1}{2}\left|1 + e^{-i\Delta\phi}\right|^2
-$$
-
-Let's expand this:
-
-$$
-\left|1 + e^{-i\Delta\phi}\right|^2 = (1 + e^{i\Delta\phi})(1 + e^{-i\Delta\phi})
+R(\theta_1) R(\theta_2) = R(\theta_1 + \theta_2)
 $$
 
 $$
-= 1 + e^{i\Delta\phi} + e^{-i\Delta\phi} + 1 = 2 + 2\cos(\Delta\phi)
+R(\theta) R(-\theta) = R(0) = I
 $$
 
-So:
+Every rotation has an inverse, and rotations compose by adding angles.
 
-$$
-\boxed{I = 1 + \cos(\Delta\phi) = 2\cos^2\left(\frac{\Delta\phi}{2}\right)}
-$$
-
-### The Physics
-
-This result contains everything:
-
-| Path difference | Phase difference $\Delta\phi$ | Intensity $I$ | What happens |
-|-----------------|------------------------------|---------------|--------------|
-| $0, \lambda, 2\lambda, ...$ | $0, 2\pi, 4\pi, ...$ | 2 (maximum) | Constructive interference |
-| $\lambda/2, 3\lambda/2, ...$ | $\pi, 3\pi, ...$ | 0 (minimum) | Destructive interference |
-
-When the two waves arrive **in phase** ($\Delta\phi = 0$), they add constructively—the arrows point the same direction.
-
-When they arrive **out of phase** ($\Delta\phi = \pi$), they cancel—the arrows point opposite directions.
-
-```{figure} ./02_01_lecture_files/interference_arrows.svg
-:width: 400px
-:name: interference-arrows
-
-Interference as vector addition: in-phase arrows add, out-of-phase arrows cancel.
-```
-
-This is interference, and it emerges directly from the addition of complex numbers.
-
-```{admonition} The Quantum Mystery
+```{admonition} Group Theory Preview
 :class: note
 
-Remarkably, this interference pattern appears even when we send photons through one at a time. Each individual photon lands at a single spot on the screen — but after thousands of photons, the spots build up the interference pattern. 
+A **group** is a set with an operation that:
+1. Is associative: $(ab)c = a(bc)$
+2. Has an identity: $ae = ea = a$
+3. Has inverses: $aa^{-1} = e$
 
-Each photon interferes with *itself* — it travels through both slits simultaneously. This is the quantum mystery we'll explore in coming lectures.
+Rotations in 2D form the group $SO(2)$. Rotations in 3D form $SO(3)$. These will become important when we study spin.
 ```
+
+So complex numbers naturally encode $SO(2)$—the group of 2D rotations. The phase of a complex amplitude is a rotation angle.
+
+Why does quantum mechanics care about rotations? That's a question we'll answer when we study spin and the Pauli matrices. For now, file this away: **phase is rotation**.
 
 ---
 
-## The Cross Term: Where Interference Lives
+## Interference: Where Phase Becomes Observable
 
-Let's look at the intensity calculation another way. Write:
+If phase is like an internal rotation angle, how do we ever see its effects? After all, when we measure $|z|^2$, the phase disappears.
+
+The answer: **we compare two phases**.
+
+### The Michelson Interferometer
+
+{I think we want to change this back to MZI. Michelson is too cmpact. Michelson would be a fun HW problem though.}
+
+
+The Michelson interferometer is the cleanest demonstration of interference. Light takes two paths and recombines. The *relative* phase between the paths determines the output.
+
+**Figure:** [Draw Michelson interferometer: source → beam splitter → two perpendicular arms with mirrors → beams return and recombine → detector]
+
+**Setup:**
+1. A beam splitter sends light into two perpendicular arms
+2. Mirrors reflect light back along each arm
+3. The beams recombine at the beam splitter
+4. A detector measures the output intensity
+
+Let the two arms have lengths $L_1$ and $L_2$. Light travels to each mirror and back, so the path lengths are $2L_1$ and $2L_2$.
+
+The phase accumulated along each path:
 
 $$
-I = |\psi_1 + \psi_2|^2 = (\psi_1^* + \psi_2^*)(\psi_1 + \psi_2)
+\phi_1 = k \cdot 2L_1 = \frac{2\pi}{\lambda} \cdot 2L_1
 $$
 
-Expanding:
-
 $$
-I = |\psi_1|^2 + |\psi_2|^2 + \psi_1^*\psi_2 + \psi_2^*\psi_1
+\phi_2 = k \cdot 2L_2 = \frac{2\pi}{\lambda} \cdot 2L_2
 $$
 
-The first two terms are just the individual intensities. The last two terms are the **cross terms**:
+The amplitudes from each arm recombine at the detector. Let's call them $\psi_1$ and $\psi_2$, each with unit magnitude:
 
 $$
-I = I_1 + I_2 + 2\text{Re}(\psi_1^*\psi_2)
+\psi_1 = \frac{1}{\sqrt{2}} e^{i\phi_1}, \qquad \psi_2 = \frac{1}{\sqrt{2}} e^{i\phi_2}
 $$
 
-If we just had $I = I_1 + I_2$, there would be no interference—just two independent waves adding their intensities.
+### The Calculation
 
-The cross term $2\text{Re}(\psi_1^*\psi_2)$ is where the phases meet. It's positive when the phases align (constructive) and negative when they oppose (destructive).
+The total amplitude at the detector:
 
-```{admonition} Key Insight
+$$
+\psi_{\text{total}} = \psi_1 + \psi_2 = \frac{1}{\sqrt{2}}\left(e^{i\phi_1} + e^{i\phi_2}\right)
+$$
+
+The intensity (what we measure) is $I = |\psi_{\text{total}}|^2$:
+
+$$
+I = \left|\psi_1 + \psi_2\right|^2 = |\psi_1|^2 + |\psi_2|^2 + \psi_1^* \psi_2 + \psi_2^* \psi_1
+$$
+
+$$
+I = \frac{1}{2} + \frac{1}{2} + 2 \cdot \frac{1}{2}\text{Re}\left(e^{i(\phi_2 - \phi_1)}\right)
+$$
+
+$$
+I = 1 + \cos(\phi_2 - \phi_1) = 1 + \cos(\Delta\phi)
+$$
+
+where $\Delta\phi = \phi_2 - \phi_1 = \frac{4\pi}{\lambda}(L_2 - L_1)$ is the **phase difference**.
+
+### The Cross Term
+
+Let's pause and look at what happened. We can write:
+
+$$
+I = \underbrace{|\psi_1|^2 + |\psi_2|^2}_{\text{individual intensities}} + \underbrace{2\text{Re}(\psi_1^* \psi_2)}_{\text{cross term}}
+$$
+
+The cross term $2\text{Re}(\psi_1^* \psi_2) = \cos(\Delta\phi)$ is where the phases meet. 
+
+- When $\Delta\phi = 0$: cross term $= +1$, constructive interference, $I = 2$
+- When $\Delta\phi = \pi$: cross term $= -1$, destructive interference, $I = 0$
+
+```{admonition} The Fundamental Principle
 :class: important
 
 **Interference is the cross term.**
 
-It appears because we add amplitudes first, then square.
+It exists because we add amplitudes first, then square:
+
+$$
+|c_1 + c_2|^2 = |c_1|^2 + |c_2|^2 + 2\text{Re}(c_1^* c_2)
+$$
+
+The cross term depends on the *relative* phase $\arg(c_1) - \arg(c_2)$.
 ```
 
-```{admonition} The Fundamental Difference
-:class: warning
+### Global Phase Doesn't Matter
 
-**Classical particles:** Probabilities add. If two paths lead to the same outcome, $P = P_1 + P_2$.
+Notice something: if we multiply *both* amplitudes by the same phase $e^{i\gamma}$:
 
-**Waves and quantum systems:** Amplitudes add, then square. $P = |c_1 + c_2|^2 \neq |c_1|^2 + |c_2|^2$.
+$$
+\psi_1 \to e^{i\gamma}\psi_1, \qquad \psi_2 \to e^{i\gamma}\psi_2
+$$
 
-The cross term $2\text{Re}(c_1^* c_2)$ is what makes quantum mechanics different from classical probability.
-```
+The intensity is unchanged:
 
-This is profoundly different from classical probability, where you would add probabilities (intensities) directly.
+$$
+|e^{i\gamma}\psi_1 + e^{i\gamma}\psi_2|^2 = |e^{i\gamma}|^2 |\psi_1 + \psi_2|^2 = |\psi_1 + \psi_2|^2
+$$
+
+This is profound: **global phase is unobservable**. Nature doesn't care about the overall phase of a wave—only relative phases between different paths or components.
+
+We'll return to this fact repeatedly. It's one of the defining features of quantum mechanics.
 
 ---
 
-## Interferometers: Precision Instruments from Interference
+## The Interferometer as a Qubit Circuit
 
-The double-slit experiment spreads interference across many points in space. But we can also engineer interference to happen at a single point, with all the "which path" information encoded in a controlled phase difference.
+Let's reframe the Michelson interferometer in the language we'll use for quantum computing.
 
-These devices are called **interferometers**, and they're some of the most precise instruments ever built.
-
-### The Michelson Interferometer
-
-The Michelson interferometer splits a beam into two perpendicular arms, reflects them back with mirrors, and recombines them.
-
-```{figure} ./02_01_lecture_files/michelson.svg
-:width: 350px
-:name: michelson
-
-The Michelson interferometer: a beam splitter, two mirrors, and a detector.
-```
-
-Here's how it works:
-1. Light hits a 50/50 beam splitter at 45°
-2. Half goes to mirror 1 (distance $L_1$), half to mirror 2 (distance $L_2$)
-3. Both beams return and recombine at the beam splitter
-4. The detector sees the interference
-
-The phase difference comes from the path length difference:
+**The two arms are two "configurations" or "states":**
 
 $$
-\Delta\phi = \frac{2\pi}{\lambda} \cdot 2(L_1 - L_2)
+|\psi\rangle = c_1 |\text{arm 1}\rangle + c_2 |\text{arm 2}\rangle
 $$
 
-(The factor of 2 is because light travels to the mirror and back.)
+**The beam splitter creates superposition:**
 
-The intensity at the detector:
-
-$$
-I = I_0 \cos^2\left(\frac{\Delta\phi}{2}\right) = I_0 \cos^2\left(\frac{2\pi (L_1 - L_2)}{\lambda}\right)
-$$
-
-**Why this matters:** The Michelson interferometer can detect length changes smaller than the wavelength of light. Move one mirror by $\lambda/4 \approx 125$ nm and the output swings from maximum to zero.
-
-```{admonition} LIGO: Gravitational Wave Detection
-:class: note
-
-The LIGO detectors that discovered gravitational waves in 2015 are Michelson interferometers with 4 km arms. They detected length changes of $10^{-19}$ meters—about 1/10,000 the diameter of a proton. This is interference as a precision measurement tool.
-```
-
-### The Mach-Zehnder Interferometer
-
-The Mach-Zehnder interferometer is similar but uses two separate beam splitters—one to split, one to recombine. The beams travel in the same direction rather than bouncing back.
-
-```{figure} ./02_01_lecture_files/mach_zehnder.svg
-:width: 400px
-:name: mach-zehnder
-
-The Mach-Zehnder interferometer: split, propagate, phase shift, recombine.
-```
-
-The setup:
-1. First beam splitter splits the input into upper and lower paths
-2. Light propagates through both arms
-3. A phase shifter adds controlled phase $\phi$ to one arm
-4. Second beam splitter recombines the beams
-5. Two detectors measure the outputs D1 and D2
-
-Let's trace the amplitudes. After the first beam splitter:
+A 50/50 beam splitter transforms input light into an equal superposition of the two arms:
 
 $$
-|in\rangle \to \frac{1}{\sqrt{2}}|upper\rangle + \frac{1}{\sqrt{2}}|lower\rangle
+|\text{input}\rangle \to \frac{1}{\sqrt{2}}|\text{arm 1}\rangle + \frac{1}{\sqrt{2}}|\text{arm 2}\rangle
 $$
 
-After the phase shifter (on the lower arm):
+This is analogous to the Hadamard gate $H$ in quantum computing.
+
+**Phase accumulation:**
+
+Each arm accumulates phase based on its length:
 
 $$
-\frac{1}{\sqrt{2}}|upper\rangle + \frac{e^{i\phi}}{\sqrt{2}}|lower\rangle
+|\text{arm } j\rangle \to e^{i\phi_j}|\text{arm } j\rangle
 $$
 
-At the second beam splitter, each path splits again. Importantly, reflection at a beam splitter adds a phase of $\pi$ (a minus sign). The transformation is:
+**Recombination and measurement:**
 
-$$
-|upper\rangle \to \frac{1}{\sqrt{2}}(|D1\rangle + |D2\rangle)
-$$
+When the beams recombine, we measure the intensity. The interference determines the outcome.
 
-$$
-|lower\rangle \to \frac{1}{\sqrt{2}}(|D1\rangle - |D2\rangle)
-$$
+| Interferometer | Quantum Circuit |
+|----------------|-----------------|
+| Beam splitter (split) | Hadamard gate $H$ |
+| Path length difference | Phase gate $R_z(\phi)$ |
+| Recombination | Hadamard gate $H$ |
+| Detector intensity | Measurement probability |
 
-Combining everything:
-
-$$
-|\psi_{out}\rangle = \frac{1}{2}\left[(1 + e^{i\phi})|D1\rangle + (1 - e^{i\phi})|D2\rangle\right]
-$$
-
-The probabilities are:
-
-$$
-P(D1) = \left|\frac{1 + e^{i\phi}}{2}\right|^2 = \cos^2\left(\frac{\phi}{2}\right)
-$$
-
-$$
-P(D2) = \left|\frac{1 - e^{i\phi}}{2}\right|^2 = \sin^2\left(\frac{\phi}{2}\right)
-$$
-
-Notice: $P(D1) + P(D2) = 1$. All the light goes somewhere—it's just a question of which detector.
-
-| Phase $\phi$ | $P(D1)$ | $P(D2)$ | What happens |
-|--------------|---------|---------|--------------|
-| $0$ | 1 | 0 | All light to D1 |
-| $\pi/2$ | 0.5 | 0.5 | Equal split |
-| $\pi$ | 0 | 1 | All light to D2 |
-| $2\pi$ | 1 | 0 | Back to D1 |
-
-The phase shift controls where the light goes. This is interference as a **switch**.
-
-### The MZI as a Quantum Circuit
-
-Here's something remarkable. The Mach-Zehnder interferometer has the same structure as a quantum circuit:
-
-| MZI Component | Quantum Circuit |
-|---------------|-----------------|
-| First beam splitter | Hadamard gate $H$ |
-| Phase shifter | $R_z(\phi)$ gate |
-| Second beam splitter | Hadamard gate $H$ |
-| Detectors | Measurement in Z basis |
-
-The quantum circuit $H \to R_z(\phi) \to H$ is mathematically identical to an MZI.
-
-This isn't a coincidence. Both are doing the same thing:
-1. **Split** into a superposition of two paths/states
-2. **Accumulate phase** between the paths
-3. **Recombine** and let interference determine the outcome
-
-This is the template for quantum algorithms: split, phase, recombine, measure.
+This is not just an analogy—it's the same mathematics. Interferometry *is* quantum computation with light.
 
 ---
 
-## From Classical Waves to Quantum States
+## Historical Note: Michelson and the Speed of Light
 
-We've seen that complex numbers are *convenient* for describing classical waves like light. But in quantum mechanics, they're not just convenient — they're *fundamental*. Quantum amplitudes are irreducibly complex.
+Albert Michelson built the first precision interferometer in the 1880s. His goal: detect Earth's motion through the "luminiferous ether."
 
-In the double-slit experiment, the "configurations" were the two paths — through slit 1 or through slit 2. Each configuration got a complex amplitude, and we summed them before squaring.
+The famous Michelson-Morley experiment (1887) found no ether drift—a null result that helped inspire special relativity. But the interferometer itself became a revolutionary tool for precision measurement.
 
-In quantum mechanics, we'll have configurations like:
-- A spin pointing up or down
-- A photon polarized horizontally or vertically
-- A particle on the left or right
+**Modern application:** The LIGO detectors that discovered gravitational waves in 2015 are Michelson interferometers with 4 km arms. They detect length changes of $\sim 10^{-19}$ meters—about 1/10,000 the width of a proton.
 
-Each configuration gets a complex amplitude:
-
-$$
-|\psi\rangle = c_1 |\text{config 1}\rangle + c_2 |\text{config 2}\rangle
-$$
-
-The same rule applies: add amplitudes first, then square to get probabilities. The cross term — the interference — is what makes quantum mechanics powerful.
-
-```{admonition} The Core Idea of Quantum Computing
-:class: important
-
-**Quantum computing is the art of engineering the cross term.**
-
-We arrange for wrong answers to interfere destructively (cancel) and right answers to interfere constructively (amplify).
-```
+Interference converts tiny phase shifts into measurable intensity changes. This is quantum sensing, and it works because of the cross term.
 
 ---
 
 ## Summary
 
-Today we established the mathematical foundation for everything that follows:
+1. **Classical vs quantum waves:** In classical physics, complex numbers are a trick (take Re at the end). In quantum mechanics, complex numbers are fundamental—the $i$ in Schrödinger's equation is essential.
 
-1. **Waves satisfy a wave equation** — and have two key properties: amplitude and phase
+2. **Complex numbers package amplitude and phase:** $z = re^{i\theta}$ encodes both magnitude and angle. Multiplication adds phases; the magnitude squared loses the phase.
 
-2. **Complex numbers package both** — $z = Ae^{i\phi}$ encodes amplitude $A$ and phase $\phi$
+3. **Phase is like rotation:** Multiplying by $e^{i\theta}$ rotates in the complex plane. This is the group $SO(2)$. (Foreshadowing: similar structure will give us spin.)
 
-3. **Interference is addition of complex numbers** — arrows add in the complex plane
+4. **Interference is the cross term:** When we add amplitudes then square, we get $|c_1 + c_2|^2 = |c_1|^2 + |c_2|^2 + 2\text{Re}(c_1^* c_2)$. The cross term depends on relative phase.
 
-4. **What we observe is $|z|^2$** — the phase disappears, but only after the cross term has done its work
+5. **Global phase is unobservable:** Only relative phases matter. Nature doesn't care about the overall phase.
 
-5. **The cross term is where interference lives** — it's positive or negative depending on relative phase
-
-6. **Interferometers harness interference for precision** — Michelson (LIGO), Mach-Zehnder (quantum circuits)
-
-Next lecture, we'll see these ideas in action with polarized light—a qubit you can hold in your hands.
-
----
-
-## Homework
-
-### Problem 1: Complex Number Warm-Up
-
-For each of the following, express in both Cartesian ($x + iy$) and polar ($re^{i\theta}$) form:
-
-**(a)** $z = 1 + i$
-
-**(b)** $z = -2$
-
-**(c)** $z = 3e^{i\pi/3}$
-
-**(d)** Compute $|z|^2$ for each.
-
----
-
-### Problem 2: Adding Waves
-
-Two waves with equal amplitude arrive at a point:
-
-$$
-\psi_1 = e^{i\phi_1}, \qquad \psi_2 = e^{i\phi_2}
-$$
-
-**(a)** Show that the total intensity is:
-
-$$
-I = |\psi_1 + \psi_2|^2 = 2(1 + \cos(\phi_1 - \phi_2))
-$$
-
-**(b)** What is $I$ when $\phi_1 - \phi_2 = 0$? When $\phi_1 - \phi_2 = \pi$? When $\phi_1 - \phi_2 = \pi/2$?
-
-**(c)** Sketch $I$ as a function of $\phi_1 - \phi_2$ from $0$ to $4\pi$.
-
----
-
-### Problem 3: Three Waves
-
-Now suppose three waves arrive at a point:
-
-$$
-\psi_{\text{total}} = e^{i\phi_1} + e^{i\phi_2} + e^{i\phi_3}
-$$
-
-**(a)** For the symmetric case $\phi_1 = 0$, $\phi_2 = 2\pi/3$, $\phi_3 = 4\pi/3$, draw the three arrows in the complex plane. What is $\psi_{\text{total}}$? What is the intensity $I$?
-
-**(b)** For $\phi_1 = \phi_2 = \phi_3 = 0$, what is the intensity?
-
-**(c)** In general, what phase relationship maximizes the intensity? What minimizes it?
-
----
-
-### Problem 4: Mach-Zehnder Variations
-
-In lecture, we derived the MZI output probabilities:
-
-$$
-P(D1) = \cos^2(\phi/2), \qquad P(D2) = \sin^2(\phi/2)
-$$
-
-**(a)** **Verify the algebra:** Starting from the state after the phase shifter,
-
-$$
-|\psi\rangle = \frac{1}{\sqrt{2}}|upper\rangle + \frac{e^{i\phi}}{\sqrt{2}}|lower\rangle
-$$
-
-apply the second beam splitter transformation and show that you get $P(D1) = \cos^2(\phi/2)$.
-
-**(b)** **Unequal beam splitter:** Suppose the first beam splitter sends fraction $r$ of the amplitude to the upper arm and $t = \sqrt{1-r^2}$ to the lower arm:
-
-$$
-|in\rangle \to r|upper\rangle + t|lower\rangle
-$$
-
-Keep the second beam splitter 50/50. Derive the new expression for $P(D1)$ as a function of $\phi$ and $r$. 
-
-**(c)** For what value of $r$ do you get the maximum contrast (difference between max and min of $P(D1)$)?
-
-**(d)** **Phase in both arms:** Now suppose both arms have phase shifters: $\phi_1$ in the upper arm and $\phi_2$ in the lower arm. Show that the output only depends on the phase *difference* $\phi_1 - \phi_2$, not the individual phases.
-
-**(e)** **Connection to quantum circuits:** The MZI is equivalent to the circuit H → Rz(φ) → H. In this analogy:
-- What does the "upper path" correspond to in the qubit?
-- What does "all light goes to D1" mean in terms of the qubit state?
-
----
-
-### Problem 5: Double-Slit Simulation (Coding)
-
-Use the provided Python code to simulate the double-slit experiment.
-
-```{code-block} python
-import numpy as np
-import matplotlib.pyplot as plt
-
-def double_slit_intensity(y, d, L, wavelength):
-    """
-    Calculate intensity pattern for double slit.
-    
-    Parameters:
-    y : array of positions on screen
-    d : slit separation
-    L : distance to screen
-    wavelength : wavelength of light
-    
-    Returns:
-    intensity at each position y
-    """
-    # Path difference (small angle approximation)
-    delta_r = d * y / L
-    
-    # Phase difference
-    delta_phi = 2 * np.pi * delta_r / wavelength
-    
-    # Intensity (normalized)
-    intensity = (np.cos(delta_phi / 2))**2
-    
-    return intensity
-
-# Parameters
-L = 1.0  # distance to screen (meters)
-d = 0.1e-3  # slit separation (0.1 mm)
-wavelength = 500e-9  # green light (500 nm)
-
-# Screen positions
-y = np.linspace(-0.02, 0.02, 1000)  # +/- 2 cm
-
-# Calculate and plot
-I = double_slit_intensity(y, d, L, wavelength)
-
-plt.figure(figsize=(10, 5))
-plt.plot(y * 1000, I, 'b-', linewidth=1.5)
-plt.xlabel('Position on screen (mm)', fontsize=12)
-plt.ylabel('Intensity (normalized)', fontsize=12)
-plt.title('Double-Slit Interference Pattern', fontsize=14)
-plt.grid(True, alpha=0.3)
-plt.show()
-```
-
-**(a)** Run the code with the default parameters. How many bright fringes do you see in the central 20 mm?
-
-**(b)** Double the wavelength to 1000 nm (infrared). What happens to the fringe spacing?
-
-**(c)** Double the slit separation to 0.2 mm. What happens?
-
-**(d)** The fringe spacing is approximately $\Delta y = \lambda L / d$. Verify this formula using your simulations.
-
-**(e)** What happens if you make the wavelength very large compared to the slit separation? What does the pattern look like? Explain physically.
-
----
-
-### Problem 6: Why Not Real Numbers? (Conceptual)
-
-Someone argues: "I can describe interference using real numbers. Just track the amplitude and phase separately. Why do we need complex numbers?"
-
-Write 1-2 paragraphs explaining the advantage of complex numbers. Your answer should address:
-- What happens when you multiply two waves (e.g., propagation)
-- What happens when you add two waves (e.g., interference)
-- Why a single complex number is more natural than two real numbers
-
----
-
-### Problem 7: The Michelson Interferometer and LIGO
-
-A Michelson interferometer has arms of length $L_1$ and $L_2$.
-
-**(a)** The output intensity is $I = I_0 \cos^2\left(\frac{2\pi (L_1 - L_2)}{\lambda}\right)$. Starting from $L_1 = L_2$, how much do you need to change $L_1$ to go from maximum intensity to zero intensity? Express your answer in terms of $\lambda$.
-
-**(b)** For green light ($\lambda = 500$ nm), what is this distance in nanometers?
-
-**(c)** LIGO uses infrared light with $\lambda = 1064$ nm. The detector can measure intensity changes corresponding to a phase shift of $\delta\phi \sim 10^{-10}$ radians. What length change $\delta L$ does this correspond to?
-
-**(d)** LIGO's arms are $L = 4$ km long. A gravitational wave causes a fractional length change (strain) of $h = \delta L / L$. Using your answer from (c), what is the smallest strain LIGO can detect?
-
-**(e)** The gravitational wave event GW150914 (the first detection) had a strain of about $h \sim 10^{-21}$. Is this detectable according to your answer in (d)? What does this tell you about the additional techniques LIGO must use?
+6. **Interferometers are quantum circuits:** Split → phase → recombine → measure. This pattern will appear throughout quantum computing.
 
 ---
 
 ## Looking Ahead
 
-Next lecture, we'll see interference in action with polarized light. A polarizer is a measurement device—it projects onto a basis and gives a definite outcome. And we'll see the surprising three-polarizer effect, where adding a measurement can *increase* transmission.
+We've seen that complex amplitudes and interference are fundamental to quantum mechanics. Next lecture, we'll see this in action with polarized light—our first concrete qubit. 
 
-This will be our first real qubit.
+A single photon's polarization lives in a 2D complex vector space, exactly like the two-path interferometer. But now we'll confront measurement directly: what happens when a photon hits a polarizer?
+
+---
+
+## Homework
+
+### Problem 1: Michelson Interferometer
+
+A Michelson interferometer uses light with wavelength $\lambda = 633$ nm (red HeNe laser).
+
+**(a)** If the two arms have equal length, what is the phase difference $\Delta\phi$? What is the output intensity (taking $I_{\max} = 2$)?
+
+**(b)** One mirror is moved by distance $d$. The light travels to the mirror and back, so the path length changes by $2d$. Show that the phase difference changes by:
+$$\Delta\phi = \frac{4\pi d}{\lambda}$$
+
+**(c)** How far must the mirror move to go from maximum intensity to zero intensity (one quarter of a fringe)?
+
+**(d)** How far must the mirror move to shift by one complete fringe (intensity maximum → maximum)?
+
+**(e)** If you can detect a 1% change in intensity, approximately what mirror displacement can you measure? Express your answer in nanometers.
+
+---
+
+### Problem 2: Fringe Counting
+
+Light with wavelength $\lambda$ enters a Michelson interferometer. One arm is fixed; the other arm's mirror is mounted on a translation stage. As you slowly move the mirror, you observe the output intensity oscillating between bright and dark.
+
+**(a)** Starting from the intensity formula $I = I_0(1 + \cos\Delta\phi)$ with $\Delta\phi = 4\pi d/\lambda$, make a plot of $I/I_0$ vs. mirror displacement $d$ for $d \in [0, 3\lambda]$. Label the positions of the maxima and minima.
+
+**(b)** You observe 100 complete oscillations (bright → dark → bright counts as one oscillation) as you move the mirror by total distance $D$. What is $D$ in terms of $\lambda$?
+
+**(c)** This technique was used historically to measure the wavelength of light. If you count 100 fringes while moving the mirror by $D = 31.65 \, \mu\text{m}$, what is $\lambda$?
+
+**(d)** Modern interferometers can count millions of fringes. If you can count $10^6$ fringes with $\lambda = 633$ nm, what total displacement can you measure? What precision does this give you (assuming you can resolve to $\pm 1$ fringe)?
+
+---
+
+### Problem 3: LIGO Sensitivity
+
+LIGO (Laser Interferometer Gravitational-Wave Observatory) uses laser light with $\lambda = 1064$ nm and has arms of length $L = 4$ km.
+
+**(a)** A gravitational wave passing through LIGO causes a fractional length change (called "strain") $h = \Delta L / L$ in the arms. For the first detected gravitational wave (GW150914), the strain was approximately $h = 10^{-21}$. What is the physical length change $\Delta L$ in meters? Compare this to the size of a proton ($\sim 10^{-15}$ m).
+
+**(b)** What phase shift $\Delta\phi$ does this length change produce? (Remember, light travels down the arm and back.)
+
+**(c)** LIGO can detect phase shifts of approximately $\Delta\phi \sim 10^{-10}$ radians. What strain sensitivity does this correspond to?
+
+**(d)** Your answer to (c) should be much larger than $10^{-21}$—LIGO couldn't detect gravitational waves with a simple Michelson interferometer! LIGO uses "Fabry-Pérot cavities" that make the light bounce back and forth ~300 times in each arm, effectively increasing the arm length. If the effective arm length is $L_{\text{eff}} = 300 \times 4$ km, recalculate the strain sensitivity. Is this close to $10^{-21}$?
+
+---
+
+### Problem 4: The Mach-Zehnder Interferometer as a Quantum Circuit
+
+The Mach-Zehnder interferometer (MZI) uses two beam splitters: one to split the light, one to recombine it.
+
+**Setup:** 
+- Light enters one input port
+- First beam splitter creates superposition of "upper" and "lower" paths
+- A phase shifter adds phase $\phi$ to the lower path  
+- Second beam splitter recombines the paths
+- Two detectors D1 and D2 measure the outputs
+
+**(a)** A 50/50 beam splitter can be modeled by the matrix:
+$$B = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$$
+
+This is the **Hadamard matrix** $H$. If light enters in state $|u\rangle = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$ (upper path only), compute $B|u\rangle$. Interpret the result physically.
+
+**(b)** The phase shifter on the lower path is represented by:
+$$P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}$$
+
+Starting from your answer in (a), apply $P(\phi)$. Write the resulting state.
+
+**(c)** Now apply the second beam splitter $B$ to recombine. Compute the final state $|\psi_{\text{out}}\rangle = B \cdot P(\phi) \cdot B |u\rangle$.
+
+**(d)** The two components of $|\psi_{\text{out}}\rangle$ give the amplitudes for detectors D1 and D2. Find the probabilities $P(D1) = |c_1|^2$ and $P(D2) = |c_2|^2$. Verify that $P(D1) + P(D2) = 1$.
+
+**(e)** Fill in this table:
+
+| Phase $\phi$ | $P(D1)$ | $P(D2)$ | Where does the light go? |
+|--------------|---------|---------|--------------------------|
+| $0$ | | | |
+| $\pi/2$ | | | |
+| $\pi$ | | | |
+| $2\pi$ | | | |
+
+**(f)** The MZI is equivalent to the quantum circuit: $H \to R_z(\phi) \to H$, where $H$ is the Hadamard gate and $R_z(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}$ is a phase gate. 
+
+In quantum computing language:
+- The "upper path" corresponds to qubit state $|0\rangle$
+- The "lower path" corresponds to qubit state $|1\rangle$
+- "All light goes to D1" means measuring $|0\rangle$
+
+What does "all light goes to D2" correspond to in qubit language?
+
+---
+
+### Problem 5: Complex Numbers and Rotation Matrices
+
+This problem connects complex multiplication to rotations, preparing for the group theory of spin.
+
+A rotation by angle $\theta$ in 2D is represented by the matrix:
+$$R(\theta) = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}$$
+
+**(a)** Compute the matrix product $R(\theta_1) R(\theta_2)$. Show that:
+$$R(\theta_1) R(\theta_2) = R(\theta_1 + \theta_2)$$
+This is the key property: rotations combine by adding angles.
+
+**(b)** What is $R(\theta) R(-\theta)$? What is $R(0)$? Interpret these results: what is the "inverse" of a rotation?
+
+**(c)** A complex number $z = x + iy$ can be thought of as a vector $\begin{pmatrix} x \\ y \end{pmatrix}$. When we multiply $z$ by $e^{i\theta}$, we get a new complex number $z' = x' + iy'$.
+
+Show that:
+$$\begin{pmatrix} x' \\ y' \end{pmatrix} = R(\theta) \begin{pmatrix} x \\ y \end{pmatrix}$$
+
+*Hint:* Use $e^{i\theta} = \cos\theta + i\sin\theta$ and multiply out $(\cos\theta + i\sin\theta)(x + iy)$.
+
+**(d)** This proves that **multiplication by $e^{i\theta}$ is the same as rotation by angle $\theta$**. 
+
+In quantum mechanics, we'll see that phase factors $e^{i\theta}$ appear everywhere. This problem shows they are rotations in disguise. 
+
+The set of all 2D rotations forms a group called $SO(2)$. What makes it a "group" is:
+- Combining two rotations gives another rotation (closure)
+- There's an identity rotation $R(0)$  
+- Every rotation has an inverse $R(-\theta)$
+
+Does the order of rotations matter for $SO(2)$? That is, does $R(\theta_1)R(\theta_2) = R(\theta_2)R(\theta_1)$?
+
+---
+
+### Problem 6: Generators of Rotations (Challenge)
+
+This problem introduces the concept of a **generator**, which is central to understanding spin and the Pauli matrices.
+
+**(a)** For a small angle $\delta\theta \ll 1$, expand $R(\delta\theta)$ to first order:
+$$R(\delta\theta) \approx I + \delta\theta \cdot G$$
+where $I$ is the identity matrix. Find the matrix $G$ (called the **generator** of rotations).
+
+**(b)** Compute $G^2$. What simple matrix do you get?
+
+**(c)** Using the Taylor series $e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots$ and your result from (b), show that:
+$$e^{\theta G} = \cos\theta \cdot I + \sin\theta \cdot G$$
+*Hint:* Group the even and odd powers of $\theta G$ separately, and use the fact that $G^2 = -I$ to simplify.
+
+**(d)** Verify that $e^{\theta G} = R(\theta)$. This is a profound result: **finite rotations are exponentials of the generator**.
+
+**(e)** For complex numbers, the analogous statement is $e^{i\theta} = \cos\theta + i\sin\theta$ (Euler's formula). Compare this to your result in (c). What plays the role of $i$ in the matrix world?
+
+**(f)** (Preview) In quantum mechanics, rotations of spin-1/2 particles are generated by the **Pauli matrices** $\sigma_x, \sigma_y, \sigma_z$. Unlike the single generator $G$ for 2D rotations, there are three generators for 3D rotations. And crucially, they don't commute: $\sigma_x \sigma_y \neq \sigma_y \sigma_x$. 
+
+Based on Problem 5(d), 2D rotations commute. What does the non-commutativity of the Pauli matrices tell you about 3D rotations?
+
