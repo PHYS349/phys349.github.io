@@ -1,4 +1,4 @@
-# Lecture 2: What Are Classical Computers Bad At?
+# Lecture 1.2: What Are Classical Computers Bad At?
 
 **Goals of today**:
 1. What are classical computers good at?

@@ -1,4 +1,4 @@
-# Lecture 4: Quantum Hardware — Where Are We?
+# Lecture 1.4: Quantum Hardware — Where Are We?
 
 ## Recap: What Is a Quantum Computer?
 
@@ -33,7 +33,7 @@ $$
 :width: 600px
 :align: center
 
-This is the caption for the image.
+Model of quantum computing.
 ```
 
 %See    {ref}`quantum-config-fig`
@@ -42,6 +42,29 @@ This is the caption for the image.
 
 
 ---
+
+## A Brief History: From Feynman to NISQ
+
+The idea of quantum computing traces back to a 1981 lecture by Richard Feynman at MIT. Feynman was thinking about simulating physics on computers, and he noticed a fundamental problem: quantum systems are exponentially hard to simulate classically. A system of $N$ quantum particles requires tracking $2^N$ amplitudes—40 particles would need more numbers than a modern supercomputer can store. Feynman's insight was to flip the problem around:
+
+> "Nature isn't classical, dammit, and if you want to make a simulation of nature, you'd better make it quantum mechanical, and by golly it's a wonderful problem, because it doesn't look so easy."
+
+If classical computers can't efficiently simulate quantum systems, maybe quantum systems could simulate each other—and perhaps solve other hard problems too.
+
+The field remained largely theoretical until the 1990s, when two breakthroughs changed everything. In 1994, Peter Shor discovered that a quantum computer could factor large numbers exponentially faster than any known classical algorithm—a direct threat to the RSA encryption protecting the internet. In 1996, Lov Grover showed that quantum computers could search unsorted databases quadratically faster than classical computers. Suddenly, quantum computing wasn't just about physics—it had practical implications.
+
+The next two decades focused on proving quantum computers could actually be built. Key milestones:
+
+- **1995:** First quantum logic gate demonstrated (NIST, trapped ions)
+- **1998:** First 2-qubit quantum algorithm run (IBM, NMR)
+- **2001:** Shor's algorithm factors 15 = 3 × 5 using 7 qubits (IBM, NMR)
+- **2011:** D-Wave sells first commercial "quantum annealer" (controversial—not universal QC)
+- **2016:** IBM puts 5-qubit quantum computer on the cloud—public access for the first time
+- **2019:** Google claims "quantum supremacy"—their 53-qubit Sycamore chip solved a sampling problem in 200 seconds that they estimated would take a classical supercomputer 10,000 years
+
+The "quantum supremacy" milestone marked the symbolic end of the proof-of-concept era. Quantum computers had done *something* faster than any classical machine. But that particular problem—random circuit sampling—has no practical application. We had crossed a threshold, but we weren't yet anywhere useful.
+
+This is where Preskill's term "NISQ" becomes relevant...
 
 ## Where Are We? The NISQ Era
 

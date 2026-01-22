@@ -1,4 +1,4 @@
-# Lecture 1: Why Quantum? Why Now?
+# Lecture 1.1: Why Quantum? Why Now?
 
 ## The Two Quantum Revolutions
 

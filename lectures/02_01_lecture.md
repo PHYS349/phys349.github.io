@@ -1,8 +1,8 @@
-# Lecture 5: Interference
+# Lecture 2.1: Interference
 
 ## Why Are We Here?
 
-In the last chapter, we saw that quantum mechanics assigns complex amplitudes to configurations, and these amplitudes can interfere. But we haven't yet asked the deeper question:
+In Chapter 1, we saw that quantum mechanics assigns complex amplitudes to configurations, and these amplitudes can interfere. But we haven't yet asked the deeper question:
 
 > **Why complex numbers?**
 
