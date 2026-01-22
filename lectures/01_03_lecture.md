@@ -577,8 +577,6 @@ The exponential state space is both the source of quantum power and the reason q
 
 
 
-
-
 ------------------------------------------------------------------------
 
 # Homework
@@ -599,15 +597,14 @@ with $J = 1$ (ferromagnetic) and $B = 0.5$.
 
 **(d)** What is the ground state if $B = 0$? (Hint: there may be more than one!) Explain physically why there is degeneracy.
 
-**(e)** What is the ground state if $B = 10$? Why is it unique now?
-
+**(e)** What is the ground state for $B=−0.5$? Compare to $B=+0.5$. Explain why only the sign matters here.
 ## Problem 2: Phase Transition in the Antiferromagnet
 
 Now consider an **antiferromagnetic** chain with $N = 10$ spins: $$
-H = -J \sum_{i=1}^{N-1} s_i s_{i+1} - B \sum_{i=1}^{N} s_i
+H = -J \sum_{i=1}^{N} s_i s_{i+1} - B \sum_{i=1}^{N} s_i
 $$
 
-with $J = -1$ (antiferromagnetic, so neighboring spins want to anti-align).
+with $J = -1$ (antiferromagnetic, so neighboring spins want to anti-align) and $s_{N+1}=s_{1}$.
 
 **(a)** What is the ground state when $B = 0$? What is its energy? (Note: there may be two degenerate ground states—list both if so.)
 
@@ -766,16 +763,3 @@ plt.show()
 
 
 
-
-**(e)** What is the ground state for $B=−0.5$? Compare to $B=+0.5$. Explain why only the sign matters here.
-**(e)** What is the ground state if $B = 10$? Why is it unique now?
-
-## Problem 2: Phase Transition in the Antiferromagnet
-
-Now consider an **antiferromagnetic** chain with $N = 10$ spins: $$
-H = -J \sum_{i=1}^{N} s_i s_{i+1} - B \sum_{i=1}^{N} s_i
-H = -J \sum_{i=1}^{N-1} s_i s_{i+1} - B \sum_{i=1}^{N} s_i
-$$
-
-with $J = -1$ (antiferromagnetic, so neighboring spins want to anti-align) and $s_{N+1}=s_{1}$.
-with $J = -1$ (antiferromagnetic, so neighboring spins want to anti-align).
