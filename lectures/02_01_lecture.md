@@ -2,31 +2,17 @@
 
 ## Chapter 2 Overview
 
-Chapter 2 introduces **the qubit**—the fundamental unit of quantum information. We'll build up to it through several interconnected ideas:
+This chapter answers one big question: **what is a qubit, physically and mathematically?**
 
-1. **Interference** — How quantum amplitudes combine and why "adding then squaring" creates interference patterns
+We’ll build the idea in a few steps:
 
-2. **Why complex numbers?** — In classical physics, complex numbers are a convenience. In quantum mechanics, they're essential. We'll see why.
+- **Interference:** amplitudes add, then we square to get what we observe  
+- **Complex numbers and phase:** phase acts like a rotation, and complex numbers keep track of it cleanly  
+- **The qubit picture:** a qubit is a 2D complex vector, often visualized on the **Bloch sphere**  
+- **Real examples:** photon polarization and spin-½ are our two main physical qubits  
+- **Operations:** single-qubit gates are rotations (and interference is how they show up in experiments)
 
-3. **Group theory of rotations** — Phase is secretly rotation. Understanding $SO(2)$ and $SU(2)$ gives us the language for quantum operations.
-
-4. **The Bloch sphere** — A beautiful geometric picture of a qubit as a point on a sphere
-
-5. **Photon polarization as a qubit** — Our first concrete physical qubit: horizontal vs. vertical polarization of a single photon
-
-6. **Spin-½ systems and $SU(2)$** — Electrons have intrinsic angular momentum that lives in a 2D complex vector space
-
-7. **Stern-Gerlach experiment** — The historical experiment that revealed quantized spin
-
-8. **Single-qubit operations** — Rotations on the Bloch sphere, Pauli matrices, the Hadamard gate
-
-9. **The qubit as an interferometer** — Full circle: the Ramsey interferometer shows that qubit operations *are* interference
-
-Two physical realizations will anchor our discussion:
-- **Photon polarization** (Lectures 2.2–2.3)
-- **Spin-½ particles** (Lectures 2.3–2.4)
-
-By the end of Chapter 2, you'll see that a qubit is not just an abstract "0 and 1 at the same time"—it's a physical system with geometry, dynamics, and deep connections to rotation groups.
+By the end of the chapter, “qubit” should feel like a concrete wave/interference object—not a slogan.
 
 ---
 
@@ -149,9 +135,6 @@ $$
 The two linearly independent real solutions are $\cos(kx - \omega t)$ and $\sin(kx - \omega t)$ (or equivalently, right-traveling and left-traveling waves).
 
 Just like before, there is also a complex form of the traveling wave: $e^{i(kx - \omega t)}$ and $e^{-i(kx - \omega t)}$. Verify for yourself that $E(x,t) = E_0 e^{i(kx - \omega t)}$ satisfies the wave equation.
-
-### Why Use Complex Numbers for Classical Waves?
-
 In classical electromagnetism, the electric field $E$ is real. But calculations are often easier using complex exponentials. Why?
 
 **Derivatives are simpler.** They just bring down a factor of $ik$ or $-i\omega$—no sign changes or switching between sin and cos.
