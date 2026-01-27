@@ -62,11 +62,13 @@ $$
 \cos(kx) = \cos\left(\frac{2\pi}{\lambda}x\right)
 $$
 
-```{figure} placeholder
+<!--
+ ```{figure} placeholder
 :name: wave-spatial
 
 A sinusoidal wave showing amplitude $A$ and wavelength $\lambda$.
 ```
+ -->
 
 However, another equally valid choice are the complex exponentials:
 $$
@@ -194,13 +196,14 @@ The average of $\cos^2$ over one period is $1/2$:
 $$
 I = \langle E^2 \rangle = \frac{1}{T}\int_0^T E_0^2 \cos^2(\omega t)\, dt = \frac{E_0^2}{2}
 $$
-
+<!-- 
 ```{figure} placeholder
 :name: intensity-averaging
 
 Top: $E(t) = \cos(\omega t)$ oscillates between $\pm 1$.
 Bottom: $E^2(t) = \cos^2(\omega t)$ oscillates between 0 and 1, with average 1/2.
 ```
+ -->
 
 ### The Complex Shortcut
 
@@ -237,12 +240,13 @@ Now the payoff: what happens when two waves combine?
 ### Setup: Two Sources
 
 Imagine two point sources emitting waves. At a detector, the waves have traveled different distances $x_1$ and $x_2$.
-
+<!-- 
 ```{figure} placeholder
 :name: two-source
 
 Two point sources at different distances from a detector. The waves arrive with different phases.
 ```
+ -->
 
 Each source contributes a complex amplitude at the detector:
 $$
@@ -350,6 +354,7 @@ $$
 | **Constructive** | $0, 2\pi, 4\pi, ...$ | $+1$ | $I = 4$ (max) |
 | **Destructive** | $\pi, 3\pi, 5\pi, ...$ | $-1$ | $I = 0$ (min) |
 
+<!-- 
 ```{figure} placeholder
 :name: interference-fringes
 
@@ -357,6 +362,7 @@ Top: Two waves in phase add constructively.
 Middle: Two waves out of phase by $\pi$ cancel destructively.
 Bottom: Intensity vs. path difference shows oscillating "fringes."
 ```
+ -->
 
 - **Constructive interference** ($\Delta x = 0, \lambda, 2\lambda, ...$): The waves arrive "in step"—peak meets peak, trough meets trough. They reinforce.
 
