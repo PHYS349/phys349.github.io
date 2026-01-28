@@ -1,695 +1,783 @@
-# Lecture 8: Ramsey Interferometry and Quantum Sensing
+# Lecture 2.4: Groups, Spin, and the Pauli Matrices
 
-## The Payoff: From Abstract to Technology
+## Review: Where We Are
 
-Over the past three lectures, we've built up a complete toolkit:
-- Complex amplitudes and interference (Lecture 5)
-- Measurement and state collapse (Lecture 6)
-- Time evolution and rotations on the Bloch sphere (Lecture 7)
+We've now seen two physical realizations of qubits:
+- **Interferometer paths:** Light in arm 1 vs arm 2 (Lecture 2.2)
+- **Polarization:** Horizontal vs vertical (Lecture 2.3)
 
-Today, we put it all together. We'll see how the abstract one-qubit interferometer becomes a real device: the **Ramsey interferometer**. This is the heart of atomic clocks, the most precise instruments ever built.
+Both are described by 2D complex vectors on the Bloch sphere. But we haven't yet asked: **why complex numbers?**
 
-And we'll see the broader picture: a qubit is a **sensor**. Anything that affects its energy levels can be measured through interference.
-
----
-
-## Review: The One-Qubit Interferometer
-
-In Lecture 5, we analyzed the Mach-Zehnder interferometer for light:
-- Beam splitter (split)
-- Phase accumulation in one arm
-- Beam splitter (recombine)
-- Detection
-
-The quantum circuit version is:
-
-$$
-|0\rangle \xrightarrow{H} \xrightarrow{R_z(\phi)} \xrightarrow{H} \xrightarrow{\text{measure}}
-$$
-
-We derived:
-$$
-P(0) = \cos^2(\phi/2), \qquad P(1) = \sin^2(\phi/2)
-$$
-
-The phase $\phi$ becomes encoded in the measurement probability. But where does this phase come from physically?
+Today we answer this question. We'll see that:
+1. Complex numbers are *fundamental* to quantum mechanics — not just a convenience
+2. Complex numbers encode rotations (the group SO(2))
+3. Qubit transformations form a larger group (SU(2))
+4. Nature hands us a qubit: electron spin (Stern-Gerlach experiment)
+5. The Pauli matrices are the generators of SU(2) — the fundamental building blocks
 
 ---
 
-## The Ramsey Sequence
+## Part 1: Why Is Quantum Mechanics Complex?
 
-In atomic physics, the same interferometer appears with a clear physical interpretation.
+### The Classical Wave Equation
 
-### The Setup
+For light (or sound, or water waves), the wave equation is:
 
-1. **Atom starts in ground state:** $|0\rangle$ (or $|\downarrow\rangle$)
+$$\frac{\partial^2 E}{\partial x^2} = \frac{1}{c^2}\frac{\partial^2 E}{\partial t^2}$$
 
-2. **First π/2-pulse:** Apply a resonant driving field for time $t_{\pi/2} = \pi/(2\Omega)$
+This is a **real** equation. The physical solutions are real:
 
-   This rotates around x by 90°, creating superposition:
-   $$|0\rangle \to \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$$
-   
-   On the Bloch sphere: north pole → equator
+$$E(x,t) = A\cos(kx - \omega t + \phi)$$
 
-3. **Free evolution for time $T$:** The atom evolves under its natural Hamiltonian $H = \frac{\hbar\omega_0}{2}\sigma_z$
+When we write $E = A e^{i(kx - \omega t)}$, this is a **trick**. We always take the real part at the end to get the physical field. The complex numbers are bookkeeping — they make the math easier, but the physics is real.
 
-   The state precesses around z, accumulating phase:
-   $$\frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle) \to \frac{1}{\sqrt{2}}(e^{-i\omega_0 T/2}|0\rangle - i e^{i\omega_0 T/2}|1\rangle)$$
-   
-   The relative phase is $\phi = \omega_0 T$
+The dispersion relation is:
 
-4. **Second π/2-pulse:** Another rotation around x by 90°
+$$\omega = ck$$
 
-   The two "paths" (being in $|0\rangle$ vs $|1\rangle$) recombine and interfere
+Linear in $k$ — frequency proportional to wavenumber.
 
-5. **Measure:** The interference determines $P(0)$ and $P(1)$
+### The Schrödinger Equation
 
-```{figure} ./02_04_lecture_files/ramsey_sequence.svg
-:width: 500px
-:name: ramsey-sequence
+Now look at the Schrödinger equation for a free particle:
 
-The Ramsey sequence: π/2 pulse - free evolution - π/2 pulse - measure.
-```
+$$i\hbar\frac{\partial \psi}{\partial t} = -\frac{\hbar^2}{2m}\frac{\partial^2 \psi}{\partial x^2}$$
 
-### The Calculation
+Notice the $i$ on the left side. This is **not** a trick — it's built into the fundamental equation. The wavefunction $\psi$ is irreducibly complex.
 
-Let's work through this carefully.
+Let's see why. Try a plane wave solution $\psi = e^{i(kx - \omega t)}$:
 
-**After first π/2-pulse** ($R_x(\pi/2)$ on $|0\rangle$):
+**Left side:**
+$$i\hbar \frac{\partial}{\partial t}e^{i(kx-\omega t)} = i\hbar \cdot (-i\omega) e^{i(kx-\omega t)} = \hbar\omega \cdot e^{i(kx-\omega t)}$$
 
-Using $R_x(\pi/2) = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & -i \\ -i & 1 \end{pmatrix}$:
+**Right side:**
+$$-\frac{\hbar^2}{2m}\frac{\partial^2}{\partial x^2}e^{i(kx-\omega t)} = -\frac{\hbar^2}{2m}(ik)^2 e^{i(kx-\omega t)} = \frac{\hbar^2 k^2}{2m}e^{i(kx-\omega t)}$$
 
-$$
-|\psi_1\rangle = R_x(\pi/2)|0\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)
-$$
+Setting them equal:
+$$\hbar\omega = \frac{\hbar^2 k^2}{2m} \implies \omega = \frac{\hbar k^2}{2m}$$
 
-**After free evolution for time $T$** (under $H = \frac{\hbar\omega_0}{2}\sigma_z$):
+This is the quantum dispersion relation — **quadratic** in $k$.
 
-$$
-|\psi_2\rangle = R_z(\omega_0 T)|\psi_1\rangle = \frac{1}{\sqrt{2}}(e^{-i\omega_0 T/2}|0\rangle - i e^{i\omega_0 T/2}|1\rangle)
-$$
+### Why Complex Is Required
 
-Pull out a global phase $e^{-i\omega_0 T/2}$:
+Here's the key point. Let's rewrite the Schrödinger equation using $E = \hbar\omega$ and $p = \hbar k$:
 
-$$
-|\psi_2\rangle = \frac{e^{-i\omega_0 T/2}}{\sqrt{2}}(|0\rangle - i e^{i\omega_0 T}|1\rangle)
-$$
+$$\frac{1}{k^2}\frac{\partial^2 \psi}{\partial x^2} = \frac{i}{\omega}\frac{\partial \psi}{\partial t}$$
 
-**After second π/2-pulse:**
+The left side has $\partial^2/\partial x^2$ (second derivative in space).
+The right side has $\partial/\partial t$ (first derivative in time).
 
-$$
-|\psi_3\rangle = R_x(\pi/2)|\psi_2\rangle
-$$
+For a real equation, we'd need both sides to have the same "parity" of derivatives. But they don't match — one is second-order, one is first-order.
 
-After some algebra (or using the general rotation formula):
+The $i$ fixes this! It provides the "missing" derivative's worth of sign changes.
 
-$$
-|\psi_3\rangle = \frac{e^{-i\omega_0 T/2}}{\sqrt{2}}\left[\frac{1-e^{i\omega_0 T}}{2}|0\rangle + \frac{-i(1+e^{i\omega_0 T})}{2}|1\rangle\right]
-$$
+If you try to use real numbers only, $\psi = A\cos(kx - \omega t)$ does **not** satisfy the Schrödinger equation. Try it:
 
-The probabilities are:
+$$\frac{\partial}{\partial t}\cos(kx - \omega t) = \omega\sin(kx - \omega t)$$
 
-$$
-P(0) = \sin^2\left(\frac{\omega_0 T}{2}\right), \qquad P(1) = \cos^2\left(\frac{\omega_0 T}{2}\right)
-$$
+$$\frac{\partial^2}{\partial x^2}\cos(kx - \omega t) = -k^2\cos(kx - \omega t)$$
 
-```{admonition} The Ramsey Result
+These are different functions (sin vs cos) — they can't be proportional for all $x$ and $t$.
+
+---
+
+## iClicker Question 1
+
+**The equation $\frac{1}{k^2}\frac{\partial^2 \psi}{\partial x^2} = \frac{i}{\omega}\frac{\partial \psi}{\partial t}$ has which traveling wave solution?**
+
+- (A) $e^{i(kx - \omega t)}$
+- (B) $e^{-i(kx - \omega t)}$ ✓
+- (C) $\cos(kx - \omega t)$
+- (D) $\sin(kx - \omega t)$
+
+**Solution:** Let's check (B): $\psi = e^{-i(kx - \omega t)}$
+
+$$\frac{\partial \psi}{\partial t} = i\omega e^{-i(kx-\omega t)}$$
+
+$$\frac{\partial^2 \psi}{\partial x^2} = -k^2 e^{-i(kx-\omega t)}$$
+
+Substituting:
+$$\frac{-k^2}{k^2}e^{-i(kx-\omega t)} = \frac{i \cdot i\omega}{\omega}e^{-i(kx-\omega t)}$$
+$$-e^{-i(kx-\omega t)} = -e^{-i(kx-\omega t)} \checkmark$$
+
+Note the sign! Option (A) gives $+1 = -1$, which fails.
+
+```{admonition} The Key Difference
 :class: important
 
-For a Ramsey sequence with free evolution time $T$:
+**Classical waves:** Complex numbers are a convenient trick. The real part is physical.
 
-$$
-P(0) = \sin^2\left(\frac{\omega_0 T}{2}\right) = \frac{1 - \cos(\omega_0 T)}{2}
-$$
-
-The atomic transition frequency $\omega_0$ is directly encoded in the oscillation of the measurement probability.
+**Quantum mechanics:** Complex numbers are fundamental. The $i$ in Schrödinger's equation is essential — it connects first-order time evolution to second-order spatial structure.
 ```
 
 ---
 
-## Ramsey Fringes
+## Part 2: Complex Numbers as Rotations — The Group SO(2)
 
-If we vary the free evolution time $T$ (or equivalently, the detuning), the probability oscillates. These oscillations are called **Ramsey fringes**.
+So complex numbers are fundamental to quantum mechanics. But what *are* complex numbers, really? Here's a deep answer: **they encode rotations**.
 
-```{figure} ./02_04_lecture_files/ramsey_fringes.svg
-:width: 500px
-:name: ramsey-fringes
+### Multiplication Is Rotation
 
-Ramsey fringes: probability oscillates with free evolution time or detuning.
-```
+Consider multiplying a complex number $z$ by $e^{i\theta}$:
 
-### With Detuning
+$$z \mapsto e^{i\theta} z$$
 
-In practice, we often work in a frame rotating at some reference frequency $\omega_{\text{ref}}$. The free evolution phase then depends on the **detuning**:
+What does this do geometrically?
 
-$$
-\delta = \omega_0 - \omega_{\text{ref}}
-$$
+Write $z = re^{i\phi}$ (polar form). Then:
 
-The accumulated phase is $\phi = \delta \cdot T$, and:
+$$e^{i\theta} z = e^{i\theta} \cdot re^{i\phi} = re^{i(\phi + \theta)}$$
 
-$$
-P(0) = \sin^2\left(\frac{\delta T}{2}\right)
-$$
+The magnitude $r$ is unchanged. The angle increases by $\theta$.
 
-Scanning $\delta$ (by changing the reference frequency) produces fringes with period:
+**Multiplication by $e^{i\theta}$ rotates by angle $\theta$ in the complex plane!**
 
-$$
-\Delta\delta = \frac{2\pi}{T}
-$$
-
-**Key insight:** Longer free evolution time $T$ means narrower fringes — higher frequency resolution.
-
----
-
-## Why Ramsey Beats Direct Measurement
-
-Why use this complicated sequence? Why not just measure the atomic frequency directly?
-
-### The Linewidth Problem
-
-If you try to measure $\omega_0$ by driving the transition and looking for maximum absorption, the spectral line has a **width** determined by how long you probe:
-
-$$
-\Delta\omega \sim \frac{1}{t_{\text{probe}}}
-$$
-
-This is the time-energy uncertainty relation.
-
-### Ramsey's Trick
-
-Ramsey's insight: **separate the "probing" (π/2-pulses) from the "measuring" (free evolution).**
-
-The π/2-pulses can be short (microseconds). The free evolution can be long (seconds). The resolution is set by the free evolution time:
-
-$$
-\Delta\omega \sim \frac{1}{T}
-$$
-
-You get the resolution of a long measurement with the control of short pulses.
-
-```{admonition} Norman Ramsey's Nobel Prize
-:class: note
-
-Norman Ramsey received the 1989 Nobel Prize in Physics for developing this technique. His "separated oscillatory fields" method is the basis of all modern precision spectroscopy and atomic clocks.
-```
-
----
-
-## Atomic Clocks: The Most Precise Instruments
-
-An atomic clock is a Ramsey interferometer where the phase comes from the energy difference between two atomic states.
-
-### The Principle
-
-Atoms have precise, universal energy levels. The transition frequency between two levels is a constant of nature:
-
-**Cesium-133:** The ground state hyperfine transition defines the second.
-
-$$
-\omega_{\text{Cs}} = 2\pi \times 9,192,631,770 \text{ Hz (exactly)}
-$$
-
-This isn't an approximate measurement — it's the **definition** of the second since 1967.
-
-### How It Works
-
-1. **Prepare atoms in state $|0\rangle$** (ground hyperfine level)
-
-2. **Apply π/2-pulse** from a local oscillator at frequency $\omega_{\text{LO}}$
-
-3. **Free evolution for time $T$**
-
-4. **Apply second π/2-pulse**
-
-5. **Measure population in $|0\rangle$**
-
-6. **Feedback:** Adjust $\omega_{\text{LO}}$ to lock to the atomic frequency
-
-```{figure} ./02_04_lecture_files/atomic_clock_schematic.svg
-:width: 450px
-:name: atomic-clock
-
-Schematic of an atomic clock: Ramsey sequence + feedback loop.
-```
-
-The feedback loop keeps the local oscillator exactly on resonance with the atomic transition. The oscillator's ticks become "atomic ticks."
-
-### Performance
-
-Modern cesium clocks achieve:
-- **Fractional accuracy:** $\sim 10^{-16}$
-- **Would gain or lose 1 second in:** 300 million years
-
-Optical atomic clocks (using visible light transitions) do even better:
-- **Fractional accuracy:** $\sim 10^{-18}$
-- **Would gain or lose 1 second in:** longer than the age of the universe
-
-```{admonition} Why So Precise?
-:class: tip
-
-1. **Universal:** All cesium atoms are identical. The frequency is a constant of nature.
-
-2. **Long coherence:** Atoms can be isolated from perturbations, allowing long free evolution times.
-
-3. **Quantum interference:** The Ramsey fringe pattern allows exquisite frequency discrimination.
-
-4. **Feedback averaging:** Running continuously and averaging reduces statistical noise.
-```
-
----
-
-## GPS: Atomic Clocks in Your Pocket
-
-The Global Positioning System relies on atomic clocks.
-
-### The Principle
-
-Each GPS satellite carries atomic clocks and broadcasts timing signals. Your phone receives signals from multiple satellites, each with a different travel time.
-
-The time delay tells you the distance: $d = c \cdot \Delta t$
-
-From multiple distances, you triangulate your position.
-
-### The Numbers
-
-- Light travels ~30 cm in 1 nanosecond
-- To get 1-meter position accuracy, you need ~3 ns timing accuracy
-- Over one day, a clock must not drift more than ~1 µs
-- This requires fractional accuracy of $\sim 10^{-14}$
-
-Without atomic clocks, GPS would accumulate errors of kilometers per day.
-
-```{admonition} Relativity Correction
-:class: note
-
-GPS satellites orbit at high altitude and high speed. General relativity (gravity) and special relativity (velocity) both affect the clock rates:
-- Gravitational time dilation: clocks run faster by ~45 µs/day
-- Velocity time dilation: clocks run slower by ~7 µs/day
-- Net effect: clocks run ~38 µs/day fast
-
-This is corrected for. GPS is a real-world test of Einstein's theories.
-```
-
----
-
-## Quantum Sensing: The Qubit as a Probe
-
-Atomic clocks are the most famous application, but the principle is much broader.
-
-**Core idea:** A qubit is sensitive to anything that shifts its energy levels. The Ramsey sequence converts that energy shift into a measurable phase.
-
-### The General Framework
-
-Any perturbation that causes a Hamiltonian $H = \frac{\hbar\omega}{2}\sigma_z$ leads to phase accumulation:
-
-$$
-\phi = \omega \cdot T
-$$
-
-If $\omega$ depends on some physical quantity $X$ (magnetic field, electric field, gravity, etc.), then measuring $\phi$ measures $X$:
-
-$$
-X \to \omega(X) \to \phi = \omega T \to P(0) = \sin^2(\phi/2)
-$$
-
-### Example: Magnetometry
-
-An electron spin in a magnetic field $B$ has:
-
-$$
-\omega = \gamma_e B
-$$
-
-where $\gamma_e = 2\pi \times 28 \text{ GHz/T}$ is the electron gyromagnetic ratio.
-
-A Ramsey sequence with time $T$ gives phase $\phi = \gamma_e B T$.
-
-**Sensitivity:** The minimum detectable field change corresponds to the minimum detectable phase change:
-
-$$
-\delta B = \frac{\delta\phi}{\gamma_e T}
-$$
-
-Longer $T$ → better sensitivity (until decoherence sets in).
-
-### Example: Gravimetry
-
-Atom interferometers use the gravitational potential energy:
-
-$$
-\phi = \frac{m g \Delta h \cdot T}{\hbar}
-$$
-
-where $\Delta h$ is the height difference between paths in a matter-wave interferometer.
-
-These devices can measure:
-- Gravitational acceleration $g$ to 9 decimal places
-- Gravitational gradients (useful for underground mapping)
-- Tests of the equivalence principle
-
-### The Quantum Advantage
-
-Classical sensors measure a field by its direct effect (deflection, voltage, etc.). Quantum sensors measure through **interference** — they're sensitive to phase, which can be accumulated over time.
-
-The precision scales as:
-- **Classical averaging:** $\delta X \propto 1/\sqrt{T}$ (central limit theorem)
-- **Quantum (Ramsey):** $\delta X \propto 1/T$ (phase accumulation)
-
-This is called the **Standard Quantum Limit**. With entanglement, you can do even better (**Heisenberg Limit**), but that's for a later lecture.
-
----
-
-## Decoherence: The Enemy of Coherence
-
-There's a catch. We've been assuming the qubit evolves purely under the desired Hamiltonian. In reality, the qubit also interacts with its environment.
-
-### What Goes Wrong
-
-Random interactions with the environment cause:
-1. **Dephasing:** Random phase kicks scramble the accumulated phase
-2. **Relaxation:** The qubit decays from $|1\rangle$ to $|0\rangle$
-
-Both effects destroy the interference pattern.
-
-```{figure} ./02_04_lecture_files/decoherence.svg
-:width: 400px
-:name: decoherence
-
-Decoherence: Ramsey fringes decay as free evolution time increases.
-```
-
-### Coherence Times
-
-The characteristic timescales are:
-- **$T_1$ (relaxation time):** How long until the qubit decays
-- **$T_2$ (dephasing time):** How long until phase coherence is lost
-
-For quantum sensing or computing, you need:
-$$
-T_{\text{operation}} \ll T_2
-$$
-
-| System | Typical $T_2$ |
-|--------|---------------|
-| Trapped ions | seconds to minutes |
-| Neutral atoms | ~1 second |
-| Superconducting qubits | ~100 µs |
-| NV centers | ~ms |
-| Electron spin (solid state) | ~µs to ms |
-
-The quest for longer coherence times drives much of modern quantum hardware research.
-
----
-
-## Lab: Ramsey Fringes in Qiskit
-
-Let's simulate a Ramsey sequence.
-
-```{code-block} python
+```python
 import numpy as np
 import matplotlib.pyplot as plt
-from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector
 
-# Ramsey sequence: Rx(pi/2) - Rz(phi) - Rx(pi/2) - measure
-# The Rz represents free evolution with accumulated phase phi
+# Visualize rotation in complex plane
+z = 1 + 0.5j  # Original complex number
+theta = np.pi/3  # Rotation angle
 
-phases = np.linspace(0, 4*np.pi, 100)
-prob_0 = []
+z_rotated = np.exp(1j * theta) * z
 
-for phi in phases:
-    qc = QuantumCircuit(1)
-    
-    # First pi/2 pulse (around x)
-    qc.rx(np.pi/2, 0)
-    
-    # Free evolution (phase accumulation around z)
-    qc.rz(phi, 0)
-    
-    # Second pi/2 pulse (around x)
-    qc.rx(np.pi/2, 0)
-    
-    # Get probabilities
-    state = Statevector(qc)
-    probs = state.probabilities()
-    prob_0.append(probs[0])
-
-# Plot Ramsey fringes
-plt.figure(figsize=(10, 5))
-plt.plot(phases/np.pi, prob_0, 'b-', linewidth=2)
-plt.xlabel('Phase φ/π (proportional to detuning × time)', fontsize=12)
-plt.ylabel('P(0)', fontsize=12)
-plt.title('Ramsey Fringes', fontsize=14)
+plt.figure(figsize=(8, 8))
+plt.arrow(0, 0, z.real, z.imag, head_width=0.1, color='blue', label='z')
+plt.arrow(0, 0, z_rotated.real, z_rotated.imag, head_width=0.1, color='red', label=f'e^(iθ)z, θ={theta:.2f}')
+plt.xlim(-2, 2)
+plt.ylim(-2, 2)
+plt.axhline(y=0, color='k', linewidth=0.5)
+plt.axvline(x=0, color='k', linewidth=0.5)
 plt.grid(True, alpha=0.3)
-plt.axhline(y=0.5, color='gray', linestyle='--', alpha=0.5)
-plt.show()
-
-# Verify: P(0) should follow sin²(φ/2)
-theory = np.sin(phases/2)**2
-plt.figure(figsize=(10, 5))
-plt.plot(phases/np.pi, prob_0, 'b-', linewidth=2, label='Qiskit simulation')
-plt.plot(phases/np.pi, theory, 'r--', linewidth=2, label='Theory: sin²(φ/2)')
-plt.xlabel('Phase φ/π', fontsize=12)
-plt.ylabel('P(0)', fontsize=12)
-plt.title('Ramsey Fringes: Simulation vs Theory', fontsize=14)
 plt.legend()
-plt.grid(True, alpha=0.3)
+plt.title('Multiplication by e^(iθ) = Rotation')
+plt.axis('equal')
 plt.show()
 ```
 
-### Adding Decoherence (Conceptual)
+### The Group Structure
 
-Real decoherence requires simulating open quantum systems, which is beyond basic Qiskit. But we can simulate the effect:
+The set of all rotations in 2D forms a **group** called SO(2) (Special Orthogonal group in 2 dimensions).
 
-```{code-block} python
-# Simulating the effect of decoherence on Ramsey fringes
-# As T increases, the fringe contrast decays
+**What is a group?** A set with an operation satisfying four properties:
 
-T2 = 10  # arbitrary units
+1. **Closure:** Combining two elements gives another element in the set
+2. **Associativity:** $(a \cdot b) \cdot c = a \cdot (b \cdot c)$
+3. **Identity:** There's an element $e$ such that $e \cdot a = a \cdot e = a$
+4. **Inverses:** Every element $a$ has an inverse $a^{-1}$ such that $a \cdot a^{-1} = e$
 
-evolution_times = np.linspace(0, 30, 100)
-prob_0_with_decoherence = []
+Let's verify SO(2) satisfies these:
 
-for T in evolution_times:
-    # Phase accumulates
-    phi = T  # Assume detuning = 1 in arbitrary units
-    
-    # Ideal probability
-    P0_ideal = np.sin(phi/2)**2
-    
-    # Decoherence reduces fringe contrast
-    contrast = np.exp(-T/T2)
-    P0_real = 0.5 + contrast * (P0_ideal - 0.5)
-    
-    prob_0_with_decoherence.append(P0_real)
+**Closure:** Rotating by $\theta_1$ then $\theta_2$ is the same as rotating by $\theta_1 + \theta_2$:
+$$e^{i\theta_1} \cdot e^{i\theta_2} = e^{i(\theta_1 + \theta_2)}$$
+This is still a rotation. ✓
 
-plt.figure(figsize=(10, 5))
-plt.plot(evolution_times, prob_0_with_decoherence, 'b-', linewidth=2)
-plt.xlabel('Free evolution time T (arb. units)', fontsize=12)
-plt.ylabel('P(0)', fontsize=12)
-plt.title(f'Ramsey Fringes with Decoherence (T₂ = {T2})', fontsize=14)
-plt.axhline(y=0.5, color='gray', linestyle='--', alpha=0.5)
-plt.grid(True, alpha=0.3)
-plt.show()
+**Associativity:** Addition of angles is associative. ✓
+
+**Identity:** $e^{i \cdot 0} = 1$ (rotation by zero). ✓
+
+**Inverses:** $(e^{i\theta})^{-1} = e^{-i\theta}$ (rotate backward). ✓
+
+So rotations form a group, and complex numbers of magnitude 1 (the unit circle) represent this group.
+
+### Matrix Representation
+
+We can also represent 2D rotations as matrices acting on vectors $\begin{pmatrix} x \\ y \end{pmatrix}$:
+
+$$R(\theta) = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}$$
+
+Let's verify this is the same as complex multiplication.
+
+A complex number $z = x + iy$ corresponds to the vector $\begin{pmatrix} x \\ y \end{pmatrix}$.
+
+Multiplying by $e^{i\theta} = \cos\theta + i\sin\theta$:
+
+$$e^{i\theta} z = (\cos\theta + i\sin\theta)(x + iy)$$
+$$= (\cos\theta \cdot x - \sin\theta \cdot y) + i(\sin\theta \cdot x + \cos\theta \cdot y)$$
+$$= x' + iy'$$
+
+where:
+$$x' = \cos\theta \cdot x - \sin\theta \cdot y$$
+$$y' = \sin\theta \cdot x + \cos\theta \cdot y$$
+
+In matrix form:
+$$\begin{pmatrix} x' \\ y' \end{pmatrix} = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = R(\theta) \begin{pmatrix} x \\ y \end{pmatrix}$$
+
+**Complex multiplication and matrix rotation are the same thing!**
+
+### The Generator of Rotations
+
+Here's a powerful idea. Instead of thinking about finite rotations $R(\theta)$, think about infinitesimal rotations.
+
+For small $\delta\theta$:
+
+$$R(\delta\theta) = \begin{pmatrix} \cos\delta\theta & -\sin\delta\theta \\ \sin\delta\theta & \cos\delta\theta \end{pmatrix} \approx \begin{pmatrix} 1 & -\delta\theta \\ \delta\theta & 1 \end{pmatrix} = I + \delta\theta \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$$
+
+Define the **generator**:
+
+$$G = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$$
+
+Then:
+$$R(\delta\theta) \approx I + \delta\theta \cdot G$$
+
+An infinitesimal rotation is "the identity plus a little bit of $G$."
+
+### From Generator to Finite Rotation
+
+How do we get a finite rotation from the generator? 
+
+Think of a finite rotation as many infinitesimal rotations:
+
+$$R(\theta) = \lim_{N \to \infty} \left(I + \frac{\theta}{N} G\right)^N$$
+
+This limit is the definition of the matrix exponential:
+
+$$\boxed{R(\theta) = e^{\theta G}}$$
+
+**Finite rotations are exponentials of the generator!**
+
+### Verifying the Exponential
+
+Let's verify this works. First, compute powers of $G$:
+
+$$G^2 = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix} = \begin{pmatrix} -1 & 0 \\ 0 & -1 \end{pmatrix} = -I$$
+
+So $G^2 = -I$. This is just like $i^2 = -1$!
+
+Continuing:
+- $G^3 = G^2 \cdot G = -G$
+- $G^4 = G^2 \cdot G^2 = (-I)(-I) = I$
+- $G^5 = G$, and so on...
+
+Now expand $e^{\theta G}$ as a Taylor series:
+
+$$e^{\theta G} = I + \theta G + \frac{(\theta G)^2}{2!} + \frac{(\theta G)^3}{3!} + \frac{(\theta G)^4}{4!} + \cdots$$
+
+$$= I + \theta G + \frac{\theta^2 G^2}{2!} + \frac{\theta^3 G^3}{3!} + \frac{\theta^4 G^4}{4!} + \cdots$$
+
+Using $G^2 = -I$, $G^3 = -G$, $G^4 = I$, etc.:
+
+$$= I + \theta G - \frac{\theta^2}{2!}I - \frac{\theta^3}{3!}G + \frac{\theta^4}{4!}I + \cdots$$
+
+Group the terms with $I$ and with $G$:
+
+$$= \left(1 - \frac{\theta^2}{2!} + \frac{\theta^4}{4!} - \cdots\right)I + \left(\theta - \frac{\theta^3}{3!} + \frac{\theta^5}{5!} - \cdots\right)G$$
+
+$$= \cos\theta \cdot I + \sin\theta \cdot G$$
+
+$$= \begin{pmatrix} \cos\theta & 0 \\ 0 & \cos\theta \end{pmatrix} + \begin{pmatrix} 0 & -\sin\theta \\ \sin\theta & 0 \end{pmatrix} = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix} = R(\theta)$$
+
+**It works!**
+
+```{admonition} The Generator-Exponential Relationship
+:class: important
+
+$$e^{\theta G} = \cos\theta \cdot I + \sin\theta \cdot G$$
+
+Compare to Euler's formula:
+$$e^{i\theta} = \cos\theta + i\sin\theta$$
+
+The matrix $G$ plays the role of $i$! Both satisfy:
+- $G^2 = -I$ (like $i^2 = -1$)
+- Exponentiating gives rotations
+```
+
+### Why This Matters for Quantum Mechanics
+
+We've shown that:
+- Complex numbers encode rotations (SO(2))
+- Phase factors $e^{i\theta}$ are rotations by angle $\theta$
+- The generator $G$ (or equivalently, $i$) is what makes rotation possible
+
+In quantum mechanics, **phase is rotation**. The complex structure of quantum mechanics isn't arbitrary — it's because quantum amplitudes can rotate, interfere, and accumulate phase.
+
+---
+
+## Part 3: From SO(2) to SU(2)
+
+### SO(2): One-Dimensional Rotations
+
+SO(2) describes rotations in a plane — rotations around a single axis. Key features:
+
+- **One generator** ($G$, or equivalently $i$)
+- **Commutative:** $R(\theta_1)R(\theta_2) = R(\theta_2)R(\theta_1)$
+  - Rotating by $\theta_1$ then $\theta_2$ is the same as $\theta_2$ then $\theta_1$
+  - Addition of angles commutes
+
+### SO(3): Three-Dimensional Rotations
+
+In 3D, we can rotate around three axes: x, y, and z.
+
+**Crucially, 3D rotations do NOT commute!**
+
+Try this with a book:
+1. Rotate 90° around x-axis, then 90° around z-axis
+2. Rotate 90° around z-axis, then 90° around x-axis
+
+You get different final orientations!
+
+This means SO(3) has:
+- **Three generators** ($J_x, J_y, J_z$)
+- **Non-commutative:** $R_x R_z \neq R_z R_x$
+
+The non-commutativity is captured by the commutation relations:
+$$[J_i, J_j] = i\epsilon_{ijk}J_k$$
+
+where $\epsilon_{ijk}$ is +1 for cyclic permutations (xyz, yzx, zxy), -1 for anti-cyclic, and 0 if any indices repeat.
+
+### SU(2): Quantum Rotations
+
+Now here's the key for qubits.
+
+A qubit state is a point on the Bloch sphere. Transformations of qubits are **rotations of the Bloch sphere**.
+
+But qubits live in a 2D *complex* vector space ($\mathbb{C}^2$). The group that acts on this space while preserving:
+- The norm: $|\alpha|^2 + |\beta|^2 = 1$
+- The determinant: $\det(U) = 1$
+
+is called **SU(2)** (Special Unitary group in 2 dimensions).
+
+**SU(2) properties:**
+- **S** = Special (determinant 1)
+- **U** = Unitary ($U^\dagger U = I$, preserves norm)
+- **2** = Acts on 2-dimensional complex space
+
+Like SO(3), SU(2) has **three generators**. Unlike SO(2), it's **non-commutative**.
+
+The generators of SU(2) are the **Pauli matrices** — which we'll meet shortly.
+
+```{admonition} SU(2) and SO(3)
+:class: note
+
+SU(2) and SO(3) are closely related but not identical:
+- Both describe 3D rotations
+- Both have three generators with the same commutation relations
+- But SU(2) is a "double cover" of SO(3): a 360° rotation in SO(3) corresponds to a 720° rotation in SU(2)
+
+For qubits, this means rotating by $2\pi$ gives a *minus sign* (not the identity). This is related to spin being half-integer.
 ```
 
 ---
 
-## The Big Picture: Interference as Information
+## Part 4: The Stern-Gerlach Experiment
 
-Let's step back and see the unified view.
+We've been doing abstract math. Now let's see how nature hands us a qubit.
 
-| System | "Split" | Phase Source | "Recombine" | Observable |
-|--------|---------|--------------|-------------|------------|
-| Double slit | Two slits | Path length difference | Screen | Intensity pattern |
-| Mach-Zehnder | Beam splitter | Arm length or medium | Beam splitter | Detector signal |
-| Polarization | Waveplate | Birefringence | Waveplate | Polarization |
-| Ramsey | π/2 pulse | Energy splitting × time | π/2 pulse | Population |
-| Atom interferometer | Light pulse | Gravity × path × time | Light pulse | Momentum state |
+### The Setup (1922)
 
-Every quantum sensor follows this pattern:
-1. **Create superposition** (split into paths/states)
-2. **Accumulate phase** from whatever you want to measure
-3. **Interfere** (recombine)
-4. **Measure** (convert phase to probability)
+Otto Stern and Walther Gerlach sent a beam of silver atoms through an **inhomogeneous magnetic field** — a field that's stronger at the top than at the bottom.
 
-```{admonition} The Central Idea
+```{figure} stern_gerlach_placeholder.svg
+:name: stern-gerlach
+:width: 80%
+
+The Stern-Gerlach experiment. A beam of atoms passes through a magnetic field gradient. Classical physics predicts a continuous spread; quantum mechanics predicts discrete spots.
+```
+
+**Classical prediction:** If atoms have randomly oriented magnetic moments, the force on each atom depends on its orientation. The beam should spread out into a **continuous band**.
+
+**Quantum result:** The beam split into exactly **two discrete spots**.
+
+### What This Means
+
+1. **Angular momentum is quantized** — it can only take discrete values
+
+2. **For silver atoms (and electrons), there are exactly two values** — "spin up" and "spin down"
+
+3. **This is spin-1/2** — the smallest non-trivial quantum angular momentum
+
+The electron has intrinsic angular momentum called **spin** with quantum number $s = 1/2$. The z-component can only be:
+
+$$S_z = m_s \hbar, \quad \text{where } m_s = +\frac{1}{2} \text{ or } -\frac{1}{2}$$
+
+### The Qubit
+
+The two spin states define a qubit:
+
+$$|\uparrow\rangle \equiv |0\rangle = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \qquad |\downarrow\rangle \equiv |1\rangle = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$$
+
+A general spin state is:
+
+$$|\psi\rangle = \alpha|\uparrow\rangle + \beta|\downarrow\rangle$$
+
+This is *exactly* the same structure as polarization. The Bloch sphere works identically.
+
+### Rotating the Apparatus
+
+Here's where spin gets interesting. What if we rotate the Stern-Gerlach apparatus?
+
+**Z-oriented apparatus:** Measures $S_z$. Eigenstates are $|\uparrow_z\rangle = |0\rangle$ and $|\downarrow_z\rangle = |1\rangle$.
+
+**X-oriented apparatus:** Measures $S_x$. Eigenstates are:
+
+$$|\uparrow_x\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) = |+\rangle$$
+$$|\downarrow_x\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) = |-\rangle$$
+
+**Y-oriented apparatus:** Measures $S_y$. Eigenstates are:
+
+$$|\uparrow_y\rangle = \frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle) = |+i\rangle$$
+$$|\downarrow_y\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle) = |-i\rangle$$
+
+**This is exactly our polarization story!**
+
+| Spin measurement | Polarization measurement |
+|------------------|-------------------------|
+| z-axis (up/down) | H/V basis |
+| x-axis | D/A basis |
+| y-axis | R/L basis |
+
+---
+
+## iClicker Question 2
+
+**An electron is prepared in state $|\uparrow_z\rangle = |0\rangle$ (spin-up along z). You measure its spin along the x-axis. What do you get?**
+
+- (A) Always spin-up along x
+- (B) Always spin-down along x
+- (C) 50% up, 50% down ✓
+- (D) The measurement is undefined
+
+**Solution:** We need to express $|0\rangle$ in the x-basis:
+
+$$|0\rangle = \frac{1}{\sqrt{2}}|+\rangle + \frac{1}{\sqrt{2}}|-\rangle$$
+
+So:
+$$P(\uparrow_x) = |\langle + | 0 \rangle|^2 = \frac{1}{2}$$
+$$P(\downarrow_x) = |\langle - | 0 \rangle|^2 = \frac{1}{2}$$
+
+A state with definite $S_z$ has completely uncertain $S_x$!
+
+---
+
+## Part 5: The Pauli Matrices
+
+We need operators to represent "measure spin along x" vs "measure spin along z."
+
+These are the **Pauli matrices**:
+
+$$\boxed{\sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad \sigma_y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \quad \sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}}$$
+
+The spin operators are:
+$$S_x = \frac{\hbar}{2}\sigma_x, \quad S_y = \frac{\hbar}{2}\sigma_y, \quad S_z = \frac{\hbar}{2}\sigma_z$$
+
+### Property 1: Hermitian
+
+$$\sigma_x^\dagger = \sigma_x, \quad \sigma_y^\dagger = \sigma_y, \quad \sigma_z^\dagger = \sigma_z$$
+
+Hermitian matrices represent **observables** — things we can measure. Their eigenvalues are real.
+
+### Property 2: Traceless
+
+$$\text{Tr}(\sigma_x) = 0 + 0 = 0$$
+$$\text{Tr}(\sigma_y) = 0 + 0 = 0$$
+$$\text{Tr}(\sigma_z) = 1 + (-1) = 0$$
+
+### Property 3: Square to Identity
+
+$$\sigma_x^2 = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = I$$
+
+Similarly, $\sigma_y^2 = I$ and $\sigma_z^2 = I$.
+
+Since $\sigma_i^2 = I$, the eigenvalues must satisfy $\lambda^2 = 1$, so $\lambda = \pm 1$.
+
+### Property 4: Eigenvalues ±1
+
+Each Pauli matrix has eigenvalues **+1 and -1**.
+
+For spin, this means $S_i = \frac{\hbar}{2}\sigma_i$ has eigenvalues $\pm\frac{\hbar}{2}$.
+
+### Eigenstates of Each Pauli Matrix
+
+**$\sigma_z$ eigenstates:**
+
+$$\sigma_z |0\rangle = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}\begin{pmatrix} 1 \\ 0 \end{pmatrix} = \begin{pmatrix} 1 \\ 0 \end{pmatrix} = +1 \cdot |0\rangle$$
+
+$$\sigma_z |1\rangle = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}\begin{pmatrix} 0 \\ 1 \end{pmatrix} = \begin{pmatrix} 0 \\ -1 \end{pmatrix} = -1 \cdot |1\rangle$$
+
+**$\sigma_x$ eigenstates:**
+
+$$\sigma_x |+\rangle = \sigma_x \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = +1 \cdot |+\rangle$$
+
+$$\sigma_x |-\rangle = \sigma_x \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -1 \end{pmatrix} = \frac{1}{\sqrt{2}}\begin{pmatrix} -1 \\ 1 \end{pmatrix} = -1 \cdot |-\rangle$$
+
+**$\sigma_y$ eigenstates:**
+
+$$\sigma_y |+i\rangle = +1 \cdot |+i\rangle, \quad \sigma_y |-i\rangle = -1 \cdot |-i\rangle$$
+
+where $|+i\rangle = \frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle)$ and $|-i\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$.
+
+### Summary: Paulis and the Bloch Sphere
+
+| Pauli | +1 eigenstate | −1 eigenstate | Bloch axis |
+|-------|---------------|---------------|------------|
+| $\sigma_z$ | $\|0\rangle$ | $\|1\rangle$ | z (poles) |
+| $\sigma_x$ | $\|+\rangle$ | $\|-\rangle$ | x (equator) |
+| $\sigma_y$ | $\|+i\rangle$ | $\|-i\rangle$ | y (equator) |
+
+The eigenstates of the three Pauli matrices are exactly the six cardinal points on the Bloch sphere!
+
+```python
+# Verify eigenstates with Qiskit
+import numpy as np
+from qiskit.quantum_info import Statevector, Operator
+
+# Define Pauli matrices
+sigma_x = Operator([[0, 1], [1, 0]])
+sigma_y = Operator([[0, -1j], [1j, 0]])
+sigma_z = Operator([[1, 0], [0, -1]])
+
+# Define states
+zero = Statevector([1, 0])
+one = Statevector([0, 1])
+plus = Statevector([1/np.sqrt(2), 1/np.sqrt(2)])
+minus = Statevector([1/np.sqrt(2), -1/np.sqrt(2)])
+plus_i = Statevector([1/np.sqrt(2), 1j/np.sqrt(2)])
+minus_i = Statevector([1/np.sqrt(2), -1j/np.sqrt(2)])
+
+# Check σ_z |0⟩ = +|0⟩
+result = zero.evolve(sigma_z)
+print(f"σ_z|0⟩ = {result.data}")  # Should be [1, 0]
+
+# Check σ_x |+⟩ = +|+⟩
+result = plus.evolve(sigma_x)
+print(f"σ_x|+⟩ = {result.data}")  # Should be [1/√2, 1/√2]
+```
+
+---
+
+## Part 6: Commutation Relations
+
+The Pauli matrices have a crucial property: **they don't commute**.
+
+### Computing $\sigma_x \sigma_y$
+
+$$\sigma_x \sigma_y = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix} = \begin{pmatrix} i & 0 \\ 0 & -i \end{pmatrix} = i\sigma_z$$
+
+### Computing $\sigma_y \sigma_x$
+
+$$\sigma_y \sigma_x = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} = \begin{pmatrix} -i & 0 \\ 0 & i \end{pmatrix} = -i\sigma_z$$
+
+### The Commutator
+
+$$[\sigma_x, \sigma_y] = \sigma_x \sigma_y - \sigma_y \sigma_x = i\sigma_z - (-i\sigma_z) = 2i\sigma_z$$
+
+### All Commutation Relations
+
+By similar calculations:
+
+$$\boxed{[\sigma_x, \sigma_y] = 2i\sigma_z}$$
+$$\boxed{[\sigma_y, \sigma_z] = 2i\sigma_x}$$
+$$\boxed{[\sigma_z, \sigma_x] = 2i\sigma_y}$$
+
+Or compactly:
+$$[\sigma_i, \sigma_j] = 2i\epsilon_{ijk}\sigma_k$$
+
+where the sum over $k$ is implied.
+
+### The Anticommutator
+
+We can also compute the anticommutator $\{A, B\} = AB + BA$:
+
+$$\{\sigma_x, \sigma_y\} = \sigma_x\sigma_y + \sigma_y\sigma_x = i\sigma_z + (-i\sigma_z) = 0$$
+
+In general:
+$$\{\sigma_i, \sigma_j\} = 2\delta_{ij}I$$
+
+Different Paulis anticommute; same Paulis give $2I$.
+
+### Combining Both
+
+$$\sigma_i \sigma_j = \delta_{ij}I + i\epsilon_{ijk}\sigma_k$$
+
+This single formula captures everything about Pauli multiplication!
+
+---
+
+## iClicker Question 3
+
+**What is $\sigma_x \sigma_y$?**
+
+- (A) $\sigma_z$
+- (B) $-\sigma_z$
+- (C) $i\sigma_z$ ✓
+- (D) $-i\sigma_z$
+
+---
+
+### Why Non-Commuting Matters: The Uncertainty Principle
+
+If two operators don't commute, they can't be simultaneously diagonalized — they can't share eigenstates.
+
+Since $[\sigma_x, \sigma_z] = -2i\sigma_y \neq 0$:
+
+- A state can't be an eigenstate of both $\sigma_x$ and $\sigma_z$
+- If you know $S_z$ precisely, $S_x$ is uncertain
+- If you know $S_x$ precisely, $S_z$ is uncertain
+
+This is the **uncertainty principle for spin**.
+
+The state $|0\rangle$ is an eigenstate of $\sigma_z$ (eigenvalue +1), so it has definite $S_z = +\hbar/2$. But it's a 50/50 superposition of $|+\rangle$ and $|-\rangle$, so $S_x$ is completely uncertain.
+
+```{admonition} Uncertainty Principle
+:class: warning
+
+**You cannot simultaneously know spin along two perpendicular axes.**
+
+If $S_z$ is definite, then $S_x$ and $S_y$ are uncertain (and vice versa).
+
+This is fundamentally different from classical physics, where all components of angular momentum can be known simultaneously.
+```
+
+---
+
+## Part 7: Paulis as Generators of SU(2)
+
+### Any Qubit Operator Can Be Written Using Paulis
+
+Any $2 \times 2$ Hermitian matrix can be decomposed as:
+
+$$\boxed{H = h_0 I + h_x \sigma_x + h_y \sigma_y + h_z \sigma_z = h_0 I + \vec{h} \cdot \vec{\sigma}}$$
+
+where $h_0, h_x, h_y, h_z$ are real numbers and $\vec{\sigma} = (\sigma_x, \sigma_y, \sigma_z)$.
+
+**The Pauli matrices (plus identity) form a basis for all $2 \times 2$ Hermitian matrices.**
+
+This means any qubit observable, any qubit Hamiltonian, can be written in terms of Paulis.
+
+### Rotations on the Bloch Sphere
+
+Just as $G$ generates SO(2) rotations, the Pauli matrices generate SU(2) rotations.
+
+A rotation by angle $\theta$ around axis $\hat{n} = (n_x, n_y, n_z)$ is:
+
+$$\boxed{R_{\hat{n}}(\theta) = e^{-i\theta(\hat{n} \cdot \vec{\sigma})/2} = \cos\frac{\theta}{2}I - i\sin\frac{\theta}{2}(\hat{n} \cdot \vec{\sigma})}$$
+
+The factor of 2 appears because of spin-1/2 (the "double cover" of SO(3)).
+
+### Explicit Rotation Matrices
+
+**Rotation around z:**
+$$R_z(\theta) = e^{-i\theta\sigma_z/2} = \begin{pmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{pmatrix}$$
+
+**Rotation around x:**
+$$R_x(\theta) = e^{-i\theta\sigma_x/2} = \begin{pmatrix} \cos\frac{\theta}{2} & -i\sin\frac{\theta}{2} \\ -i\sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}$$
+
+**Rotation around y:**
+$$R_y(\theta) = e^{-i\theta\sigma_y/2} = \begin{pmatrix} \cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\ \sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}$$
+
+### Connection to Gates We Know
+
+**Phase gate:**
+$$P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix} = e^{i\phi/2} R_z(\phi)$$
+
+Up to global phase, the phase gate IS $R_z$.
+
+**Hadamard gate:**
+
+The Hadamard is a 180° rotation around the axis $(\hat{x} + \hat{z})/\sqrt{2}$:
+
+$$H = \frac{1}{\sqrt{2}}(\sigma_x + \sigma_z)$$
+
+You can verify:
+$$H = e^{i\pi/2} \cdot e^{-i\pi(\sigma_x + \sigma_z)/(2\sqrt{2})} = e^{i\pi/2} R_{(\hat{x}+\hat{z})/\sqrt{2}}(\pi)$$
+
+**X, Y, Z gates:**
+
+These are 180° rotations (up to global phase):
+- $X = \sigma_x = iR_x(\pi)$
+- $Y = \sigma_y = iR_y(\pi)$
+- $Z = \sigma_z = iR_z(\pi)$
+
+```{admonition} The Fundamental Result
 :class: important
 
-**Quantum sensing converts physical quantities into phase differences, which interference converts into measurable probabilities.**
+**Every single-qubit unitary is a rotation on the Bloch sphere.**
 
-Phase can accumulate continuously, giving sensitivity that improves with time — until decoherence sets in.
+Any $U \in SU(2)$ can be written as $U = e^{-i\theta(\hat{n} \cdot \vec{\sigma})/2}$ for some axis $\hat{n}$ and angle $\theta$.
+
+The Pauli matrices are the **generators** of these rotations.
+```
+
+### Qiskit Verification
+
+```python
+import numpy as np
+from qiskit.quantum_info import Operator
+from qiskit import QuantumCircuit
+
+# Verify R_z(θ) = e^{-iθσ_z/2}
+theta = np.pi/3
+
+# Method 1: Direct matrix
+sigma_z = np.array([[1, 0], [0, -1]])
+Rz_direct = np.cos(theta/2) * np.eye(2) - 1j * np.sin(theta/2) * sigma_z
+print("R_z from formula:")
+print(Rz_direct)
+
+# Method 2: Qiskit gate
+qc = QuantumCircuit(1)
+qc.rz(theta, 0)
+Rz_qiskit = Operator(qc).data
+print("\nR_z from Qiskit:")
+print(Rz_qiskit)
+
+# They match up to global phase!
 ```
 
 ---
 
 ## Summary
 
-Today we completed our single-qubit journey:
-
-1. **The Ramsey sequence** — π/2 pulse, free evolution, π/2 pulse — is a qubit interferometer
-
-2. **Free evolution creates phase** — $\phi = \omega_0 T$ from energy splitting
-
-3. **Ramsey fringes** — probability oscillates with phase, allowing frequency measurement
-
-4. **Atomic clocks** use Ramsey to lock an oscillator to atomic transitions
-   - Cesium defines the second: 9,192,631,770 Hz
-   - Best clocks: 1 second accuracy over the age of the universe
-
-5. **GPS** relies on atomic clocks for timing signals
-
-6. **Quantum sensing** — any energy shift becomes a measurable phase
-   - Magnetometry, gravimetry, electric fields, etc.
-   - Sensitivity: $\delta\omega \sim 1/T$
-
-7. **Decoherence** limits the useful evolution time
-
-8. **Universal pattern:** Split → Phase → Recombine → Measure
-
----
-
-## Homework
-
-### Problem 1: Ramsey Derivation
-
-Work through the Ramsey sequence calculation in detail.
-
-**(a)** Start with $|0\rangle$. Apply $R_x(\pi/2)$. Write the resulting state.
-
-**(b)** Apply $R_z(\phi)$ where $\phi = \omega_0 T$. Write the resulting state.
-
-**(c)** Apply another $R_x(\pi/2)$. Write the final state.
-
-**(d)** Compute $P(0)$ and $P(1)$. Verify they sum to 1.
-
-**(e)** For what values of $\phi$ is $P(0) = 0$? For what values is $P(0) = 1$?
-
----
-
-### Problem 2: Ramsey Fringes
-
-Consider a Ramsey experiment where the free evolution time is $T$ and the atomic transition frequency is $\omega_0$.
-
-**(a)** If you scan the local oscillator frequency $\omega_{\text{LO}}$ near $\omega_0$, the effective detuning is $\delta = \omega_0 - \omega_{\text{LO}}$. What is the fringe period $\Delta\delta$?
-
-**(b)** If $T = 1$ s, what is the fringe period in Hz?
-
-**(c)** If $T = 1$ ms, what is the fringe period?
-
-**(d)** Why would you want longer $T$? What limits how long $T$ can be?
-
----
-
-### Problem 3: Atomic Clock Precision
-
-A cesium atomic clock has transition frequency $\omega_{\text{Cs}} = 2\pi \times 9.192631770$ GHz.
-
-**(a)** If the Ramsey time is $T = 10$ ms, what is the linewidth $\Delta\omega$ of the Ramsey fringes?
-
-**(b)** What fractional frequency precision $\Delta\omega/\omega_0$ does this correspond to?
-
-**(c)** If you average for 1 day ($\sim 10^5$ seconds), and the noise averages down as $1/\sqrt{N}$ where $N$ is the number of measurements, by what factor does the precision improve?
-
-**(d)** A modern optical clock uses a transition at $\omega = 2\pi \times 429$ THz (strontium). If it achieves the same absolute frequency uncertainty $\Delta\omega$ as the cesium clock, what fractional precision does this give?
-
----
-
-### Problem 4: Magnetometry
-
-An electron spin is used as a magnetic field sensor. The Zeeman splitting is $\omega = \gamma_e B$ where $\gamma_e = 2\pi \times 28$ GHz/T.
-
-**(a)** If the Ramsey time is $T = 1$ µs, what is the phase accumulated in a field $B = 1$ µT?
-
-**(b)** If you can resolve phase to $\delta\phi = 0.01$ rad (from counting statistics), what is the minimum detectable field change $\delta B$?
-
-**(c)** If you increase $T$ to 100 µs (still shorter than $T_2$), how does the sensitivity improve?
-
-**(d)** The Earth's magnetic field is about 50 µT. How many Ramsey fringes would you see scanning from 0 to 50 µT with $T = 1$ µs?
-
----
-
-### Problem 5: Decoherence
-
-A qubit has dephasing time $T_2 = 100$ µs.
-
-**(a)** In a Ramsey experiment, the fringe contrast decays as $C(T) = e^{-T/T_2}$. The probability becomes:
-
-$$
-P(0) = \frac{1}{2} + \frac{C(T)}{2}\sin(\omega_0 T)
-$$
-
-Plot $P(0)$ vs $T$ for $\omega_0 = 2\pi \times 10$ MHz, from $T = 0$ to $T = 500$ µs.
-
-**(b)** What is the fringe contrast at $T = T_2$? At $T = 2T_2$?
-
-**(c)** For sensing, there's a trade-off: longer $T$ gives better resolution but lower contrast. The signal-to-noise ratio goes as $C(T) \times T$. What value of $T$ maximizes this?
-
----
-
-### Problem 6: GPS Timing
-
-GPS satellites orbit at altitude $h = 20,200$ km with orbital period $\approx 12$ hours.
-
-**(a)** The speed of light is $c = 3 \times 10^8$ m/s. How long does a signal take to travel from satellite to ground?
-
-**(b)** If you want 1 meter position accuracy, what timing accuracy is needed? (Recall $d = c \cdot \Delta t$.)
-
-**(c)** Over one day, how much can the satellite clock drift while still meeting this requirement?
-
-**(d)** What fractional clock accuracy does this require?
-
----
-
-### Problem 7: Comparing Classical and Quantum Sensing
-
-Consider measuring a magnetic field using (i) a classical compass, (ii) a Hall sensor, (iii) an atomic magnetometer.
-
-**(a)** A compass needle deflects by an angle proportional to the field. If you can resolve 0.1° deflection, and the sensitivity is 1°/mT, what is the minimum detectable field?
-
-**(b)** A Hall sensor produces voltage $V = k B$ with $k = 1$ mV/mT. If your voltmeter can resolve 1 µV, what is the minimum detectable field?
-
-**(c)** An atomic magnetometer with $\gamma = 2\pi \times 28$ GHz/T and $T = 1$ ms can resolve phase $\delta\phi = 0.01$ rad. What is the minimum detectable field?
-
-**(d)** Compare the three sensitivities. Why is the atomic magnetometer so much better?
-
----
-
-### Problem 8: The Ramsey Sequence in Qiskit
-
-Implement the Ramsey sequence in Qiskit.
-
-**(a)** Create a function `ramsey(phi)` that returns the probability $P(0)$ for a Ramsey sequence with phase $\phi$. Use the circuit: `rx(π/2)` → `rz(phi)` → `rx(π/2)` → measure.
-
-**(b)** Plot Ramsey fringes: $P(0)$ vs $\phi$ for $\phi$ from 0 to $4\pi$. Verify they match the theoretical curve.
-
-**(c)** Modify the sequence to use `ry(π/2)` pulses instead of `rx(π/2)`. How does the fringe pattern change?
-
-**(d)** Now add a small "error" in the first pulse: use `rx(π/2 + ε)` with $\epsilon = 0.1$. Plot the new fringes. How does the contrast change?
-
----
-
-### Problem 9: Conceptual Questions
-
-**(a)** In a Ramsey sequence, what physical role does the first π/2-pulse play? What about the second?
-
-**(b)** Why is Ramsey better than a single long pulse for measuring frequency? (Hint: think about the difference between "probe time" and "evolution time.")
-
-**(c)** An atomic clock doesn't directly measure time — it measures frequency. How do you get a "clock" from a frequency measurement?
-
-**(d)** If all cesium atoms have exactly the same transition frequency, why do we need to stabilize a local oscillator to them? Why not just count atomic transitions directly?
-
-**(e)** Decoherence destroys quantum interference. Does this mean a decohered qubit is useless for sensing? Or can you still extract some information?
+Today we covered the mathematical foundation of qubits:
+
+1. **Quantum mechanics is fundamentally complex** — the $i$ in Schrödinger's equation is essential, not a trick
+
+2. **Complex numbers = SO(2) rotations**
+   - $e^{i\theta}$ rotates by angle $\theta$
+   - The generator $G$ satisfies $G^2 = -I$ (like $i^2 = -1$)
+   - Finite rotations: $R(\theta) = e^{\theta G}$
+
+3. **Qubits transform under SU(2)**
+   - Three generators (three axes)
+   - Non-commutative (order matters)
+   - Rotations of the Bloch sphere
+
+4. **Stern-Gerlach reveals spin**
+   - Nature hands us a qubit: spin-1/2
+   - Two discrete outcomes, not a continuum
+   - Rotating the apparatus = choosing measurement basis
+
+5. **The Pauli matrices $\sigma_x$, $\sigma_y$, $\sigma_z$:**
+   - Hermitian, traceless, square to identity
+   - Eigenvalues ±1
+   - Eigenstates = Bloch sphere axes (z, x, y)
+   - Non-commuting: $[\sigma_i, \sigma_j] = 2i\epsilon_{ijk}\sigma_k$
+
+6. **Paulis generate SU(2):**
+   - Any qubit Hamiltonian: $H = h_0 I + \vec{h} \cdot \vec{\sigma}$
+   - Rotations: $R_{\hat{n}}(\theta) = e^{-i\theta(\hat{n} \cdot \vec{\sigma})/2}$
+   - Every single-qubit gate is a rotation!
+
+### Everything Connects
+
+| Polarization | Spin | Bloch sphere | Pauli eigenstate |
+|--------------|------|--------------|------------------|
+| H | $\uparrow_z$ | +z (north pole) | $\sigma_z = +1$ |
+| V | $\downarrow_z$ | −z (south pole) | $\sigma_z = -1$ |
+| D | $\uparrow_x$ | +x | $\sigma_x = +1$ |
+| A | $\downarrow_x$ | −x | $\sigma_x = -1$ |
+| R | $\uparrow_y$ | +y | $\sigma_y = +1$ |
+| L | $\downarrow_y$ | −y | $\sigma_y = -1$ |
 
 ---
 
 ## Looking Ahead
 
-We've now completed our study of single-qubit physics:
-- **States:** Points on the Bloch sphere
-- **Evolution:** Rotations (from Hamiltonians)
-- **Measurement:** Projection onto an axis
-- **Interference:** Split-phase-recombine pattern
-
-Next chapter, we enter the truly quantum regime: **two qubits and entanglement**. When you have more than one qubit, something entirely new happens — correlations that have no classical explanation. This is where quantum computing gets its power.
+**Next lecture (final of Chapter 2):**
+- Time evolution: Schrödinger equation $i\hbar\frac{d}{dt}|\psi\rangle = H|\psi\rangle$
+- Hamiltonians generate rotations
+- Precession (rotation around z)
+- Rabi oscillations (rotation around x)
+- The Ramsey interferometer
+- Atomic clocks: the qubit as a sensor

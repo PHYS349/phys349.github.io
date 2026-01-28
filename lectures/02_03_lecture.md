@@ -1,689 +1,649 @@
-# Lecture 7: Spin, Pauli Matrices, and Time Evolution
+# Lecture 2.3: Polarization and Measurement
 
-## From Polarization to Spin
+## Review: The Bloch Sphere
 
-Last lecture, we saw that a photon's polarization is a qubit — a two-state quantum system described by complex amplitudes. The Jones vector from classical optics became the quantum state vector.
+In Lecture 2.2, we developed the Bloch sphere as a way to visualize qubit states:
 
-Today we turn to another qubit that nature provides: the **spin** of an electron. This will lead us to the Pauli matrices, which are the fundamental building blocks for describing any qubit. And we'll finally see how quantum states evolve in time.
+$$|\psi\rangle = \cos\frac{\theta}{2}|0\rangle + e^{i\phi}\sin\frac{\theta}{2}|1\rangle$$
 
----
+- **Two parameters:** polar angle $\theta$ (amplitude mixing) and azimuthal angle $\phi$ (relative phase)
+- **North pole:** $|0\rangle$
+- **South pole:** $|1\rangle$  
+- **Equator:** equal superpositions with different relative phases
 
-## The Stern-Gerlach Experiment: Nature Hands Us a Qubit
-
-In 1922, Otto Stern and Walther Gerlach performed an experiment that revealed something profound about electrons.
-
-### The Setup
-
-They sent a beam of silver atoms through an inhomogeneous magnetic field — a field that's stronger on one side than the other. Classical physics makes a clear prediction: if the atoms have magnetic moments oriented randomly, the beam should spread out into a continuous band.
-
-```{figure} ./02_03_lecture_files/stern_gerlach.svg
-:width: 450px
-:name: stern-gerlach
-
-The Stern-Gerlach experiment: atoms pass through an inhomogeneous magnetic field.
-```
-
-### The Result
-
-The beam didn't spread continuously. It split into exactly **two discrete spots**.
-
-This was shocking. It meant:
-1. The magnetic moment (and therefore angular momentum) is **quantized** — it can only take discrete values
-2. For silver atoms (and electrons), there are exactly **two** possible values
-
-This is the experimental discovery of **spin-1/2**.
-
-```{admonition} Why Two?
-:class: note
-
-The electron has spin quantum number $s = 1/2$. The rules of quantum mechanics say the $z$-component of angular momentum can take values $m_s = -s, -s+1, ..., s$. For $s = 1/2$, that's just two values: $m_s = +1/2$ ("spin up") and $m_s = -1/2$ ("spin down").
-
-This is the smallest non-trivial representation of rotations in quantum mechanics — the fundamental representation of SU(2).
-```
-
-### The Qubit
-
-The two outcomes of a Stern-Gerlach measurement define our basis:
-
-$$
-|\uparrow\rangle \equiv |0\rangle = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \qquad |\downarrow\rangle \equiv |1\rangle = \begin{pmatrix} 0 \\ 1 \end{pmatrix}
-$$
-
-A general spin state is a superposition:
-
-$$
-|\psi\rangle = \alpha|\uparrow\rangle + \beta|\downarrow\rangle = \begin{pmatrix} \alpha \\ \beta \end{pmatrix}
-$$
-
-This is mathematically identical to polarization. The Bloch sphere we developed for polarization works exactly the same way for spin.
+Today we'll see a beautiful physical realization of the Bloch sphere: **the polarization of light**. This will be our first concrete qubit, and we can manipulate it with simple optical elements.
 
 ---
 
-## Rotating the Apparatus: Different Measurement Axes
+## The Electric Field of Light
 
-Here's where spin gets interesting. What if we rotate the Stern-Gerlach apparatus?
+Light is an electromagnetic wave. For light traveling along the $z$-axis, the electric field oscillates in the transverse $x$-$y$ plane:
 
-### Measuring Along Different Axes
+$$\vec{E}(z,t) = \begin{pmatrix} E_x(z,t) \\ E_y(z,t) \end{pmatrix}$$
 
-If the magnetic field gradient points along $z$, we measure the $z$-component of spin. The eigenstates are $|\uparrow_z\rangle$ and $|\downarrow_z\rangle$.
+Each component oscillates sinusoidally. Using the complex representation:
 
-If we rotate the apparatus to point along $x$, we measure the $x$-component of spin. The eigenstates are different:
+$$E_x = \mathcal{E}_x e^{i(kz - \omega t + \phi_x)}, \qquad E_y = \mathcal{E}_y e^{i(kz - \omega t + \phi_y)}$$
 
-$$
-|\uparrow_x\rangle = \frac{1}{\sqrt{2}}(|\uparrow_z\rangle + |\downarrow_z\rangle) = |+\rangle
-$$
+The **polarization** of light describes the pattern traced by the electric field vector as the wave passes.
 
-$$
-|\downarrow_x\rangle = \frac{1}{\sqrt{2}}(|\uparrow_z\rangle - |\downarrow_z\rangle) = |-\rangle
-$$
+```{figure} polarization_states.svg
+:name: polarization-states
+:width: 100%
 
-Similarly for the $y$-axis:
-
-$$
-|\uparrow_y\rangle = \frac{1}{\sqrt{2}}(|\uparrow_z\rangle + i|\downarrow_z\rangle)
-$$
-
-$$
-|\downarrow_y\rangle = \frac{1}{\sqrt{2}}(|\uparrow_z\rangle - i|\downarrow_z\rangle)
-$$
-
-### The Connection to Polarization
-
-This is exactly what we saw with polarization!
-
-| Polarization | Spin |
-|--------------|------|
-| H/V basis | $z$-measurement |
-| D/A basis | $x$-measurement |
-| R/L basis | $y$-measurement |
-
-The same Bloch/Poincaré sphere describes both systems. Choosing a measurement basis in polarization (rotating a polarizer) is equivalent to choosing a measurement axis in spin (rotating the Stern-Gerlach apparatus).
-
----
-
-## The Uncertainty Principle: You Can't Know Everything
-
-Here's a fundamental consequence of what we've seen.
-
-Suppose an electron is in state $|\uparrow_z\rangle$ — definitely spin-up along $z$.
-
-**Question:** What is its spin along $x$?
-
-**Answer:** It doesn't have a definite value! If we measure $S_x$, we get:
-- $+\hbar/2$ (spin-up along $x$) with probability $1/2$
-- $-\hbar/2$ (spin-down along $x$) with probability $1/2$
-
-This isn't because we don't know — the electron genuinely doesn't have a definite $x$-component of spin when it has a definite $z$-component.
-
-```{admonition} The Uncertainty Principle for Spin
-:class: warning
-
-You cannot simultaneously know the spin along two perpendicular axes.
-
-If you know $S_z$ precisely, then $S_x$ and $S_y$ are completely uncertain (and vice versa).
-
-Mathematically, this is because the operators $\hat{S}_x$, $\hat{S}_y$, $\hat{S}_z$ don't commute:
-
-$$
-[\hat{S}_x, \hat{S}_z] = \hat{S}_x \hat{S}_z - \hat{S}_z \hat{S}_x \neq 0
-$$
-```
-
-This is visualized on the Bloch sphere: a state that's at the north pole (definite $S_z = +\hbar/2$) has no definite position on the equator (uncertain $S_x$ and $S_y$).
-
----
-
-## The Pauli Matrices
-
-We need mathematical objects to represent "measure spin along $x$" vs "measure spin along $z$."
-
-These are the **Pauli matrices**:
-
-$$
-\sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \qquad
-\sigma_y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \qquad
-\sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}
-$$
-
-### What They Represent
-
-The spin operators are:
-
-$$
-\hat{S}_x = \frac{\hbar}{2}\sigma_x, \qquad \hat{S}_y = \frac{\hbar}{2}\sigma_y, \qquad \hat{S}_z = \frac{\hbar}{2}\sigma_z
-$$
-
-Each Pauli matrix has eigenvalues $\pm 1$, so each spin operator has eigenvalues $\pm \hbar/2$.
-
-### Eigenstates
-
-The eigenstates of each Pauli matrix are the basis states for measuring along that axis:
-
-**$\sigma_z$ eigenstates:**
-$$
-\sigma_z |0\rangle = +|0\rangle, \qquad \sigma_z |1\rangle = -|1\rangle
-$$
-
-**$\sigma_x$ eigenstates:**
-$$
-\sigma_x |+\rangle = +|+\rangle, \qquad \sigma_x |-\rangle = -|-\rangle
-$$
-
-where $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$ and $|-\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$.
-
-### Key Properties
-
-The Pauli matrices have beautiful algebraic properties:
-
-1. **Hermitian:** $\sigma_i^\dagger = \sigma_i$ (they represent observables)
-
-2. **Traceless:** $\text{Tr}(\sigma_i) = 0$
-
-3. **Square to identity:** $\sigma_i^2 = I$
-
-4. **Anti-commute:** $\sigma_i \sigma_j = -\sigma_j \sigma_i$ for $i \neq j$
-
-5. **Commutators:** $[\sigma_x, \sigma_y] = 2i\sigma_z$ (and cyclic permutations)
-
-### Any 2×2 Matrix Can Be Written Using Paulis
-
-Here's a powerful fact. Any $2 \times 2$ Hermitian matrix can be written as:
-
-$$
-H = a_0 I + a_x \sigma_x + a_y \sigma_y + a_z \sigma_z = a_0 I + \vec{a} \cdot \vec{\sigma}
-$$
-
-where $a_0, a_x, a_y, a_z$ are real numbers and $\vec{\sigma} = (\sigma_x, \sigma_y, \sigma_z)$.
-
-This means the Pauli matrices (plus identity) form a **basis** for all qubit operators.
-
----
-
-## Time Evolution: The Schrödinger Equation
-
-So far, we've discussed static states. But quantum states evolve in time. How?
-
-### The Fundamental Law
-
-The Schrödinger equation tells us:
-
-$$
-i\hbar \frac{d}{dt}|\psi(t)\rangle = H|\psi(t)\rangle
-$$
-
-Here $H$ is the **Hamiltonian** — the operator representing the total energy of the system.
-
-### The Solution
-
-For a time-independent Hamiltonian, the solution is:
-
-$$
-|\psi(t)\rangle = e^{-iHt/\hbar}|\psi(0)\rangle = U(t)|\psi(0)\rangle
-$$
-
-The operator $U(t) = e^{-iHt/\hbar}$ is called the **time evolution operator**.
-
-### Unitary Evolution
-
-A crucial property: $U(t)$ is **unitary**, meaning $U^\dagger U = I$.
-
-Why does this matter?
-
-$$
-\langle\psi(t)|\psi(t)\rangle = \langle\psi(0)|U^\dagger U|\psi(0)\rangle = \langle\psi(0)|\psi(0)\rangle = 1
-$$
-
-Unitarity guarantees that **probability is conserved**. The total probability stays equal to 1 for all time.
-
-```{admonition} Why Hermitian Hamiltonians?
-:class: note
-
-For $U = e^{-iHt/\hbar}$ to be unitary, we need $H^\dagger = H$ — the Hamiltonian must be **Hermitian**.
-
-This also guarantees that energy eigenvalues are real numbers, which makes physical sense.
+Electric field patterns for different polarization states. Top row: linear polarizations (H, V, D, A). Bottom row: circular polarizations (R, L). The arrows show the E-field direction as seen looking into the beam.
 ```
 
 ---
 
-## Example 1: Energy Eigenstates (Phase Evolution)
+## The Jones Vector
 
-The simplest case: what if $|\psi(0)\rangle$ is an eigenstate of $H$?
+We can factor out the propagation $e^{i(kz - \omega t)}$ and focus on what makes polarizations different. What remains is the **Jones vector**:
 
-Suppose $H|\psi(0)\rangle = E|\psi(0)\rangle$. Then:
+$$\vec{J} = \begin{pmatrix} \mathcal{E}_x e^{i\phi_x} \\ \mathcal{E}_y e^{i\phi_y} \end{pmatrix}$$
 
-$$
-|\psi(t)\rangle = e^{-iHt/\hbar}|\psi(0)\rangle = e^{-iEt/\hbar}|\psi(0)\rangle
-$$
+This is a 2D complex vector — exactly like our qubit states!
 
-The state just picks up a phase factor $e^{-iEt/\hbar}$. The physical state doesn't change — probabilities are unaffected since $|e^{-iEt/\hbar}|^2 = 1$.
+For normalized states (total intensity = 1):
+$$|\mathcal{E}_x|^2 + |\mathcal{E}_y|^2 = 1$$
 
-**Energy eigenstates are stationary states.** They don't evolve (except for an overall phase).
+### The Polarization-Qubit Dictionary
 
----
-
-## Example 2: A Spin in a Magnetic Field (Precession)
-
-Now let's do a real physical example.
-
-A spin in a magnetic field $\vec{B} = B\hat{z}$ (pointing along $z$) has Hamiltonian:
-
-$$
-H = -\vec{\mu} \cdot \vec{B} = -\gamma \vec{S} \cdot \vec{B} = -\gamma B S_z = -\frac{\gamma B \hbar}{2}\sigma_z
-$$
-
-where $\gamma$ is the gyromagnetic ratio.
-
-Define $\omega_0 = \gamma B$ (the Larmor frequency). Then:
-
-$$
-H = -\frac{\hbar\omega_0}{2}\sigma_z = \frac{\hbar\omega_0}{2}\begin{pmatrix} -1 & 0 \\ 0 & 1 \end{pmatrix}
-$$
-
-(We can flip the sign convention; the physics is the same.)
-
-### Time Evolution
-
-For a simple diagonal Hamiltonian $H = \frac{\hbar\omega_0}{2}\sigma_z$:
-
-$$
-U(t) = e^{-iHt/\hbar} = e^{-i\omega_0 t \sigma_z/2} = \begin{pmatrix} e^{-i\omega_0 t/2} & 0 \\ 0 & e^{i\omega_0 t/2} \end{pmatrix}
-$$
-
-If we start in a superposition $|\psi(0)\rangle = \alpha|0\rangle + \beta|1\rangle$:
-
-$$
-|\psi(t)\rangle = \alpha e^{-i\omega_0 t/2}|0\rangle + \beta e^{i\omega_0 t/2}|1\rangle
-$$
-
-### What's Happening?
-
-The probabilities $|\alpha|^2$ and $|\beta|^2$ don't change — if you measure in the $z$-basis, you get the same statistics at all times.
-
-But the **relative phase** between $|0\rangle$ and $|1\rangle$ is changing:
-
-$$
-\frac{\beta(t)}{\alpha(t)} = \frac{\beta}{\alpha}e^{i\omega_0 t}
-$$
-
-On the Bloch sphere, this is **precession around the $z$-axis**. The state vector rotates around $z$ at angular frequency $\omega_0$.
-
-```{figure} ./02_03_lecture_files/precession.svg
-:width: 350px
-:name: precession
-
-Precession: a state rotates around the z-axis under $H \propto \sigma_z$.
-```
-
-This is the quantum version of a classical gyroscope precessing in a gravitational field.
-
----
-
-## Example 3: Rabi Oscillations (Population Transfer)
-
-Now let's add a driving field that can flip the spin.
-
-### The Setup
-
-A spin in a static field $B_z$ plus an oscillating transverse field. In the rotating frame (a standard trick we'll justify later), the effective Hamiltonian becomes:
-
-$$
-H = \frac{\hbar\Omega}{2}\sigma_x = \frac{\hbar\Omega}{2}\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}
-$$
-
-where $\Omega$ is called the **Rabi frequency**.
-
-### Time Evolution
-
-We need to compute $e^{-i\Omega t \sigma_x/2}$.
-
-Using the identity $e^{i\theta \hat{n}\cdot\vec{\sigma}/2} = \cos(\theta/2)I + i\sin(\theta/2)\hat{n}\cdot\vec{\sigma}$:
-
-$$
-U(t) = e^{-i\Omega t \sigma_x/2} = \cos\frac{\Omega t}{2}I - i\sin\frac{\Omega t}{2}\sigma_x
-$$
-
-$$
-= \begin{pmatrix} \cos\frac{\Omega t}{2} & -i\sin\frac{\Omega t}{2} \\ -i\sin\frac{\Omega t}{2} & \cos\frac{\Omega t}{2} \end{pmatrix}
-$$
-
-### Starting in $|0\rangle$
-
-If $|\psi(0)\rangle = |0\rangle$:
-
-$$
-|\psi(t)\rangle = \cos\frac{\Omega t}{2}|0\rangle - i\sin\frac{\Omega t}{2}|1\rangle
-$$
-
-The probabilities are:
-
-$$
-P_0(t) = \cos^2\frac{\Omega t}{2}, \qquad P_1(t) = \sin^2\frac{\Omega t}{2}
-$$
-
-```{figure} ./02_03_lecture_files/rabi_oscillations.svg
-:width: 450px
-:name: rabi-oscillations
-
-Rabi oscillations: population oscillates between $|0\rangle$ and $|1\rangle$.
-```
-
-### The Physics
-
-This is dramatically different from precession:
-- The **populations** are changing
-- The spin oscillates between "up" and "down"
-- On the Bloch sphere, this is rotation around the **x-axis**
-
-At time $t = \pi/\Omega$ (a "**π-pulse**"):
-
-$$
-|\psi\rangle = -i|1\rangle
-$$
-
-The spin has completely flipped from $|0\rangle$ to $|1\rangle$. (The $-i$ is a global phase and doesn't affect measurements.)
-
-At time $t = \pi/(2\Omega)$ (a "**π/2-pulse**"):
-
-$$
-|\psi\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)
-$$
-
-We've created an equal superposition — the spin is now on the equator of the Bloch sphere.
-
-```{admonition} Rabi Oscillations Are Everywhere
-:class: important
-
-This same physics appears whenever a two-level system is driven by a resonant field:
-- Atoms driven by light ($H_{int} = -\vec{d} \cdot \vec{E} \propto \sigma_x$)
-- Superconducting qubits driven by microwaves
-- NMR (nuclear spins driven by RF fields)
-
-The Rabi frequency $\Omega$ depends on the strength of the driving field.
-```
-
----
-
-## The General Rule: Hamiltonians Are Rotation Axes
-
-We can now state the general principle.
-
-Any qubit Hamiltonian can be written as:
-
-$$
-H = \frac{\hbar\omega}{2}\hat{n}\cdot\vec{\sigma} = \frac{\hbar\omega}{2}(n_x\sigma_x + n_y\sigma_y + n_z\sigma_z)
-$$
-
-where $\hat{n}$ is a unit vector.
-
-The time evolution is:
-
-$$
-U(t) = e^{-iHt/\hbar} = e^{-i\omega t \hat{n}\cdot\vec{\sigma}/2}
-$$
-
-This represents a **rotation around the axis $\hat{n}$ by angle $\theta = \omega t$** on the Bloch sphere.
-
-| Hamiltonian | Rotation Axis | Physical Effect |
-|-------------|---------------|-----------------|
-| $H \propto \sigma_z$ | z-axis | Precession (phase accumulation) |
-| $H \propto \sigma_x$ | x-axis | Rabi oscillations (population transfer) |
-| $H \propto \sigma_y$ | y-axis | Rabi oscillations (different phase) |
-| $H \propto \hat{n}\cdot\vec{\sigma}$ | $\hat{n}$-axis | Rotation around $\hat{n}$ |
-
-```{figure} ./02_03_lecture_files/bloch_rotations.svg
-:width: 400px
-:name: bloch-rotations
-
-On the Bloch sphere, Hamiltonians generate rotations around their axis.
-```
-
----
-
-## Quantum Gates Are Controlled Rotations
-
-This brings us to a crucial insight for quantum computing.
-
-A **quantum gate** is just a unitary transformation — a rotation on the Bloch sphere. By controlling the Hamiltonian (choosing the axis and duration), we can implement any gate we want.
-
-| Gate | Matrix | Bloch Sphere |
-|------|--------|--------------|
-| $X$ | $\sigma_x$ | 180° rotation around x |
-| $Y$ | $\sigma_y$ | 180° rotation around y |
-| $Z$ | $\sigma_z$ | 180° rotation around z |
-| $H$ | $\frac{1}{\sqrt{2}}(\sigma_x + \sigma_z)$ | 180° around (x+z)/√2 |
-| $R_x(\theta)$ | $e^{-i\theta\sigma_x/2}$ | $\theta$ rotation around x |
-| $R_z(\phi)$ | $e^{-i\phi\sigma_z/2}$ | $\phi$ rotation around z |
-
-The "recipe" for a quantum gate:
-1. Apply a Hamiltonian $H = \frac{\hbar\Omega}{2}\hat{n}\cdot\vec{\sigma}$
-2. Wait for time $t = \theta/\Omega$
-3. Result: rotation by angle $\theta$ around axis $\hat{n}$
-
-**Quantum control is choosing which Hamiltonian to apply and for how long.**
-
----
-
-## Lab: Rabi Oscillations in Qiskit
-
-Let's simulate Rabi oscillations using Qiskit.
-
-```{code-block} python
-import numpy as np
-import matplotlib.pyplot as plt
-from qiskit import QuantumCircuit
-from qiskit_aer import AerSimulator
-from qiskit.visualization import plot_bloch_multivector
-from qiskit.quantum_info import Statevector
-
-simulator = AerSimulator()
-
-# Rabi oscillations: apply Rx(theta) for varying theta
-thetas = np.linspace(0, 4*np.pi, 50)
-prob_0 = []
-prob_1 = []
-
-for theta in thetas:
-    qc = QuantumCircuit(1, 1)
-    qc.rx(theta, 0)  # Rotation around x-axis
-    qc.measure(0, 0)
-    
-    counts = simulator.run(qc, shots=1000).result().get_counts()
-    prob_0.append(counts.get('0', 0) / 1000)
-    prob_1.append(counts.get('1', 0) / 1000)
-
-# Plot
-plt.figure(figsize=(10, 5))
-plt.plot(thetas, prob_0, 'b-', label='P(0)', linewidth=2)
-plt.plot(thetas, prob_1, 'r-', label='P(1)', linewidth=2)
-plt.xlabel('Rotation angle θ (radians)', fontsize=12)
-plt.ylabel('Probability', fontsize=12)
-plt.title('Rabi Oscillations: Rx(θ) applied to |0⟩', fontsize=14)
-plt.legend()
-plt.grid(True, alpha=0.3)
-plt.show()
-```
+| Polarization | Symbol | Jones Vector | Qubit | Bloch Position |
+|--------------|--------|--------------|-------|----------------|
+| Horizontal | $\|H\rangle$ | $\begin{pmatrix} 1 \\ 0 \end{pmatrix}$ | $\|0\rangle$ | North pole (+z) |
+| Vertical | $\|V\rangle$ | $\begin{pmatrix} 0 \\ 1 \end{pmatrix}$ | $\|1\rangle$ | South pole (−z) |
+| Diagonal (+45°) | $\|D\rangle$ | $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix}$ | $\|+\rangle$ | +x axis |
+| Anti-diagonal (−45°) | $\|A\rangle$ | $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -1 \end{pmatrix}$ | $\|-\rangle$ | −x axis |
+| Right circular | $\|R\rangle$ | $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ i \end{pmatrix}$ | $\|+i\rangle$ | +y axis |
+| Left circular | $\|L\rangle$ | $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -i \end{pmatrix}$ | $\|-i\rangle$ | −y axis |
 
 ### Visualizing on the Bloch Sphere
 
-```{code-block} python
-# Watch the state rotate as we increase theta
-thetas_to_show = [0, np.pi/4, np.pi/2, 3*np.pi/4, np.pi]
+```python
+import numpy as np
+from qiskit.visualization import plot_bloch_multivector
+from qiskit.quantum_info import Statevector
 
-fig, axes = plt.subplots(1, 5, figsize=(15, 3))
-
-for i, theta in enumerate(thetas_to_show):
-    qc = QuantumCircuit(1)
-    qc.rx(theta, 0)
-    state = Statevector(qc)
-    # Note: plot_bloch_multivector creates its own figure
-    # In practice, you'd display these one at a time
-    print(f"θ = {theta:.2f}: state = {state}")
+# Horizontal polarization |H⟩ = |0⟩ (north pole)
+H = Statevector([1, 0])
+print("Horizontal |H⟩ = |0⟩:")
+plot_bloch_multivector(H)
 ```
+
+```python
+# Vertical polarization |V⟩ = |1⟩ (south pole)
+V = Statevector([0, 1])
+print("Vertical |V⟩ = |1⟩:")
+plot_bloch_multivector(V)
+```
+
+```python
+# Diagonal polarization |D⟩ = |+⟩ (+x axis)
+D = Statevector([1/np.sqrt(2), 1/np.sqrt(2)])
+print("Diagonal |D⟩ = |+⟩:")
+plot_bloch_multivector(D)
+```
+
+```python
+# Anti-diagonal polarization |A⟩ = |-⟩ (-x axis)
+A = Statevector([1/np.sqrt(2), -1/np.sqrt(2)])
+print("Anti-diagonal |A⟩ = |-⟩:")
+plot_bloch_multivector(A)
+```
+
+```python
+# Right circular polarization |R⟩ = |+i⟩ (+y axis)
+R = Statevector([1/np.sqrt(2), 1j/np.sqrt(2)])
+print("Right circular |R⟩ = |+i⟩:")
+plot_bloch_multivector(R)
+```
+
+```python
+# Left circular polarization |L⟩ = |-i⟩ (-y axis)
+L = Statevector([1/np.sqrt(2), -1j/np.sqrt(2)])
+print("Left circular |L⟩ = |-i⟩:")
+plot_bloch_multivector(L)
+```
+
+---
+
+## Relative Phase Creates Different Polarizations
+
+Look carefully at the Jones vectors:
+
+**Diagonal vs. Anti-diagonal:**
+$$|D\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix}, \qquad |A\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -1 \end{pmatrix}$$
+
+Same amplitudes! The only difference is a relative phase of $\pi$ (the minus sign = $e^{i\pi}$).
+
+**Right circular vs. Left circular:**
+$$|R\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ i \end{pmatrix}, \qquad |L\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -i \end{pmatrix}$$
+
+Same amplitudes! The difference is a relative phase of $\pi$ (since $-i = e^{i\pi} \cdot i$).
+
+```{admonition} Key Insight
+:class: important
+
+**Relative phase is physical!**
+
+Two states with the same amplitudes but different relative phases represent completely different physical polarizations. This is exactly what we saw in the MZI: relative phase determines interference.
+```
+
+---
+
+## iClicker Question 1
+
+**The states $|D\rangle = \frac{1}{\sqrt{2}}(|H\rangle + |V\rangle)$ and $|A\rangle = \frac{1}{\sqrt{2}}(|H\rangle - |V\rangle)$ differ only by a relative phase. On the Bloch sphere, they are located:**
+
+- (A) At the same point
+- (B) On opposite sides of the sphere (antipodal) ✓
+- (C) Both on the equator but 90° apart
+- (D) One at a pole, one on the equator
+
+**Solution:** $|D\rangle$ is at +x and $|A\rangle$ is at −x. They are antipodal (opposite sides), which means they are orthogonal states: $\langle D|A\rangle = 0$.
+
+---
+
+## Three Orthogonal Bases
+
+The six polarization states form three pairs of orthogonal states. Each pair defines a **basis** for the 2D space.
+
+### The z-axis: H/V Basis
+
+$$\langle H|V\rangle = \begin{pmatrix} 1 & 0 \end{pmatrix}\begin{pmatrix} 0 \\ 1 \end{pmatrix} = 0$$
+
+Horizontal and vertical are orthogonal. Any polarization can be written:
+$$|\psi\rangle = \alpha|H\rangle + \beta|V\rangle$$
+
+### The x-axis: D/A Basis
+
+$$\langle D|A\rangle = \frac{1}{2}\begin{pmatrix} 1 & 1 \end{pmatrix}\begin{pmatrix} 1 \\ -1 \end{pmatrix} = \frac{1}{2}(1 - 1) = 0$$
+
+Diagonal and anti-diagonal are orthogonal. Any polarization can also be written:
+$$|\psi\rangle = \gamma|D\rangle + \delta|A\rangle$$
+
+### The y-axis: R/L Basis
+
+$$\langle R|L\rangle = \frac{1}{2}\begin{pmatrix} 1 & -i \end{pmatrix}\begin{pmatrix} 1 \\ -i \end{pmatrix} = \frac{1}{2}(1 + i^2) = \frac{1}{2}(1-1) = 0$$
+
+Right and left circular are orthogonal. Any polarization can also be written:
+$$|\psi\rangle = \epsilon|R\rangle + \zeta|L\rangle$$
+
+### Changing Bases
+
+We can express any state in any basis:
+
+$$|D\rangle = \frac{1}{\sqrt{2}}|H\rangle + \frac{1}{\sqrt{2}}|V\rangle$$
+
+$$|H\rangle = \frac{1}{\sqrt{2}}|D\rangle + \frac{1}{\sqrt{2}}|A\rangle$$
+
+$$|H\rangle = \frac{1}{\sqrt{2}}|R\rangle + \frac{1}{\sqrt{2}}|L\rangle$$
+
+```python
+# Verify: |H⟩ in the D/A basis
+# |H⟩ = (1/√2)|D⟩ + (1/√2)|A⟩
+
+H_from_DA = (1/np.sqrt(2)) * D.data + (1/np.sqrt(2)) * A.data
+print(f"|H⟩ from D/A basis: {H_from_DA}")
+print(f"|H⟩ directly: {H.data}")
+print(f"Equal? {np.allclose(H_from_DA, H.data)}")
+```
+
+### The Three Axes on the Bloch Sphere
+
+| Axis | Basis | Physical Measurement |
+|------|-------|---------------------|
+| z | $\|H\rangle$, $\|V\rangle$ | Horizontal/Vertical polarizer |
+| x | $\|D\rangle$, $\|A\rangle$ | Polarizer at ±45° |
+| y | $\|R\rangle$, $\|L\rangle$ | Circular polarizer (with quarter-wave plate) |
+
+Each axis corresponds to a different type of polarization measurement!
+
+---
+
+## iClicker Question 2
+
+**What is $|\langle H|D\rangle|^2$?**
+
+- (A) 0
+- (B) 1/4
+- (C) 1/2 ✓
+- (D) 1
+
+**Solution:** 
+$$\langle H|D\rangle = \begin{pmatrix} 1 & 0 \end{pmatrix} \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \frac{1}{\sqrt{2}}$$
+
+$$|\langle H|D\rangle|^2 = \frac{1}{2}$$
+
+This is the probability that D-polarized light passes through an H polarizer.
+
+---
+
+## Polarizers: Projective Measurement
+
+A **polarizer** transmits light polarized along one axis and blocks the orthogonal polarization.
+
+### Horizontal Polarizer
+
+A horizontal polarizer projects onto $|H\rangle$:
+
+$$P_H = |H\rangle\langle H| = \begin{pmatrix} 1 \\ 0 \end{pmatrix}\begin{pmatrix} 1 & 0 \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$$
+
+**What happens to various input states?**
+
+**H-polarized input:**
+$$P_H|H\rangle = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}\begin{pmatrix} 1 \\ 0 \end{pmatrix} = \begin{pmatrix} 1 \\ 0 \end{pmatrix} = |H\rangle$$
+
+All light passes, state unchanged.
+
+**V-polarized input:**
+$$P_H|V\rangle = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}\begin{pmatrix} 0 \\ 1 \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$$
+
+No light passes.
+
+**D-polarized input:**
+$$P_H|D\rangle = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 0 \end{pmatrix}$$
+
+The output has norm $1/\sqrt{2}$, so the **intensity** transmitted is $|1/\sqrt{2}|^2 = 1/2$.
+
+After normalizing, the output state is $|H\rangle$.
+
+### Malus's Law
+
+For a polarizer oriented along direction $|\chi\rangle$, the transmitted intensity is:
+
+$$\boxed{I_{out} = |\langle\chi|\psi_{in}\rangle|^2 \cdot I_{in}}$$
+
+This is **Malus's Law** (1809), written in modern notation.
+
+The quantity $|\langle\chi|\psi\rangle|^2$ is the fraction of light that passes through.
+
+---
+
+## iClicker Question 3
+
+**R-polarized light passes through a horizontal polarizer. What fraction of the intensity is transmitted?**
+
+- (A) 0
+- (B) 1/4
+- (C) 1/2 ✓
+- (D) 1
+
+**Solution:**
+$$|R\rangle = \frac{1}{\sqrt{2}}(|H\rangle + i|V\rangle)$$
+
+$$\langle H|R\rangle = \frac{1}{\sqrt{2}}$$
+
+$$|\langle H|R\rangle|^2 = \frac{1}{2}$$
+
+Half the light passes through.
+
+```python
+# Verify with Qiskit
+R = Statevector([1/np.sqrt(2), 1j/np.sqrt(2)])
+H = Statevector([1, 0])
+
+# Probability of measuring |H⟩
+prob_H = np.abs(np.vdot(H.data, R.data))**2
+print(f"P(H|R) = {prob_H}")  # Should be 0.5
+```
+
+---
+
+## From Waves to Photons: The Quantum Leap
+
+So far, everything we've done is classical wave optics. Malus's Law tells us what fraction of the **intensity** passes through a polarizer.
+
+Now we take the quantum leap.
+
+### Light is Quantized
+
+Light comes in discrete packets called **photons**, each carrying energy $E = \hbar\omega$.
+
+What happens when we turn down the intensity until only one photon at a time hits the polarizer?
+
+### The Experiment
+
+Send D-polarized photons through an H polarizer, one at a time.
+
+**Classical prediction:** Each photon should "half pass" — we'd see a continuous dim beam.
+
+**What actually happens:** Each photon either passes completely OR is absorbed completely. There is no "half a photon."
+
+Over many photons, 50% pass and 50% are absorbed. But each individual event is all-or-nothing.
+
+```{admonition} The Fundamental Discreteness
+:class: important
+
+**A photon is indivisible.**
+
+When a photon encounters a polarizer:
+- It either passes through completely, OR
+- It is absorbed completely
+
+The classical "intensity fraction" becomes a **probability** for individual photon events.
+```
+
+### The Born Rule
+
+This forces us to reinterpret Malus's Law:
+
+**Classical (waves):** $I_{out}/I_{in} = |\langle\chi|\psi\rangle|^2$ — "What fraction of intensity passes?"
+
+**Quantum (photons):** $P(\text{pass}) = |\langle\chi|\psi\rangle|^2$ — "What is the probability this photon passes?"
+
+This is the **Born Rule**, a fundamental postulate of quantum mechanics.
+
+---
+
+## Measurement Changes the State
+
+Here's something crucial: **if a photon passes through an H polarizer, what is its polarization afterward?**
+
+**Answer:** It's $|H\rangle$, regardless of what it was before!
+
+The polarizer doesn't just filter — it **prepares** a definite state. A photon that passes through an H polarizer emerges horizontally polarized.
+
+$$|\psi\rangle \xrightarrow{\text{passes H polarizer}} |H\rangle$$
+
+This is called **state collapse** or **projection**.
+
+---
+
+## iClicker Question 4
+
+**A photon in state $|D\rangle$ passes through an H polarizer. What is its state afterward?**
+
+- (A) $|D\rangle$ (unchanged)
+- (B) $|H\rangle$ ✓
+- (C) $\frac{1}{\sqrt{2}}|H\rangle$ (reduced amplitude)
+- (D) Could be either $|H\rangle$ or $|V\rangle$
+
+**Solution:** If the photon passes, it must now be horizontally polarized. The measurement has changed (collapsed) its state to $|H\rangle$.
+
+The factor of $1/\sqrt{2}$ determined the *probability* of passing, not the output state.
+
+---
+
+## The Three-Polarizer Paradox
+
+Now we can understand a striking quantum effect.
+
+### Setup 1: H polarizer → V polarizer
+
+1. Light starts H-polarized: $|H\rangle$
+2. H polarizer: all passes (state remains $|H\rangle$)
+3. V polarizer: $P = |\langle V|H\rangle|^2 = 0$
+
+**Result: 0% transmission.** H and V are orthogonal.
+
+```python
+# Setup 1: H → V
+print("Setup 1: H → V")
+prob_V_given_H = np.abs(np.vdot(V.data, H.data))**2
+print(f"Transmission: {prob_V_given_H * 100}%")
+```
+
+### Setup 2: H polarizer → D polarizer → V polarizer
+
+1. Light starts H-polarized: $|H\rangle$
+2. H polarizer: all passes (state is $|H\rangle$)
+3. D polarizer: $P = |\langle D|H\rangle|^2 = 1/2$ passes, state becomes $|D\rangle$
+4. V polarizer: $P = |\langle V|D\rangle|^2 = 1/2$ of that passes, state becomes $|V\rangle$
+
+**Total transmission:** $1 \times \frac{1}{2} \times \frac{1}{2} = \frac{1}{4}$
+
+**Result: 25% transmission!**
+
+```python
+# Setup 2: H → D → V
+print("\nSetup 2: H → D → V")
+prob_D_given_H = np.abs(np.vdot(D.data, H.data))**2
+prob_V_given_D = np.abs(np.vdot(V.data, D.data))**2
+total = prob_D_given_H * prob_V_given_D
+print(f"P(D|H) = {prob_D_given_H}")
+print(f"P(V|D) = {prob_V_given_D}")
+print(f"Total transmission: {total * 100}%")
+```
+
+### The Paradox
+
+**Adding a polarizer INCREASED the transmission from 0% to 25%!**
+
+Classically, this makes no sense. A polarizer can only absorb light, never create it. How can adding an obstacle let more light through?
+
+### The Resolution
+
+The key is that **measurement changes the state**.
+
+After the H polarizer, the state is $|H\rangle$. In the H/V basis, this state is definite — it has zero probability of passing a V polarizer.
+
+But the D polarizer asks a *different* question. In the D/A basis, $|H\rangle$ is NOT definite:
+
+$$|H\rangle = \frac{1}{\sqrt{2}}|D\rangle + \frac{1}{\sqrt{2}}|A\rangle$$
+
+So there's a 50% chance of passing. Crucially, photons that pass are now in state $|D\rangle$ — they've been *changed* by the measurement.
+
+In the H/V basis, $|D\rangle$ is again not definite:
+
+$$|D\rangle = \frac{1}{\sqrt{2}}|H\rangle + \frac{1}{\sqrt{2}}|V\rangle$$
+
+So there's now a 50% chance of passing the V polarizer!
+
+The intermediate measurement "scrambles" the H/V relationship, giving the photon another chance.
+
+```{admonition} The Lesson
+:class: important
+
+**Measurement is not passive observation — it's an active intervention that changes the state.**
+
+The D polarizer doesn't just "check" the polarization. It projects onto a new basis, fundamentally altering what the photon "is."
+```
+
+---
+
+## iClicker Question 5
+
+**In the three-polarizer setup H → D → V, we get 25% transmission. If we replace the D polarizer with an A polarizer (H → A → V), what transmission do we get?**
+
+- (A) 0%
+- (B) 12.5%
+- (C) 25% ✓
+- (D) 50%
+
+**Solution:** 
+- $P(A|H) = |\langle A|H\rangle|^2 = 1/2$
+- $P(V|A) = |\langle V|A\rangle|^2 = 1/2$
+- Total: $1/2 \times 1/2 = 1/4 = 25\%$
+
+Same answer! Both D and A are at 45° to H and V.
+
+---
+
+## Visualizing on the Bloch Sphere
+
+The three-polarizer paradox has a beautiful interpretation on the Bloch sphere.
+
+```python
+import numpy as np
+from qiskit.visualization import plot_bloch_multivector
+from qiskit.quantum_info import Statevector
+
+def show_state(name, state_vector):
+    """Display a state on the Bloch sphere"""
+    state = Statevector(state_vector)
+    print(f"\n{name}:")
+    return plot_bloch_multivector(state)
+
+# The three-polarizer sequence
+print("=== Three-Polarizer Paradox on Bloch Sphere ===")
+
+# Step 1: Start with |H⟩ (north pole)
+show_state("Step 1: |H⟩ (after H polarizer)", [1, 0])
+
+# Step 2: Project onto D (moves to +x axis)
+show_state("Step 2: |D⟩ (after D polarizer)", [1/np.sqrt(2), 1/np.sqrt(2)])
+
+# Step 3: Project onto V (moves to south pole)
+show_state("Step 3: |V⟩ (after V polarizer)", [0, 1])
+```
+
+**The path on the Bloch sphere:**
+1. Start at north pole ($|H\rangle$)
+2. D measurement projects to +x axis ($|D\rangle$) — moved to equator!
+3. V measurement projects to south pole ($|V\rangle$) — reached the "forbidden" destination
+
+Without the D polarizer, we'd try to go directly from north pole to south pole via a V measurement — impossible since they're orthogonal.
 
 ---
 
 ## Summary
 
-Today we covered a lot of ground:
+1. **Polarization is a qubit:** The Jones vector $(E_x, E_y)^T$ is a 2D complex vector, just like qubit states
 
-1. **Stern-Gerlach reveals spin** — electrons have exactly two spin states along any axis
+2. **Polarization ↔ Bloch sphere:**
+   - H/V = north/south poles (z-axis)
+   - D/A = ±x axis
+   - R/L = ±y axis
 
-2. **Rotating the apparatus = choosing measurement basis** — same as rotating a polarizer
+3. **Relative phase is physical:** D and A have the same amplitudes but differ by a phase of $\pi$ — completely different polarizations
 
-3. **The uncertainty principle** — you can't know spin along perpendicular axes simultaneously
+4. **Three orthogonal bases:** H/V, D/A, R/L each form a complete basis; correspond to three measurement types
 
-4. **Pauli matrices** — $\sigma_x$, $\sigma_y$, $\sigma_z$ represent spin measurements; any qubit operator is built from them
+5. **Polarizers = projective measurement:** Transmitted intensity given by Malus's Law: $I = |\langle\chi|\psi\rangle|^2$
 
-5. **Schrödinger equation** — $i\hbar\frac{d}{dt}|\psi\rangle = H|\psi\rangle$ governs time evolution
+6. **Photons are discrete:** Each photon passes or doesn't — Born Rule gives probability
 
-6. **Unitary evolution** — $|\psi(t)\rangle = e^{-iHt/\hbar}|\psi(0)\rangle$; probability is conserved
+7. **Measurement changes the state:** A photon that passes a polarizer emerges in that polarization state
 
-7. **Precession** — $H \propto \sigma_z$ causes rotation around z (phase accumulation)
-
-8. **Rabi oscillations** — $H \propto \sigma_x$ causes rotation around x (population transfer)
-
-9. **The Bloch sphere picture** — Hamiltonians generate rotations around their axis
-
----
-
-## Homework
-
-### Problem 1: Pauli Matrix Practice
-
-**(a)** Verify that $\sigma_x^2 = \sigma_y^2 = \sigma_z^2 = I$.
-
-**(b)** Compute $\sigma_x \sigma_y$ and $\sigma_y \sigma_x$. Verify that $\sigma_x \sigma_y = i\sigma_z$.
-
-**(c)** Show that $[\sigma_x, \sigma_y] = 2i\sigma_z$.
-
-**(d)** Show that $\{\sigma_x, \sigma_y\} = \sigma_x\sigma_y + \sigma_y\sigma_x = 0$ (anti-commutator).
-
----
-
-### Problem 2: Eigenstates of Pauli Matrices
-
-**(a)** Find the eigenstates of $\sigma_x$. Verify they have eigenvalues $\pm 1$.
-
-**(b)** Find the eigenstates of $\sigma_y$. Verify they have eigenvalues $\pm 1$.
-
-**(c)** For each eigenstate you found, what is the probability of measuring $|0\rangle$ (spin-up along z)?
-
----
-
-### Problem 3: Spin in a Magnetic Field
-
-An electron in a magnetic field $\vec{B} = B_0 \hat{z}$ has Hamiltonian:
-
-$$
-H = \frac{\hbar\omega_0}{2}\sigma_z
-$$
-
-where $\omega_0 = \gamma B_0$ is the Larmor frequency.
-
-**(a)** The electron starts in state $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$. Find $|\psi(t)\rangle$.
-
-**(b)** Calculate $P_0(t)$ and $P_1(t)$, the probabilities of measuring spin-up and spin-down along z.
-
-**(c)** Calculate $\langle \sigma_x \rangle(t)$ and $\langle \sigma_y \rangle(t)$. What motion does this describe?
-
-**(d)** Sketch the trajectory of the state on the Bloch sphere.
-
----
-
-### Problem 4: Rabi Oscillations
-
-A qubit has Hamiltonian $H = \frac{\hbar\Omega}{2}\sigma_x$.
-
-**(a)** Starting in $|0\rangle$, find $|\psi(t)\rangle$.
-
-**(b)** What is $P_1(t)$, the probability of finding the qubit in $|1\rangle$?
-
-**(c)** At what time $t$ does the qubit first reach $|1\rangle$ with certainty? This is called a π-pulse.
-
-**(d)** At what time does the qubit first reach an equal superposition? This is a π/2-pulse.
-
-**(e)** Sketch $P_0(t)$ and $P_1(t)$ from $t=0$ to $t=4\pi/\Omega$.
-
----
-
-### Problem 5: Rotation Matrices
-
-The rotation operator around axis $\hat{n}$ by angle $\theta$ is:
-
-$$
-R_{\hat{n}}(\theta) = e^{-i\theta \hat{n}\cdot\vec{\sigma}/2} = \cos\frac{\theta}{2}I - i\sin\frac{\theta}{2}(\hat{n}\cdot\vec{\sigma})
-$$
-
-**(a)** Derive $R_x(\theta) = e^{-i\theta\sigma_x/2}$ explicitly as a 2×2 matrix.
-
-**(b)** Verify that $R_x(\pi) = -i\sigma_x$ (the X gate, up to a global phase).
-
-**(c)** Verify that $R_z(\phi) = \begin{pmatrix} e^{-i\phi/2} & 0 \\ 0 & e^{i\phi/2} \end{pmatrix}$.
-
-**(d)** Show that $R_z(\phi)|+\rangle$ gives a state on the equator of the Bloch sphere, rotated by angle $\phi$ from $|+\rangle$.
-
----
-
-### Problem 6: Unitarity and Probability Conservation
-
-**(a)** Show that if $H = H^\dagger$ (Hermitian), then $U = e^{-iHt/\hbar}$ satisfies $U^\dagger U = I$ (unitary).
-
-*Hint:* Use $(e^A)^\dagger = e^{A^\dagger}$.
-
-**(b)** Show that unitary evolution preserves the norm: if $|\psi(t)\rangle = U(t)|\psi(0)\rangle$ and $U$ is unitary, then $\langle\psi(t)|\psi(t)\rangle = \langle\psi(0)|\psi(0)\rangle$.
-
-**(c)** Why is probability conservation important physically?
-
----
-
-### Problem 7: Decomposing a Hamiltonian
-
-Any 2×2 Hermitian matrix can be written as $H = a_0 I + a_x\sigma_x + a_y\sigma_y + a_z\sigma_z$.
-
-**(a)** Given 
-$$H = \begin{pmatrix} 2 & 1-i \\ 1+i & 0 \end{pmatrix}$$
-find $a_0$, $a_x$, $a_y$, $a_z$.
-
-*Hint:* Use $a_0 = \frac{1}{2}\text{Tr}(H)$ and $a_i = \frac{1}{2}\text{Tr}(\sigma_i H)$.
-
-**(b)** What is the rotation axis $\hat{n} = (a_x, a_y, a_z)/|\vec{a}|$ for this Hamiltonian?
-
-**(c)** What are the energy eigenvalues of $H$?
-
----
-
-### Problem 8: Qiskit Exploration
-
-**(a)** Use Qiskit to implement Rabi oscillations. Starting from $|0\rangle$, apply $R_x(\theta)$ for $\theta$ from 0 to $4\pi$. Plot $P_0$ and $P_1$ vs $\theta$. Verify the period is $2\pi$.
-
-**(b)** Now do the same with $R_y(\theta)$. How does the result compare to $R_x$?
-
-**(c)** Apply $R_z(\phi)$ to $|0\rangle$ for various $\phi$. What happens to $P_0$ and $P_1$? Explain using the Bloch sphere.
-
-**(d)** Create a state on the equator using $H|0\rangle = |+\rangle$. Now apply $R_z(\phi)$ for various $\phi$ and measure in the X-basis (apply $H$ before measuring). Plot the probability vs $\phi$. What do you observe?
-
----
-
-### Problem 9: Physical Units
-
-The electron spin Hamiltonian in a magnetic field is $H = -\gamma \vec{S} \cdot \vec{B}$ where $\gamma = g_e \mu_B/\hbar$ is the gyromagnetic ratio.
-
-For an electron: $g_e \approx 2$, $\mu_B = 9.274 \times 10^{-24}$ J/T.
-
-**(a)** In a magnetic field $B = 1$ T, what is the Larmor frequency $\omega_0 = \gamma B$ in rad/s? In GHz?
-
-**(b)** What is the period of precession?
-
-**(c)** In NMR, protons have $\gamma_p = 2.675 \times 10^8$ rad/(s·T). In a 1 T field, what is the Larmor frequency? Why is this in the radio frequency (RF) range?
+8. **Three-polarizer paradox:** Adding a polarizer can increase transmission because measurement changes the state
 
 ---
 
 ## Looking Ahead
 
-Next lecture, we'll put everything together. We'll see how:
-- A π/2 pulse followed by free evolution followed by another π/2 pulse creates interference
-- This is the **Ramsey sequence** — the basis of atomic clocks
-- Phase differences become measurable probabilities
-- This is quantum sensing: using interference to measure tiny energy shifts
+Next lecture: 
+- Pauli matrices as the generators of rotations
+- How to rotate states on the Bloch sphere
+- Connection to spin-1/2 particles and the Stern-Gerlach experiment
 
-The one-qubit interferometer we studied in Lecture 5 will finally become a real physical device.
+---
+
+## Homework
+
+### Problem 1: Jones Vectors
+
+Write the normalized Jones vector for each polarization state:
+
+**(a)** Linear polarization at 30° from horizontal
+
+**(b)** Linear polarization at 60° from horizontal
+
+**(c)** Linear polarization at angle $\theta$ from horizontal (general formula)
+
+**(d)** Verify that your answer to (c) gives the correct results for $\theta = 0°$ (H), $\theta = 45°$ (D), and $\theta = 90°$ (V).
+
+---
+
+### Problem 2: Orthogonality and Inner Products
+
+**(a)** Verify that $\langle D|A\rangle = 0$ by explicit calculation.
+
+**(b)** Verify that $\langle R|L\rangle = 0$ by explicit calculation.
+
+**(c)** Calculate $\langle H|R\rangle$ and $|\langle H|R\rangle|^2$. Interpret physically.
+
+**(d)** Calculate $\langle D|R\rangle$ and $|\langle D|R\rangle|^2$. Interpret physically.
+
+---
+
+### Problem 3: Polarizer Calculations
+
+A photon is prepared in state $|R\rangle = \frac{1}{\sqrt{2}}(|H\rangle + i|V\rangle)$.
+
+**(a)** What is the probability it passes an H polarizer?
+
+**(b)** What is the probability it passes a V polarizer?
+
+**(c)** What is the probability it passes a D polarizer?
+
+**(d)** What is the probability it passes an R polarizer?
+
+**(e)** What is the probability it passes an L polarizer?
+
+**(f)** Verify that $P(H) + P(V) = 1$, $P(D) + P(A) = 1$, and $P(R) + P(L) = 1$.
+
+---
+
+### Problem 4: Three-Polarizer Paradox — Quantitative
+
+**(a)** Calculate the transmission for H → V (verify it's 0%).
+
+**(b)** Calculate the transmission for H → D → V (verify it's 25%).
+
+**(c)** Calculate the transmission for H → (polarizer at 30°) → V.
+
+**(d)** Calculate the transmission for H → (polarizer at 60°) → V.
+
+**(e)** For an intermediate polarizer at angle $\theta$, show that the transmission through H → θ → V is:
+$$T(\theta) = \cos^2\theta \sin^2\theta = \frac{1}{4}\sin^2(2\theta)$$
+
+**(f)** What angle $\theta$ maximizes the transmission? What is the maximum?
+
+---
+
+### Problem 5: Many Intermediate Polarizers
+
+Consider inserting $n$ polarizers evenly spaced in angle between H (0°) and V (90°).
+
+**(a)** For $n = 1$ (one polarizer at 45°), the transmission is 25%. Verify this.
+
+**(b)** For $n = 2$ (polarizers at 30° and 60°), calculate the transmission.
+
+**(c)** For $n = 3$ (polarizers at 22.5°, 45°, 67.5°), calculate the transmission.
+
+**(d)** For general $n$, the polarizers are at angles $\theta_k = k \cdot 90°/(n+1)$ for $k = 1, 2, ..., n$. Each step rotates by angle $\Delta\theta = 90°/(n+1)$. Show that the total transmission is:
+$$T(n) = \cos^{2(n+1)}\left(\frac{\pi}{2(n+1)}\right)$$
+
+*Hint:* Each polarizer transmits $\cos^2(\Delta\theta)$ of the incoming light.
+
+**(e)** Calculate $T(n)$ numerically for $n = 1, 2, 3, 5, 10, 100$.
+
+**(f)** What happens as $n \to \infty$? Explain physically why adding more polarizers *increases* transmission.
+
+---
+
+### Problem 6: Bloch Sphere and Measurement
+
+**(a)** A state has Bloch coordinates $\theta = \pi/3$, $\phi = 0$. Write out the state in the form $\alpha|H\rangle + \beta|V\rangle$.
+
+**(b)** For this state, calculate $P(H)$, $P(V)$, $P(D)$, and $P(A)$.
+
+**(c)** Where on the Bloch sphere is this state located? Sketch it.
+
+**(d)** What state is orthogonal to this one? Give its Bloch coordinates.
+
+---
+
+### Problem 7: Circular Polarization
+
+**(a)** Show that $|R\rangle$ and $|L\rangle$ can be written as:
+$$|R\rangle = \frac{1}{\sqrt{2}}(|D\rangle + i|A\rangle)$$
+$$|L\rangle = \frac{1}{\sqrt{2}}(|D\rangle - i|A\rangle)$$
+
+**(b)** A right-circularly polarized photon hits a D polarizer. What is the probability it passes? What is its state after passing?
+
+**(c)** That photon then hits an A polarizer. What is the probability it passes?
+
+**(d)** What is the total probability of passing both D then A polarizers, starting from $|R\rangle$?
+
+---
+
+### Problem 8: Quantum vs Classical (Conceptual)
+
+**(a)** In classical wave optics, we say "half the intensity passes through." In quantum mechanics, we say "each photon has a 50% probability of passing." Explain why these give the same experimental predictions for large numbers of photons.
+
+**(b)** Describe an experiment that would distinguish between the classical and quantum descriptions. *Hint:* Think about what happens with single photons.
+
+**(c)** The three-polarizer paradox seems impossible classically: adding an absorber increases transmission. Explain in your own words why this happens quantum mechanically.
