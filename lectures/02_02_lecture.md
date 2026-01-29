@@ -37,9 +37,9 @@ Before we dive into the Mach-Zehnder interferometer, let's discuss its historica
 
 ### The Setup
 
-```{figure} michelson_diagram.svg
+```{figure} ./02_02_lecture_files/michelson_diagram.svg
 :name: michelson-setup
-:width: 80%
+:width: 50%
 
 The Michelson interferometer. Light from a source is split by a beam splitter (BS). One beam travels to mirror M1 (distance $L_1$), the other to mirror M2 (distance $L_2$). Both beams reflect back and recombine at the beam splitter, where interference determines how much light goes to the detector.
 ```
@@ -113,9 +113,9 @@ The Mach-Zehnder interferometer (MZI) is conceptually cleaner than the Michelson
 
 ### The Setup
 
-```{figure} mzi_diagram.svg
+```{figure} ./02_02_lecture_files/mzi_diagram.svg
 :name: mzi-setup
-:width: 80%
+:width: 50%
 
 The Mach-Zehnder interferometer. Light enters from the left, is split by BS1 into two arms with lengths $L_1$ and $L_2$, and recombines at BS2. Detectors D1 and D2 measure the output intensities.
 ```
@@ -316,7 +316,7 @@ This is a general principle: **measurement collapses the quantum state onto one 
 
 **A beam splitter has two inputs: amplitude 1 enters from the top, and amplitude $e^{i\theta}$ enters from the side. The Hadamard matrix gives the outputs. What value of $\theta$ gives equal power in both outputs?**
 
-```{figure} beamsplitter_two_inputs.svg
+```{figure} ./02_02_lecture_files/beamsplitter_two_inputs.svg
 :name: bs-two-inputs
 :width: 60%
 ```
@@ -372,12 +372,14 @@ $$\boxed{|\psi\rangle = \cos\frac{\theta}{2}|0\rangle + e^{i\phi}\sin\frac{\thet
 
 Every qubit state corresponds to a point on the unit sphere: the **Bloch sphere**.
 
-```{figure} bloch_sphere.svg
+<!--
+ ```{figure} ./02_02_lecture_files/bloch_sphere.svg
 :name: bloch-sphere
-:width: 70%
+:width: 40%
 
 The Bloch sphere. The state $|0\rangle$ is at the north pole, $|1\rangle$ at the south pole. Equal superposition states lie on the equator, with the relative phase $\phi$ determining the position around the equator.
-```
+``` 
+-->
 
 ### Key Points on the Bloch Sphere
 
@@ -507,6 +509,8 @@ state = bloch_state(np.pi/2, np.pi/2)
 plot_bloch_multivector(state)
 ```
 
+![alt text](./02_02_lecture_files/bloch_sphere1.png)
+
 ### Plotting the Six Cardinal States
 
 ```python
@@ -564,7 +568,7 @@ psi = psi.evolve(H)             # After second Hadamard
 print("Final state:")
 display(plot_bloch_multivector(psi))
 ```
-
+![alt text](./02_02_lecture_files/output3.pngimage.png)
 
 
 ---
@@ -574,7 +578,7 @@ display(plot_bloch_multivector(psi))
 
 # Homework: Interferometers and the Bloch Sphere
 
-This homework is designed to be completed in Python using Jupyter notebooks. You'll use NumPy for linear algebra and Qiskit for visualization.
+This homework is designed to be completed in Python. You'll use NumPy for linear algebra and Qiskit for visualization.
 
 ## Setup
 
@@ -630,7 +634,7 @@ cardinal_states = {
 
 Write a loop that plots each of the six cardinal states on the Bloch sphere. Include a title for each plot indicating which state is being displayed.
 
-
+<!-- 
 
 ---
 
@@ -675,9 +679,9 @@ Write code to verify that all three pairs are orthogonal.
 
 Compute the inner product $\langle 0|+\rangle$. Is it zero? Explain geometrically why these states are not orthogonal (hint: think about their positions on the Bloch sphere).
 
----
+--- -->
 
-## Problem 3: Quantum Gates (25 points)
+## Problem 2: Quantum Gates
 
 ### Part (a): Define the Hadamard Gate
 
@@ -685,10 +689,7 @@ The Hadamard gate is:
 
 $$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$$
 
-Define this as a NumPy array.
-
-
-Verify that $H$ is **unitary** by showing that $H H^\dagger = I$ (the identity matrix).
+Define this as a NumPy array.  Verify that $H$ is **unitary** by showing that $H H^\dagger = I$ (the identity matrix). Later we will learn that this means that energy is conserved on the output. 
 
 
 
@@ -712,7 +713,7 @@ def phase_gate(phi):
         2x2 numpy array representing P(phi)
     """
     # Your code here
-    pass
+
 ```
 
 Test your function by verifying that:
@@ -744,7 +745,7 @@ print("H|0⟩ =", result1)
 
 ---
 
-## Problem 4: Mach-Zehnder Interferometer Simulation (30 points)
+## Problem 3: Mach-Zehnder Interferometer Simulation
 
 In this problem, you'll simulate the complete Mach-Zehnder interferometer and reproduce the interference pattern.
 
@@ -768,7 +769,7 @@ def mzi_output(phi):
         Output state as a numpy array [c0, c1]
     """
     # Your code here
-    pass
+
 ```
 
 Test your function:
@@ -793,7 +794,7 @@ def detection_probabilities(phi):
         Tuple (P_D1, P_D2) of detection probabilities
     """
     # Your code here
-    pass
+
 ```
 
 Verify that $P_{D1} + P_{D2} = 1$ for several values of $\phi$.
@@ -822,7 +823,7 @@ plt.figure(figsize=(10, 6))
 
 plt.show()
 ```
-
+<!-- 
 ### Part (d): Verify the Analytical Formula
 
 The analytical formulas for the detection probabilities are:
@@ -838,35 +839,4 @@ Answer the following questions (you can include your answers as comments or mark
 1. At what values of $\phi$ does all the light go to detector D1? 
 2. At what values of $\phi$ does all the light go to detector D2?
 3. If you wanted exactly 75% of the light to go to D1, what phase would you need?
-
-```python
-# For part 3, solve: (1 + cos(phi))/2 = 0.75
-# Your calculation here
-```
-
----
-
-## Bonus Challenge (Optional)
-
-### Animated MZI on the Bloch Sphere
-
-Create an animation (or a series of plots) showing how the quantum state evolves through the MZI on the Bloch sphere as the phase $\phi$ varies from $0$ to $2\pi$.
-
-Show:
-1. The initial state $|0\rangle$
-2. After the first Hadamard: $|+\rangle$  
-3. After the phase gate: the state rotating around the equator
-4. After the second Hadamard: the final state
-
-Hint: You can create multiple subplots or use `matplotlib.animation` for a true animation.
-
----
-
-## Submission
-
-Submit your completed Jupyter notebook (.ipynb file) containing:
-- All code cells with your solutions
-- Output from running each cell (plots, printed values)
-- Brief written answers where requested
-
-Your code should run without errors when cells are executed in order.
+ -->

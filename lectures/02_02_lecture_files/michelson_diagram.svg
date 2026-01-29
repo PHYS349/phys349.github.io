@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 450">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="500" height="450" fill="white"/>
+  
+  <!-- Title -->
+  <text x="250" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">Michelson Interferometer</text>
+  
+  <!-- Source -->
+  <rect x="30" y="222" width="55" height="36" fill="#fbbf24" stroke="#333" stroke-width="2" rx="4"/>
+  <text x="57" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold">Source</text>
+  
+  <!-- Input beam (source to BS) -->
+  <rect x="85" y="234" width="130" height="12" fill="#555" opacity="0.8"/>
+  
+  <!-- Beam splitter - diagonal from upper-left to lower-right (\) -->
+  <!-- Positioned so input hits middle, transmits right, reflects up -->
+  <line x1="200" y1="200" x2="260" y2="280" stroke="#1e40af" stroke-width="6"/>
+  <line x1="203" y1="202" x2="263" y2="282" stroke="#60a5fa" stroke-width="2"/>
+  <text x="270" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold">BS</text>
+  
+  <!-- Arm 1: Transmitted beam going right to M1 -->
+  <rect x="245" y="234" width="165" height="12" fill="#3b82f6" opacity="0.7"/>
+  <!-- Arm 1: Return beam (slightly above, lighter) -->
+  <rect x="245" y="224" width="165" height="8" fill="#93c5fd" opacity="0.6"/>
+  
+  <!-- Mirror M1 (right side) - vertical mirror -->
+  <rect x="410" y="200" width="10" height="80" fill="#cbd5e1" stroke="#333" stroke-width="2"/>
+  <line x1="410" y1="200" x2="410" y2="280" stroke="#1e40af" stroke-width="4"/>
+  <text x="435" y="245" font-family="Arial, sans-serif" font-size="14" font-weight="bold">M1</text>
+  
+  <!-- Arm 2: Reflected beam going up to M2 -->
+  <rect x="224" y="70" width="12" height="160" fill="#ef4444" opacity="0.7"/>
+  <!-- Arm 2: Return beam (slightly right, lighter) -->
+  <rect x="238" y="70" width="8" height="160" fill="#fca5a5" opacity="0.6"/>
+  
+  <!-- Mirror M2 (top) - horizontal mirror -->
+  <rect x="195" y="52" width="80" height="10" fill="#cbd5e1" stroke="#333" stroke-width="2"/>
+  <line x1="195" y1="62" x2="275" y2="62" stroke="#1e40af" stroke-width="4"/>
+  <text x="235" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold">M2</text>
+  
+  <!-- Output beam going down to detector -->
+  <rect x="224" y="265" width="12" height="100" fill="#a855f7" opacity="0.7"/>
+  
+  <!-- Detector (photodiode style: half circle with squiggly wires) -->
+  <path d="M 200 375 L 200 400 A 30 30 0 0 0 260 400 L 260 375 Z" fill="#333" stroke="#333" stroke-width="2"/>
+  <!-- Squiggly wires -->
+  <path d="M 215 400 C 210 410, 220 420, 215 430" fill="none" stroke="#333" stroke-width="2.5"/>
+  <path d="M 245 400 C 240 410, 250 420, 245 430" fill="none" stroke="#333" stroke-width="2.5"/>
+  <text x="230" y="422" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold">Detector</text>
+  
+  <!-- Length label L1 -->
+  <line x1="250" y1="195" x2="405" y2="195" stroke="#666" stroke-width="1.5"/>
+  <line x1="250" y1="188" x2="250" y2="202" stroke="#666" stroke-width="1.5"/>
+  <line x1="405" y1="188" x2="405" y2="202" stroke="#666" stroke-width="1.5"/>
+  <text x="327" y="188" text-anchor="middle" font-family="Times New Roman, serif" font-size="18" font-style="italic">L₁</text>
+  
+  <!-- Length label L2 -->
+  <line x1="190" y1="70" x2="190" y2="225" stroke="#666" stroke-width="1.5"/>
+  <line x1="183" y1="70" x2="197" y2="70" stroke="#666" stroke-width="1.5"/>
+  <line x1="183" y1="225" x2="197" y2="225" stroke="#666" stroke-width="1.5"/>
+  <text x="175" y="150" text-anchor="middle" font-family="Times New Roman, serif" font-size="18" font-style="italic">L₂</text>
+  
+  <!-- Legend -->
+  <rect x="340" y="55" width="140" height="85" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" rx="5"/>
+  <rect x="352" y="72" width="30" height="10" fill="#3b82f6" opacity="0.7"/>
+  <text x="390" y="82" font-family="Arial, sans-serif" font-size="12">Arm 1</text>
+  <rect x="352" y="92" width="30" height="10" fill="#ef4444" opacity="0.7"/>
+  <text x="390" y="102" font-family="Arial, sans-serif" font-size="12">Arm 2</text>
+  <rect x="352" y="112" width="30" height="10" fill="#a855f7" opacity="0.7"/>
+  <text x="390" y="122" font-family="Arial, sans-serif" font-size="12">Output</text>
+</svg>

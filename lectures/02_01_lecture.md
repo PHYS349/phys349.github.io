@@ -332,7 +332,7 @@ $$
 \boxed{I = 4\cos^2\left(\frac{k\Delta x}{2}\right)}
 $$
 
-This form makes the oscillation between 0 and 4 more explicit. The intensity depends only on the **path difference** $\Delta x$.
+This form makes the oscillation between 0 and 4 more explicit. The intensity depends only on the path difference $\Delta x$.
 
 ### Global Phase Doesn't Matter
 
@@ -406,16 +406,16 @@ The cross term $2\text{Re}(E_1^* E_2)$ can be positive (constructive) or negativ
 
 Next lecture: We'll see interference in action with the **Mach-Zehnder interferometer**—and discover that it's mathematically identical to a quantum computing circuit. The interferometer will be our first concrete example of a qubit.
 
----
 
-## Homework
+
+## Homework 2.1
 
 ### Problem 1: Separation of Variables for the Wave Equation
 
 The wave equation in one dimension is:
 $$\frac{\partial^2 E}{\partial x^2} = \frac{1}{c^2}\frac{\partial^2 E}{\partial t^2}$$
 
-Solve this equation using separation of variables.
+Solve this equation using separation of variables. Use the complex exponential form $e^{ikx}$ for your solutions. (Feel free to use the $\cos(kx)$ form if you are a maniac.)
 
 **(a)** Assume a solution of the form $E(x,t) = X(x) \cdot T(t)$. Substitute this into the wave equation and show that you can separate it into:
 $$\frac{1}{X}\frac{d^2 X}{dx^2} = \frac{1}{c^2 T}\frac{d^2 T}{dt^2}$$
@@ -432,78 +432,24 @@ $$\frac{1}{X}\frac{d^2 X}{dx^2} = \frac{1}{c^2 T}\frac{d^2 T}{dt^2}$$
 
 ### Problem 2: Visualizing Traveling Waves
 
-In this problem, you'll create an animation of a traveling wave to build intuition for how $\cos(kx - \omega t)$ represents motion.
+Plot the traveling wave $E(x,t) = \cos(kx - \omega t)$ with $k = 2\pi/\lambda$ and $\omega = 2\pi f$, where $\lambda = 1$ and $f = 1$.
 
-**(a)** Using the code below, create an animation of the traveling wave $E(x,t) = \cos(kx - \omega t)$. Run it and observe the wave moving to the right.
+**(a)** Plot $E$ vs $x$ over several wavelengths so you can see many oscillations. Change $t$ and watch the wave travel. Feel free to make an animation if you want to watch a video.  There are many ways to do this in python.
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-
-# Parameters
-wavelength = 1.0  # lambda = 1 meter
-frequency = 1.0   # f = 1 Hz
-k = 2 * np.pi / wavelength  # wavenumber
-omega = 2 * np.pi * frequency  # angular frequency
-c = wavelength * frequency  # wave speed (should equal omega/k)
-
-# Spatial grid
-x = np.linspace(0, 4 * wavelength, 500)
-
-# Set up the figure
-fig, ax = plt.subplots(figsize=(10, 4))
-line, = ax.plot(x, np.cos(k * x), 'b-', lw=2)
-ax.set_xlim(0, 4 * wavelength)
-ax.set_ylim(-1.5, 1.5)
-ax.set_xlabel('x (m)')
-ax.set_ylabel('E(x,t)')
-ax.set_title('Traveling Wave: E(x,t) = cos(kx - ωt)')
-ax.axhline(y=0, color='k', linestyle='-', lw=0.5)
-ax.grid(True, alpha=0.3)
-
-# Animation function
-def animate(frame):
-    t = frame / 30  # time in seconds (30 frames per second)
-    E = np.cos(k * x - omega * t)
-    line.set_ydata(E)
-    ax.set_title(f'Traveling Wave: E(x,t) = cos(kx - ωt), t = {t:.2f} s')
-    return line,
-
-# Create animation
-anim = FuncAnimation(fig, animate, frames=120, interval=33, blit=True)
-anim.save('traveling_wave.gif', writer='pillow', fps=30)
-plt.show()
-```
-
-**(b)** With $\lambda = 1$ m and $f = 1$ Hz, what is the wave speed $c$? How far does the wave travel in one period $T = 1/f$?
-
-**(c)** Modify the code to plot *both* $\cos(kx - \omega t)$ (right-traveling) and $\cos(kx + \omega t)$ (left-traveling) on the same graph. Use different colors for each. Run the animation and observe how they move in opposite directions.
-
-*Hint:* Add a second line object and update both in the animate function:
-```python
-line1, = ax.plot(x, np.cos(k * x), 'b-', lw=2, label='Right-traveling')
-line2, = ax.plot(x, np.cos(k * x), 'r-', lw=2, label='Left-traveling')
-ax.legend()
-```
-
-**(d)** Explain in words why changing the sign from $(kx - \omega t)$ to $(kx + \omega t)$ reverses the direction of travel. *Hint:* Think about what value of $x$ keeps the phase constant as $t$ increases.
-
-**(e)** Create a new animation showing two waves traveling in the *same* direction: $E_1 = \cos(kx - \omega t)$ and $E_2 = \cos(kx - \omega t + \pi)$ (shifted by $\pi$). Also plot their sum $E_1 + E_2$. What do you observe? Relate this to destructive interference.
+**(b)** Now change $kx - \omega t$ to $-kx - \omega t$ (i.e., flip the sign of the $kx$ term). What's the difference?
 
 ---
 
-### Problem 3: Complex Number Practice
+### Problem 3: Complex Exponential Conversion
 
-Using Euler's formula $e^{i\theta} = \cos\theta + i\sin\theta$:
+The general real solution to the wave equation can be written as:
+$$E(x) = A\cos(kx) + B\sin(kx)$$
 
-**(a)** Express $\cos(kx)$ in terms of complex exponentials.
+or equivalently as:
+$$E(x) = Ce^{ikx} + De^{-ikx}$$
 
-**(b)** Express $\sin(\omega t)$ in terms of complex exponentials.
 
-**(c)** Show that the general real solution $A\cos(kx) + B\sin(kx)$ can be written as $Ce^{ikx} + De^{-ikx}$ by finding $C$ and $D$ in terms of $A$ and $B$.
-
-**(d)** Compute $|e^{i\theta}|^2 = e^{i\theta} \cdot e^{-i\theta}$ and verify it equals 1.
+Find $C$ and $D$ in terms of $A$ and $B$.
 
 ---
 
@@ -518,17 +464,3 @@ $$\frac{1}{T}\int_0^T \cos^2(\omega t)\, dt$$
 **(c)** What is $\langle \cos(\omega t)\sin(\omega t) \rangle$? This "cross term" will be important for interference.
 
 **(d)** For a complex wave $E = E_0 e^{i(kx - \omega t)}$, compute $|E|^2$ and show it's constant in time.
-
----
-
-### Problem 5: Two-Source Interference
-
-Two sources emit waves with wavelength $\lambda = 500$ nm. A detector is positioned so that one source is 10.0 μm away and the other is 10.5 μm away.
-
-**(a)** What is the path difference $\Delta x$ in meters? In wavelengths?
-
-**(b)** Calculate the phase difference $k\Delta x$ in radians.
-
-**(c)** Calculate the intensity $I = 4\cos^2(k\Delta x/2)$. Is this closer to constructive or destructive interference?
-
-**(d)** How much would you need to move the detector (changing one path length) to get from maximum to minimum intensity?

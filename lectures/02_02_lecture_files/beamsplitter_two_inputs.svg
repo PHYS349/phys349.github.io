@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 400">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="450" height="400" fill="white"/>
+  
+  <!-- Title -->
+  <text x="225" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold">Beam Splitter with Two Inputs</text>
+  
+  <!-- Output 2 label (top) -->
+  <text x="225" y="60" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c3aed">Output 2</text>
+  
+  <!-- Output 2: going up -->
+  <rect x="219" y="70" width="12" height="80" fill="#a855f7" opacity="0.7"/>
+  
+  <!-- Input 1 label and beam (from left) -->
+  <text x="40" y="155" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2563eb">Input 1</text>
+  <text x="40" y="172" font-family="Times New Roman, serif" font-size="13" fill="#2563eb" font-style="italic">(amplitude: 1)</text>
+  <rect x="40" y="184" width="120" height="12" fill="#3b82f6" opacity="0.7"/>
+  
+  <!-- Beam splitter: diagonal from upper-right to lower-left -->
+  <!-- This creates: transmit right, reflect up for input from left -->
+  <!-- and: transmit up, reflect right for input from below -->
+  <line x1="190" y1="150" x2="260" y2="240" stroke="#1e40af" stroke-width="7"/>
+  <line x1="193" y1="152" x2="263" y2="242" stroke="#60a5fa" stroke-width="3"/>
+  
+  <!-- BS label -->
+  <text x="275" y="215" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1e40af">BS</text>
+  
+  <!-- Output 1: going right -->
+  <rect x="245" y="184" width="120" height="12" fill="#a855f7" opacity="0.7"/>
+  
+  <!-- Output 1 label (right) -->
+  <text x="380" y="195" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c3aed">Output 1</text>
+  
+  <!-- Input 2: coming from below -->
+  <rect x="219" y="230" width="12" height="100" fill="#ef4444" opacity="0.7"/>
+  
+  <!-- Input 2 label (bottom) -->
+  <text x="225" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#dc2626">Input 2</text>
+  <text x="225" y="370" text-anchor="middle" font-family="Times New Roman, serif" font-size="14" fill="#dc2626" font-style="italic">(amplitude: e</text>
+  <text x="280" y="365" font-family="Times New Roman, serif" font-size="11" fill="#dc2626" font-style="italic">iθ</text>
+  <text x="290" y="370" font-family="Times New Roman, serif" font-size="14" fill="#dc2626" font-style="italic">)</text>
+  
+  <!-- Hadamard gate box -->
+  <rect x="20" y="250" width="140" height="90" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2" rx="6"/>
+  <text x="90" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold">Hadamard gate:</text>
+  
+  <!-- Matrix: H = 1/√2 (1  1)  -->
+  <!--               (1 -1)  -->
+  <text x="35" y="310" font-family="Times New Roman, serif" font-size="18" font-style="italic">H</text>
+  <text x="50" y="310" font-family="Times New Roman, serif" font-size="18"> = </text>
+  
+  <!-- Fraction 1/√2 -->
+  <text x="80" y="300" font-family="Times New Roman, serif" font-size="14">1</text>
+  <line x1="73" y1="305" x2="90" y2="305" stroke="#333" stroke-width="1.2"/>
+  <text x="73" y="322" font-family="Times New Roman, serif" font-size="14">√2</text>
+  
+  <!-- Matrix with parentheses -->
+  <text x="100" y="310" font-family="Times New Roman, serif" font-size="36">(</text>
+  <text x="112" y="300" font-family="Times New Roman, serif" font-size="15">1     1</text>
+  <text x="112" y="322" font-family="Times New Roman, serif" font-size="15">1   −1</text>
+  <text x="148" y="310" font-family="Times New Roman, serif" font-size="36">)</text>
+  
+  <!-- Question box -->
+  <rect x="290" y="265" width="145" height="75" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="6"/>
+  <text x="362" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#92400e">Question:</text>
+  <text x="362" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#92400e">What value of θ gives</text>
+  <text x="362" y="328" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#92400e">equal power in both</text>
+  <text x="362" y="346" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#92400e">outputs?</text>
+</svg>

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 520">
+  <defs>
+    <marker id="arrowhead-gray" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arrowhead-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#dc2626"/>
+    </marker>
+    <!-- Gradient for sphere shading -->
+    <radialGradient id="sphereGradient" cx="30%" cy="30%" r="70%" fx="25%" fy="25%">
+      <stop offset="0%" style="stop-color:#e0f2fe;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#7dd3fc;stop-opacity:0.75" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="500" height="520" fill="white"/>
+  
+  <!-- Title -->
+  <text x="250" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold">The Bloch Sphere</text>
+  
+  <!-- Sphere center at (250, 270), radius 150 -->
+  
+  <!-- Sphere with shading -->
+  <circle cx="250" cy="270" r="150" fill="url(#sphereGradient)" stroke="#64748b" stroke-width="2.5"/>
+  
+  <!-- Back latitude lines (dashed) -->
+  <ellipse cx="250" cy="195" rx="112" ry="28" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,5"/>
+  <ellipse cx="250" cy="345" rx="112" ry="28" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <!-- Equator - back half dashed -->
+  <path d="M 100 270 Q 175 225 250 225 Q 325 225 400 270" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,4"/>
+  
+  <!-- Back meridian (x-z plane) - dashed -->
+  <path d="M 250 120 Q 165 270 250 420" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <!-- Back meridian (y-z plane) - dashed parts -->
+  <path d="M 250 120 Q 145 200 108 285" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,5"/>
+  <path d="M 392 255 Q 355 340 250 420" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <!-- Z-axis: from center going up to |0⟩ -->
+  <line x1="250" y1="270" x2="250" y2="125" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrowhead-gray)"/>
+  <!-- Z-axis: from center going down (dashed, behind) -->
+  <line x1="250" y1="270" x2="250" y2="415" stroke="#64748b" stroke-width="2" stroke-dasharray="8,5"/>
+  
+  <!-- X-axis: from center to |+⟩ direction (front-right) -->
+  <!-- Using isometric-ish projection: +x at roughly (385, 230) on sphere surface -->
+  <line x1="250" y1="270" x2="380" y2="230" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrowhead-gray)"/>
+  <!-- -X axis: behind, dashed -->
+  <line x1="250" y1="270" x2="120" y2="310" stroke="#64748b" stroke-width="2" stroke-dasharray="8,5"/>
+  
+  <!-- Y-axis: from center to |+i⟩ direction (front-left) -->
+  <line x1="250" y1="270" x2="120" y2="230" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrowhead-gray)"/>
+  <!-- -Y axis: behind, dashed -->
+  <line x1="250" y1="270" x2="380" y2="310" stroke="#64748b" stroke-width="2" stroke-dasharray="8,5"/>
+  
+  <!-- Front half of equator (solid) -->
+  <path d="M 100 270 Q 175 315 250 315 Q 325 315 400 270" fill="none" stroke="#64748b" stroke-width="1.5"/>
+  
+  <!-- Front meridian (x-z plane) - solid -->
+  <path d="M 250 120 Q 335 270 250 420" fill="none" stroke="#94a3b8" stroke-width="1"/>
+  
+  <!-- Axis labels -->
+  <text x="258" y="105" font-family="Times New Roman, serif" font-size="20" font-style="italic" fill="#374151">z</text>
+  <text x="395" y="225" font-family="Times New Roman, serif" font-size="20" font-style="italic" fill="#374151">x</text>
+  <text x="100" y="220" font-family="Times New Roman, serif" font-size="20" font-style="italic" fill="#374151">y</text>
+  
+  <!-- State |0⟩ at north pole (+z) -->
+  <circle cx="250" cy="120" r="10" fill="#2563eb" stroke="#1e40af" stroke-width="2"/>
+  <text x="270" y="115" font-family="Times New Roman, serif" font-size="18" fill="#1e40af">|0⟩</text>
+  
+  <!-- State |1⟩ at south pole (-z) -->
+  <circle cx="250" cy="420" r="10" fill="#2563eb" stroke="#1e40af" stroke-width="2"/>
+  <text x="270" y="428" font-family="Times New Roman, serif" font-size="18" fill="#1e40af">|1⟩</text>
+  
+  <!-- State |+⟩ on +x axis -->
+  <circle cx="385" cy="228" r="9" fill="#16a34a" stroke="#15803d" stroke-width="2"/>
+  <text x="402" y="222" font-family="Times New Roman, serif" font-size="16" fill="#15803d">|+⟩</text>
+  
+  <!-- State |−⟩ on −x axis -->
+  <circle cx="115" cy="312" r="9" fill="#16a34a" stroke="#15803d" stroke-width="2"/>
+  <text x="85" y="328" font-family="Times New Roman, serif" font-size="16" fill="#15803d">|−⟩</text>
+  
+  <!-- State |+i⟩ on +y axis -->
+  <circle cx="115" cy="228" r="9" fill="#ea580c" stroke="#c2410c" stroke-width="2"/>
+  <text x="75" y="222" font-family="Times New Roman, serif" font-size="16" fill="#c2410c">|+i⟩</text>
+  
+  <!-- State |−i⟩ on −y axis -->
+  <circle cx="385" cy="312" r="9" fill="#ea580c" stroke="#c2410c" stroke-width="2"/>
+  <text x="398" y="328" font-family="Times New Roman, serif" font-size="16" fill="#c2410c">|−i⟩</text>
+  
+  <!-- General state |ψ⟩ -->
+  <!-- Position approximately θ=50° from z, φ=35° from x in equatorial plane -->
+  <circle cx="330" cy="180" r="9" fill="#dc2626" stroke="#b91c1c" stroke-width="2"/>
+  <text x="345" y="172" font-family="Times New Roman, serif" font-size="18" fill="#b91c1c">|ψ⟩</text>
+  
+  <!-- Vector from origin to |ψ⟩ -->
+  <line x1="250" y1="270" x2="325" y2="185" stroke="#dc2626" stroke-width="3" marker-end="url(#arrowhead-red)"/>
+  
+  <!-- Projection of |ψ⟩ onto equator plane -->
+  <circle cx="340" cy="255" r="5" fill="none" stroke="#dc2626" stroke-width="2"/>
+  
+  <!-- Dashed line from |ψ⟩ down to projection -->
+  <line x1="330" y1="180" x2="340" y2="255" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,4"/>
+  
+  <!-- Dashed line from origin to projection -->
+  <line x1="250" y1="270" x2="335" y2="257" stroke="#dc2626" stroke-width="2" stroke-dasharray="5,4"/>
+  
+  <!-- Theta angle arc (from +z axis to state vector) -->
+  <path d="M 250 240 Q 270 230 280 225" fill="none" stroke="#7c3aed" stroke-width="2.5"/>
+  <text x="275" y="215" font-family="Times New Roman, serif" font-size="18" fill="#7c3aed">θ</text>
+  
+  <!-- Phi angle arc (from +x direction to projection, larger and more visible) -->
+  <path d="M 290 262 Q 305 258 315 258 Q 325 260 332 262" fill="none" stroke="#0891b2" stroke-width="2.5"/>
+  <text x="305" y="285" font-family="Times New Roman, serif" font-size="18" fill="#0891b2">φ</text>
+  
+  <!-- Center point -->
+  <circle cx="250" cy="270" r="5" fill="#374151"/>
+  
+  <!-- Legend -->
+  <rect x="25" y="465" width="450" height="45" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" rx="5"/>
+  <circle cx="55" cy="488" r="8" fill="#2563eb"/>
+  <text x="70" y="493" font-family="Arial, sans-serif" font-size="12">|0⟩, |1⟩ (computational basis)</text>
+  <circle cx="230" cy="488" r="8" fill="#16a34a"/>
+  <text x="245" y="493" font-family="Arial, sans-serif" font-size="12">|+⟩, |−⟩ (x-basis)</text>
+  <circle cx="380" cy="488" r="8" fill="#ea580c"/>
+  <text x="395" y="493" font-family="Arial, sans-serif" font-size="12">|+i⟩, |−i⟩ (y-basis)</text>
+</svg>
