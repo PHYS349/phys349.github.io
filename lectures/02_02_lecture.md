@@ -568,7 +568,7 @@ psi = psi.evolve(H)             # After second Hadamard
 print("Final state:")
 display(plot_bloch_multivector(psi))
 ```
-![alt text](./02_02_lecture_files/output3.pngimage.png)
+![alt text](./02_02_lecture_files/output3.png)
 
 
 ---
