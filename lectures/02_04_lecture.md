@@ -50,8 +50,13 @@ This is **quadratic** in $k$, unlike the classical $\omega = ck$.
 
 For the classical wave equation, all four sign combinations $e^{\pm i(kx \pm \omega t)}$ are valid solutions. **Do all four also solve the Schrödinger equation?**
 
-- (A) Yes
-- (B) No ✓
+-   
+
+    (A) Yes
+
+-   
+
+    (B) No ✓
 
 Let's check. Write a general plane wave as $\psi = e^{i(\alpha kx - \beta\omega t)}$ where $\alpha, \beta = \pm 1$. Substituting into the Schrödinger equation:
 
@@ -89,7 +94,7 @@ $$|\psi\rangle = c_0|0\rangle + c_1|1\rangle$$
 
 the coefficients $c_0$ and $c_1$ are complex numbers. Each carries two pieces of information: an **amplitude** and a **phase**. Both are physical — the amplitude determines probabilities, and the relative phase determines interference. We've seen this on the Bloch sphere: the six cardinal states all have the same amplitudes ($1/\sqrt{2}$ each) for some basis, but differ by their relative phases, and they represent completely different physical states.
 
----
+------------------------------------------------------------------------
 
 ## Why Group Theory?
 
@@ -109,7 +114,7 @@ Nature cares about this distinction. Particles called **fermions** (electrons, q
 
 For now, let's build the mathematics from the ground up.
 
----
+------------------------------------------------------------------------
 
 ## Complex Numbers as Rotations
 
@@ -123,7 +128,7 @@ $$e^{i\theta_1} \cdot e^{i\theta_2} = e^{i(\theta_1 + \theta_2)}$$
 
 Geometrically, multiplying by $e^{i\theta}$ **rotates** a point in the complex plane by angle $\theta$. The magnitudes multiply and the angles add. For numbers on the unit circle ($r = 1$), multiplication is pure rotation.
 
----
+------------------------------------------------------------------------
 
 ## What Is a Group?
 
@@ -161,7 +166,7 @@ The inverse is the complex conjugate. Multiplying gives $e^{i\theta} \cdot e^{-i
 
 All four rules are satisfied. The unit complex numbers under multiplication form a group. This group is called **U(1)** — the unitary group in 1 dimension.
 
----
+------------------------------------------------------------------------
 
 ## Matrix Representation of SO(2)
 
@@ -181,8 +186,7 @@ turning it by angle $\theta$ counterclockwise.
 
 The matrix rotation and complex multiplication are doing the same thing. A complex number $z = x + iy$ corresponds to the vector $(x, y)^T$. Multiplying by $e^{i\theta} = \cos\theta + i\sin\theta$:
 
-$$e^{i\theta}z = (\cos\theta + i\sin\theta)(x + iy)$$
-$$= (\cos\theta\cdot x - \sin\theta\cdot y) + i(\sin\theta\cdot x + \cos\theta\cdot y)$$
+$$e^{i\theta}z = (\cos\theta + i\sin\theta)(x + iy)$$ $$= (\cos\theta\cdot x - \sin\theta\cdot y) + i(\sin\theta\cdot x + \cos\theta\cdot y)$$
 
 Reading off the real and imaginary parts:
 
@@ -192,7 +196,7 @@ This is exactly:
 
 $$\begin{pmatrix} x' \\ y' \end{pmatrix} = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}\begin{pmatrix} x \\ y \end{pmatrix}$$
 
-**Complex multiplication by $e^{i\theta}$ and matrix multiplication by $R(\theta)$ are two representations of the same rotation.**
+**Complex multiplication by** $e^{i\theta}$ and matrix multiplication by $R(\theta)$ are two representations of the same rotation.
 
 ### Verifying the Group Axioms for $R(\theta)$
 
@@ -210,20 +214,25 @@ The set of all rotation matrices $\{R(\theta)\}$ also forms a group:
 
 This group is called **SO(2)**:
 
-- **S** = Special: $\det R(\theta) = \cos^2\theta + \sin^2\theta = 1$
-- **O** = Orthogonal: $R^T R = I$ (the inverse is the transpose; this preserves lengths)
-- **2** = $2 \times 2$ real matrices
+-   **S** = Special: $\det R(\theta) = \cos^2\theta + \sin^2\theta = 1$
+-   **O** = Orthogonal: $R^T R = I$ (the inverse is the transpose; this preserves lengths)
+-   **2** = $2 \times 2$ real matrices
 
 ### iClicker: Does Order Matter in SO(2)?
 
-**Is $R(\theta_2)R(\theta_1) = R(\theta_1)R(\theta_2)$? Does the order of two rotations matter?**
+**Is** $R(\theta_2)R(\theta_1) = R(\theta_1)R(\theta_2)$? Does the order of two rotations matter?
 
-- (A) Yes, order matters
-- (B) No, order doesn't matter ✓
+-   
+
+    (A) Yes, order matters
+
+-   
+
+    (B) No, order doesn't matter ✓
 
 Since $R(\theta_1)R(\theta_2) = R(\theta_1 + \theta_2) = R(\theta_2 + \theta_1) = R(\theta_2)R(\theta_1)$, the order doesn't matter. SO(2) is a **commutative** (abelian) group. Rotating by 30° then 45° is the same as 45° then 30° — it's all rotations in a single plane, and angles just add.
 
----
+------------------------------------------------------------------------
 
 ## From 2D to 3D: Non-Commutativity
 
@@ -233,8 +242,8 @@ Now let's move to three dimensions. In 3D, we can rotate around three independen
 
 Consider two sequences of rotations applied to an object:
 
-1. Rotate 90° around the x-axis, then 90° around the z-axis
-2. Rotate 90° around the z-axis, then 90° around the x-axis
+1.  Rotate 90° around the x-axis, then 90° around the z-axis
+2.  Rotate 90° around the z-axis, then 90° around the x-axis
 
 $$R_x(90°)\,R_z(90°) \qquad \text{vs.} \qquad R_z(90°)\,R_x(90°)$$
 
@@ -242,8 +251,13 @@ $$R_x(90°)\,R_z(90°) \qquad \text{vs.} \qquad R_z(90°)\,R_x(90°)$$
 
 **Do these two sequences give the same result?**
 
-- (A) Yes, they commute
-- (B) No, they don't commute ✓
+-   
+
+    (A) Yes, they commute
+
+-   
+
+    (B) No, they don't commute ✓
 
 **Try it with a book!** Hold a book in front of you:
 
@@ -261,21 +275,21 @@ The group of 3D rotations is called **SO(3)**: special orthogonal $3 \times 3$ r
 
 This non-commutativity will turn out to be the mathematical origin of the uncertainty principle: if two measurements don't commute, you can't know both simultaneously. But that's for next lecture.
 
----
+------------------------------------------------------------------------
 
 ## Summary
 
-1. **Quantum mechanics is fundamentally complex.** The $i$ in the Schrödinger equation is not a bookkeeping trick — it's essential. Only complex exponentials $e^{-i(\omega t \pm kx)}$ solve the Schrödinger equation; real cosines and sines do not.
+1.  **Quantum mechanics is fundamentally complex.** The $i$ in the Schrödinger equation is not a bookkeeping trick — it's essential. Only complex exponentials $e^{-i(\omega t \pm kx)}$ solve the Schrödinger equation; real cosines and sines do not.
 
-2. **Complex numbers encode rotations.** Multiplication by $e^{i\theta}$ rotates by angle $\theta$ in the complex plane. This is identical to matrix multiplication by the rotation matrix $R(\theta)$.
+2.  **Complex numbers encode rotations.** Multiplication by $e^{i\theta}$ rotates by angle $\theta$ in the complex plane. This is identical to matrix multiplication by the rotation matrix $R(\theta)$.
 
-3. **Rotations form a group.** A group is a set with an operation satisfying closure, associativity, identity, and inverses. The unit complex numbers (U(1)) and the $2\times 2$ rotation matrices (SO(2)) are two representations of the same group.
+3.  **Rotations form a group.** A group is a set with an operation satisfying closure, associativity, identity, and inverses. The unit complex numbers (U(1)) and the $2\times 2$ rotation matrices (SO(2)) are two representations of the same group.
 
-4. **2D rotations commute; 3D rotations do not.** SO(2) is commutative — the order of rotations doesn't matter. SO(3) is non-commutative — order matters. This non-commutativity will be central to quantum mechanics.
+4.  **2D rotations commute; 3D rotations do not.** SO(2) is commutative — the order of rotations doesn't matter. SO(3) is non-commutative — order matters. This non-commutativity will be central to quantum mechanics.
 
-5. **Looking ahead.** The qubit lives on the Bloch sphere, which is acted on by the group SU(2). SU(2) is like SO(3) — three-dimensional, non-commutative — but with the twist that $R(2\pi) = -1$. The generators of SU(2) are the Pauli matrices, which we will meet next lecture.
+5.  **Looking ahead.** The qubit lives on the Bloch sphere, which is acted on by the group SU(2). SU(2) is like SO(3) — three-dimensional, non-commutative — but with the twist that $R(2\pi) = -1$. The generators of SU(2) are the Pauli matrices, which we will meet next lecture.
 
----
+------------------------------------------------------------------------
 
 ## Homework 2.4
 
@@ -291,23 +305,24 @@ For each of the following, determine whether the set and operation form a group.
 
 *Hint:* Consider the matrix $\begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$. Does it have an inverse?
 
-**(d)** The set of all $2\times 2$ real matrices with $\det \neq 0$, under multiplication. Which axiom from part (c) is now repaired?
+<!-- **(d)** The set of all $2\times 2$ real matrices with $\det \neq 0$, under multiplication. Which axiom from part (c) is now repaired? -->
 
-**(e)** The set of reflections in 2D. A reflection across an axis at angle $\alpha$ from the horizontal is given by:
+<!-- **(e)** The set of reflections in 2D. A reflection across an axis at angle $\alpha$ from the horizontal is given by:
 
 $$M(\alpha) = \begin{pmatrix} \cos 2\alpha & \sin 2\alpha \\ \sin 2\alpha & -\cos 2\alpha \end{pmatrix}$$
 
 Compute $M(\alpha_1) M(\alpha_2)$ and determine whether the result is another reflection matrix. Which axiom fails?
 
-*Hint:* A reflection matrix has $\det = -1$ and $M^2 = I$. Does the product have these properties?
+*Hint:* A reflection matrix has $\det = -1$ and $M^2 = I$. Does the product have these properties? -->
 
+<!--#
 **(f)** The set $\{I, \sigma_x\}$ under matrix multiplication, where $\sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$.
-
-**(g)** The set $\{I, \sigma_x, \sigma_y, \sigma_z\}$ under matrix multiplication. 
-
+**(g)** The set $\{I, \sigma_x, \sigma_y, \sigma_z\}$ under matrix multiplication.
 *Hint:* Compute $\sigma_x \sigma_y$. Is the result in the set?
+-->
 
----
+
+------------------------------------------------------------------------
 
 ### Problem 2: SO(2) — Matrix Properties
 
@@ -327,7 +342,7 @@ $$R(\theta) = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\thet
 
 *Hint:* $|\vec{v}'|^2 = \vec{v}'^T \vec{v}' = (R\vec{v})^T(R\vec{v})$.
 
----
+------------------------------------------------------------------------
 
 ### Problem 3: Non-Commutativity in 3D
 
@@ -349,19 +364,19 @@ $$R_z(\theta) = \begin{pmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \co
 
 **(e)** Compute the **commutator** $R_x(\pi/2)\, R_z(\pi/2) - R_z(\pi/2)\, R_x(\pi/2)$. Is it the zero matrix?
 
-**(f)** Verify that both $R_x(\pi/2)$ and $R_z(\pi/2)$ satisfy $\det R = 1$ and $R^T R = I$.
+<!-- **(f)** Verify that both $R_x(\pi/2)$ and $R_z(\pi/2)$ satisfy $\det R = 1$ and $R^T R = I$. -->
 
----
+<!-- ------------------------------------------------------------------------
 
 ### Problem 4: Permutations — A Finite Non-Abelian Group
 
 Consider three objects in positions (1, 2, 3). A **permutation** rearranges them. We can write permutations in a compact notation, for example:
 
-- $e = (1)(2)(3)$: identity, everything stays put
-- $r = (123)$: cyclic shift, $1 \to 2 \to 3 \to 1$
-- $s = (12)(3)$: swap positions 1 and 2, leave 3 fixed
+-   $e = (1)(2)(3)$: identity, everything stays put
+-   $r = (123)$: cyclic shift, $1 \to 2 \to 3 \to 1$
+-   $s = (12)(3)$: swap positions 1 and 2, leave 3 fixed
 
-**(a)** List all 6 permutations of three objects. 
+**(a)** List all 6 permutations of three objects.
 
 *Hint:* Three are "even" (identity plus two cyclic shifts) and three are "odd" (three different pairwise swaps).
 
@@ -371,11 +386,11 @@ Consider three objects in positions (1, 2, 3). A **permutation** rearranges them
 
 **(d)** Is $r \circ s = s \circ r$? This group is called $S_3$ — it is the smallest non-abelian group.
 
-**(e)** Verify the four group axioms for $S_3$. What is the inverse of the cyclic shift $r = (123)$?
+**(e)** Verify the four group axioms for $S_3$. What is the inverse of the cyclic shift $r = (123)$? -->
 
----
+------------------------------------------------------------------------
 
-### Problem 5: Discovering the Generator
+### Problem 4: Discovering the Generator
 
 **(a)** Taylor expand $\cos(\delta\theta)$ and $\sin(\delta\theta)$ to first order in $\delta\theta$ (i.e., for small $\delta\theta$). Write the resulting approximate form of $R(\delta\theta)$.
 
@@ -391,17 +406,19 @@ $G$ is called the **generator** of SO(2).
 
 **(c)** Compute $G^2$. What familiar property does it share with $i$?
 
-**(d)** A finite rotation can be built from $N$ infinitesimal rotations: $R(\theta) = \lim_{N\to\infty}\left(I + \frac{\theta}{N}G\right)^N$. Verify this numerically: compute $\left(I + \frac{\pi/4}{N}G\right)^N$ for $N = 1, 10, 100$ and compare to $R(\pi/4)$.
+We will learn more about this next week. 
 
-**(e)** Using the Taylor series $e^{\theta G} = I + \theta G + \frac{\theta^2}{2!}G^2 + \frac{\theta^3}{3!}G^3 + \cdots$ and the result from (c), show that:
+<!-- **(d)** A finite rotation can be built from $N$ infinitesimal rotations: $R(\theta) = \lim_{N\to\infty}\left(I + \frac{\theta}{N}G\right)^N$. Verify this numerically: compute $\left(I + \frac{\pi/4}{N}G\right)^N$ for $N = 1, 10, 100$ and compare to $R(\pi/4)$. -->
+
+<!-- **(e)** Using the Taylor series $e^{\theta G} = I + \theta G + \frac{\theta^2}{2!}G^2 + \frac{\theta^3}{3!}G^3 + \cdots$ and the result from (c), show that:
 
 $$e^{\theta G} = \cos\theta\, I + \sin\theta\, G$$
 
-*Hint:* Compute $G^3$, $G^4$, etc. using $G^2 = -I$. Group the series into terms with $I$ and terms with $G$, and recognize the Taylor series for $\cos\theta$ and $\sin\theta$.
+*Hint:* Compute $G^3$, $G^4$, etc. using $G^2 = -I$. Group the series into terms with $I$ and terms with $G$, and recognize the Taylor series for $\cos\theta$ and $\sin\theta$. -->
 
-**(f)** Compare your result to Euler's formula $e^{i\theta} = \cos\theta + i\sin\theta$. What role does $G$ play relative to $i$?
+<!-- **(f)** Compare your result to Euler's formula $e^{i\theta} = \cos\theta + i\sin\theta$. What role does $G$ play relative to $i$? -->
 
----
+<!-- ------------------------------------------------------------------------
 
 ### Problem 6: Rotations on the Bloch Sphere
 
@@ -417,4 +434,4 @@ The state $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$ sits on the +x
 
 **(e)** Now start with $|0\rangle$ (north pole) and apply $P(\phi)$. What state do you get? Does the north pole move? Explain why, in terms of what $P(\phi)$ does geometrically.
 
-**(f)** Write $P(\phi)$ in the form $P(\phi) = \cos(\phi/2)\,I - i\sin(\phi/2)\,\sigma_z$ (up to a global phase). This shows that the phase gate is a rotation generated by $\sigma_z$ — a preview of next lecture.
+**(f)** Write $P(\phi)$ in the form $P(\phi) = \cos(\phi/2)\,I - i\sin(\phi/2)\,\sigma_z$ (up to a global phase). This shows that the phase gate is a rotation generated by $\sigma_z$ — a preview of next lecture. -->

@@ -39,7 +39,7 @@ For circular polarization, the $E_x$ and $E_y$ components have equal amplitude b
 These six states map directly onto the Bloch sphere:
 
 | Polarization | Jones Vector | Qubit | Bloch Position |
-|------------------|-----------------|----------------|---------------------|
+|------------------|------------------|------------------|--------------------|
 | Horizontal $\|H\rangle$ | $(1, 0)^T$ | $\|0\rangle$ | North pole (+z) |
 | Vertical $\|V\rangle$ | $(0, 1)^T$ | $\|1\rangle$ | South pole (−z) |
 | Diagonal $\|D\rangle$ | $(1, 1)^T/\sqrt{2}$ | $\|+\rangle$ | +x axis |
@@ -52,7 +52,7 @@ Notice what distinguishes these states. $|D\rangle$ and $|A\rangle$ have the sam
 The six states form three pairs of orthogonal states, corresponding to three measurement bases:
 
 | Axis | Basis | Physical Measurement |
-|----------------|----------------|-----------------------------------------|
+|-----------------|-----------------|--------------------------------------|
 | z | $\|H\rangle$, $\|V\rangle$ | Horizontal/Vertical polarizer |
 | x | $\|D\rangle$, $\|A\rangle$ | Polarizer at ±45° |
 | y | $\|R\rangle$, $\|L\rangle$ | Circular polarizer (quarter-wave plate + linear polarizer) |
@@ -260,7 +260,7 @@ This is admittedly unsatisfying. But it is the current state of the art: the Sch
 
 ------------------------------------------------------------------------
 
-## Homework 2.3
+## Homework
 
 ### Problem 1: Changing Basis
 
@@ -271,10 +271,6 @@ A photon is prepared in the state $|H\rangle$.
 *Hint:* Use the definitions $|R\rangle = \frac{1}{\sqrt{2}}(|H\rangle + i|V\rangle)$ and $|L\rangle = \frac{1}{\sqrt{2}}(|H\rangle - i|V\rangle)$, and solve for $|H\rangle$.
 
 **(b)** If this $|H\rangle$-polarized photon passes through a right-circular polarizer, what is the probability it is transmitted? What about a left-circular polarizer?
-
-**(c)** Do your answers to (b) sum to 1? Why must this be the case?
-
-**(d)** Now write $|D\rangle$ in the circular basis $\{|R\rangle, |L\rangle\}$. What is the probability that a $|D\rangle$-polarized photon passes through an $|R\rangle$ polarizer?
 
 ------------------------------------------------------------------------
 
@@ -299,7 +295,7 @@ $$T(n) = \cos^{2(n+1)}\!\left(\frac{\pi}{2(n+1)}\right)$$
 **(f)** Explain physically why adding more polarizers — each of which can only absorb light — *increases* the total transmission. What does this have to do with measurement changing the state?
 
 ------------------------------------------------------------------------
-
+<!-- 
 ### Problem 3: Polarizer Round Trips
 
 **(a)** A photon starts in state $|H\rangle$ and passes through an $|H\rangle$ polarizer. What is the state afterward? What fraction of the light is transmitted? (This should be trivial — that's the point.)
@@ -335,8 +331,8 @@ Alice prepares single photons in one of two ways, but won't tell Bob which:
 
 *Hint:* Think about what basis you would need to measure in.
 
-------------------------------------------------------------------------
-
+------------------------------------------------------------------------ -->
+<!-- 
 ### Problem 5: The Projector Algebra
 
 **(a)** Write out the projection operator $P_D = |D\rangle\langle D|$ as a $2\times 2$ matrix in the $\{|H\rangle, |V\rangle\}$ basis.
@@ -349,9 +345,9 @@ Alice prepares single photons in one of two ways, but won't tell Bob which:
 
 **(e)** Compute the product $P_H P_V$. What matrix do you get? Interpret physically: what does it mean to project onto $|V\rangle$ and then onto $|H\rangle$?
 
-**(f)** Compute $P_H P_D P_V$ as a matrix. This represents the three-polarizer sequence H → D → V. Show that this operator is not zero, even though $P_H P_V = 0$. Relate the nonzero matrix elements to the 25% transmission we found in class.
+**(f)** Compute $P_H P_D P_V$ as a matrix. This represents the three-polarizer sequence H → D → V. Show that this operator is not zero, even though $P_H P_V = 0$. Relate the nonzero matrix elements to the 25% transmission we found in class. -->
 
-------------------------------------------------------------------------
+<!-- ------------------------------------------------------------------------
 
 ### Problem 6: Energy Conservation in Measurement
 
@@ -370,8 +366,8 @@ Verify your probabilities sum to 1.
 
 **(c)** In each outcome, where did the photon's energy $h\nu$ go? Verify that energy is conserved in every case.
 
-------------------------------------------------------------------------
-
+------------------------------------------------------------------------ -->
+<!-- 
 ### Problem 7: States on the Bloch Sphere
 
 Recall the Bloch sphere parametrization:
@@ -388,4 +384,16 @@ $$|\psi\rangle = \cos\frac{\theta}{2}|H\rangle + e^{i\phi}\sin\frac{\theta}{2}|V
 
 **(e)** Now consider a state with $\theta = \pi/2$, $\phi = \pi/4$. Write out this state. This state lies on the equator — where exactly? It's not one of the six cardinal states. Calculate $P(H)$, $P(D)$, and $P(R)$. Which of the three measurement bases comes closest to giving a definite (probability $\approx 1$) outcome?
 
-**(f)** A state is prepared such that $P(H) = 3/4$ and $P(D) = 1/2$. What are the Bloch coordinates $\theta$ and $\phi$? Is the state uniquely determined by these two probabilities? If not, what additional measurement would pin it down?
+**(f)** A state is prepared such that $P(H) = 3/4$ and $P(D) = 1/2$. What are the Bloch coordinates $\theta$ and $\phi$? Is the state uniquely determined by these two probabilities? If not, what additional measurement would pin it down? -->
+
+### Problem 3:  Quantum Measurement Problem
+In the Mach-Zehnder interferometer, a single photon enters the first beamsplitter and — based on the interference pattern — appears to travel through both arms simultaneously. Yet when it reaches a detector, it always produces exactly one click at one detector. It is never split between two detectors, and it never fails to arrive.
+
+(a) In your own words, describe the quantum measurement problem. At what point does the photon stop behaving like a wave (traveling both paths, producing interference) and start behaving like a particle (clicking at one detector)? Be specific about what happens at each stage of the experiment.
+(b) What experimental evidence forces us to conclude the photon travels both paths? What happens to the interference pattern if you block one arm?
+
+(c) Propose a resolution to the measurement problem. There is no single accepted answer — physicists have debated this for a century. Some approaches include: the Copenhagen interpretation, the many-worlds interpretation, decoherence/entanglement with the environment, or objective collapse theories. Pick one (or propose your own) and argue for it. Your answer should address: at what point (if any) does the wave description break down, and why do we only ever experience one outcome?
+
+(d) Is the "collapse of the wavefunction" a physical process, or a mathematical update to our description? Defend your position.
+
+You are welcome (and encouraged) to discuss with classmates, consult textbooks, or use an LLM. If you use an LLM, cite it and briefly note what you used it for. Your final answer must be in your own words and reflect your own understanding — we are looking for evidence that you've genuinely thought about this, not for a "correct" answer.

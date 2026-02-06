@@ -57,7 +57,8 @@ project:
 site:
   template: book-theme
   options:
-  #  style: ./style/custom.css  # Not working as of 1/2026
+    outline_maxdepth: 1   # show only H1 and H2 in the right-side outline
+    #  style: ./style/custom.css  # Not working as of 1/2026
     logo: ./figures/PU-H-logo.jpg
     favicon: ./figures/PU-H-logo.jpg
     folders: true
