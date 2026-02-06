@@ -27,12 +27,15 @@ project:
         - file: lectures/01_04_lecture.md
         - file: lectures/02_01_lecture.md
         - file: lectures/02_02_lecture.md
+        - file: lectures/02_03_lecture.md
+        - file: lectures/02_04_lecture.md
 
     - title: Homework
       children:
         - file: homework/01_homework.md
         - file: homework/02_homework.md
         - file: homework/03_homework.md
+        - file: homework/04_homework.md
     - title: Resources
       children:
         - file: ./resources/syllabus.md

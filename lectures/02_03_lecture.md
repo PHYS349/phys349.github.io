@@ -1,649 +1,391 @@
 # Lecture 2.3: Polarization and Measurement
 
-## Review: The Bloch Sphere
-
-In Lecture 2.2, we developed the Bloch sphere as a way to visualize qubit states:
-
-$$|\psi\rangle = \cos\frac{\theta}{2}|0\rangle + e^{i\phi}\sin\frac{\theta}{2}|1\rangle$$
-
-- **Two parameters:** polar angle $\theta$ (amplitude mixing) and azimuthal angle $\phi$ (relative phase)
-- **North pole:** $|0\rangle$
-- **South pole:** $|1\rangle$  
-- **Equator:** equal superpositions with different relative phases
-
-Today we'll see a beautiful physical realization of the Bloch sphere: **the polarization of light**. This will be our first concrete qubit, and we can manipulate it with simple optical elements.
-
----
-
-## The Electric Field of Light
+## Polarization as a Qubit
 
 Light is an electromagnetic wave. For light traveling along the $z$-axis, the electric field oscillates in the transverse $x$-$y$ plane:
 
-$$\vec{E}(z,t) = \begin{pmatrix} E_x(z,t) \\ E_y(z,t) \end{pmatrix}$$
+$$\vec{E}(x,t) = \text{Re}\left[(E_x \hat{x} + E_y e^{i\phi} \hat{y})\, e^{i(kx - \omega t)}\right]$$
 
-Each component oscillates sinusoidally. Using the complex representation:
+The amplitudes $E_x$ and $E_y$ and the relative phase $\phi$ together determine the **polarization** — the pattern traced by the electric field vector as the wave passes. Linear polarization, circular polarization, and everything in between are all encoded in these parameters.
 
-$$E_x = \mathcal{E}_x e^{i(kz - \omega t + \phi_x)}, \qquad E_y = \mathcal{E}_y e^{i(kz - \omega t + \phi_y)}$$
+### The Jones Vector
 
-The **polarization** of light describes the pattern traced by the electric field vector as the wave passes.
+We can factor out the propagation $e^{i(kx - \omega t)}$ and focus on what makes different polarizations different. What remains is the **Jones vector**:
 
-```{figure} polarization_states.svg
-:name: polarization-states
-:width: 100%
+$$\vec{J} = \begin{pmatrix} E_x \\ E_y e^{i\phi} \end{pmatrix}$$
 
-Electric field patterns for different polarization states. Top row: linear polarizations (H, V, D, A). Bottom row: circular polarizations (R, L). The arrows show the E-field direction as seen looking into the beam.
-```
+This is a 2D complex vector — exactly like our qubit state vectors! For normalized states (total intensity = 1):
 
----
+$$|E_x|^2 + |E_y|^2 = 1$$
 
-## The Jones Vector
+### The Six Cardinal Polarization States
 
-We can factor out the propagation $e^{i(kz - \omega t)}$ and focus on what makes polarizations different. What remains is the **Jones vector**:
+We identify horizontal and vertical polarization with our computational basis:
 
-$$\vec{J} = \begin{pmatrix} \mathcal{E}_x e^{i\phi_x} \\ \mathcal{E}_y e^{i\phi_y} \end{pmatrix}$$
+$$|H\rangle = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \qquad |V\rangle = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$$
 
-This is a 2D complex vector — exactly like our qubit states!
+From these we can build the diagonal and anti-diagonal linear polarizations:
 
-For normalized states (total intensity = 1):
-$$|\mathcal{E}_x|^2 + |\mathcal{E}_y|^2 = 1$$
+$$|D\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \frac{|H\rangle + |V\rangle}{\sqrt{2}}, \qquad |A\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -1 \end{pmatrix} = \frac{|H\rangle - |V\rangle}{\sqrt{2}}$$
 
-### The Polarization-Qubit Dictionary
+And the circular polarizations, where the relative phase between $x$ and $y$ components is $\pm \pi/2$:
 
-| Polarization | Symbol | Jones Vector | Qubit | Bloch Position |
-|--------------|--------|--------------|-------|----------------|
-| Horizontal | $\|H\rangle$ | $\begin{pmatrix} 1 \\ 0 \end{pmatrix}$ | $\|0\rangle$ | North pole (+z) |
-| Vertical | $\|V\rangle$ | $\begin{pmatrix} 0 \\ 1 \end{pmatrix}$ | $\|1\rangle$ | South pole (−z) |
-| Diagonal (+45°) | $\|D\rangle$ | $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix}$ | $\|+\rangle$ | +x axis |
-| Anti-diagonal (−45°) | $\|A\rangle$ | $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -1 \end{pmatrix}$ | $\|-\rangle$ | −x axis |
-| Right circular | $\|R\rangle$ | $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ i \end{pmatrix}$ | $\|+i\rangle$ | +y axis |
-| Left circular | $\|L\rangle$ | $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -i \end{pmatrix}$ | $\|-i\rangle$ | −y axis |
+$$|R\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ i \end{pmatrix} = \frac{|H\rangle + i|V\rangle}{\sqrt{2}}, \qquad |L\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -i \end{pmatrix} = \frac{|H\rangle - i|V\rangle}{\sqrt{2}}$$
 
-### Visualizing on the Bloch Sphere
+For circular polarization, the $E_x$ and $E_y$ components have equal amplitude but are 90° out of phase. The electric field vector traces out a circle as the wave propagates — rotating clockwise (R) or counterclockwise (L) when viewed head-on.
 
-```python
-import numpy as np
-from qiskit.visualization import plot_bloch_multivector
-from qiskit.quantum_info import Statevector
+### The Polarization–Qubit Dictionary
 
-# Horizontal polarization |H⟩ = |0⟩ (north pole)
-H = Statevector([1, 0])
-print("Horizontal |H⟩ = |0⟩:")
-plot_bloch_multivector(H)
-```
+These six states map directly onto the Bloch sphere:
 
-```python
-# Vertical polarization |V⟩ = |1⟩ (south pole)
-V = Statevector([0, 1])
-print("Vertical |V⟩ = |1⟩:")
-plot_bloch_multivector(V)
-```
+| Polarization | Jones Vector | Qubit | Bloch Position |
+|------------------|-----------------|----------------|---------------------|
+| Horizontal $\|H\rangle$ | $(1, 0)^T$ | $\|0\rangle$ | North pole (+z) |
+| Vertical $\|V\rangle$ | $(0, 1)^T$ | $\|1\rangle$ | South pole (−z) |
+| Diagonal $\|D\rangle$ | $(1, 1)^T/\sqrt{2}$ | $\|+\rangle$ | +x axis |
+| Anti-diagonal $\|A\rangle$ | $(1, -1)^T/\sqrt{2}$ | $\|-\rangle$ | −x axis |
+| Right circular $\|R\rangle$ | $(1, i)^T/\sqrt{2}$ | $\|+i\rangle$ | +y axis |
+| Left circular $\|L\rangle$ | $(1, -i)^T/\sqrt{2}$ | $\|-i\rangle$ | −y axis |
 
-```python
-# Diagonal polarization |D⟩ = |+⟩ (+x axis)
-D = Statevector([1/np.sqrt(2), 1/np.sqrt(2)])
-print("Diagonal |D⟩ = |+⟩:")
-plot_bloch_multivector(D)
-```
+Notice what distinguishes these states. $|D\rangle$ and $|A\rangle$ have the same amplitudes — both have $|E_x| = |E_y| = 1/\sqrt{2}$ — but differ by a relative phase of $\pi$. Similarly, $|R\rangle$ and $|L\rangle$ have the same amplitudes but differ by a relative phase of $\pi$. Relative phase is physical: it produces completely different polarizations.
 
-```python
-# Anti-diagonal polarization |A⟩ = |-⟩ (-x axis)
-A = Statevector([1/np.sqrt(2), -1/np.sqrt(2)])
-print("Anti-diagonal |A⟩ = |-⟩:")
-plot_bloch_multivector(A)
-```
-
-```python
-# Right circular polarization |R⟩ = |+i⟩ (+y axis)
-R = Statevector([1/np.sqrt(2), 1j/np.sqrt(2)])
-print("Right circular |R⟩ = |+i⟩:")
-plot_bloch_multivector(R)
-```
-
-```python
-# Left circular polarization |L⟩ = |-i⟩ (-y axis)
-L = Statevector([1/np.sqrt(2), -1j/np.sqrt(2)])
-print("Left circular |L⟩ = |-i⟩:")
-plot_bloch_multivector(L)
-```
-
----
-
-## Relative Phase Creates Different Polarizations
-
-Look carefully at the Jones vectors:
-
-**Diagonal vs. Anti-diagonal:**
-$$|D\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix}, \qquad |A\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -1 \end{pmatrix}$$
-
-Same amplitudes! The only difference is a relative phase of $\pi$ (the minus sign = $e^{i\pi}$).
-
-**Right circular vs. Left circular:**
-$$|R\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ i \end{pmatrix}, \qquad |L\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -i \end{pmatrix}$$
-
-Same amplitudes! The difference is a relative phase of $\pi$ (since $-i = e^{i\pi} \cdot i$).
-
-```{admonition} Key Insight
-:class: important
-
-**Relative phase is physical!**
-
-Two states with the same amplitudes but different relative phases represent completely different physical polarizations. This is exactly what we saw in the MZI: relative phase determines interference.
-```
-
----
-
-## iClicker Question 1
-
-**The states $|D\rangle = \frac{1}{\sqrt{2}}(|H\rangle + |V\rangle)$ and $|A\rangle = \frac{1}{\sqrt{2}}(|H\rangle - |V\rangle)$ differ only by a relative phase. On the Bloch sphere, they are located:**
-
-- (A) At the same point
-- (B) On opposite sides of the sphere (antipodal) ✓
-- (C) Both on the equator but 90° apart
-- (D) One at a pole, one on the equator
-
-**Solution:** $|D\rangle$ is at +x and $|A\rangle$ is at −x. They are antipodal (opposite sides), which means they are orthogonal states: $\langle D|A\rangle = 0$.
-
----
-
-## Three Orthogonal Bases
-
-The six polarization states form three pairs of orthogonal states. Each pair defines a **basis** for the 2D space.
-
-### The z-axis: H/V Basis
-
-$$\langle H|V\rangle = \begin{pmatrix} 1 & 0 \end{pmatrix}\begin{pmatrix} 0 \\ 1 \end{pmatrix} = 0$$
-
-Horizontal and vertical are orthogonal. Any polarization can be written:
-$$|\psi\rangle = \alpha|H\rangle + \beta|V\rangle$$
-
-### The x-axis: D/A Basis
-
-$$\langle D|A\rangle = \frac{1}{2}\begin{pmatrix} 1 & 1 \end{pmatrix}\begin{pmatrix} 1 \\ -1 \end{pmatrix} = \frac{1}{2}(1 - 1) = 0$$
-
-Diagonal and anti-diagonal are orthogonal. Any polarization can also be written:
-$$|\psi\rangle = \gamma|D\rangle + \delta|A\rangle$$
-
-### The y-axis: R/L Basis
-
-$$\langle R|L\rangle = \frac{1}{2}\begin{pmatrix} 1 & -i \end{pmatrix}\begin{pmatrix} 1 \\ -i \end{pmatrix} = \frac{1}{2}(1 + i^2) = \frac{1}{2}(1-1) = 0$$
-
-Right and left circular are orthogonal. Any polarization can also be written:
-$$|\psi\rangle = \epsilon|R\rangle + \zeta|L\rangle$$
-
-### Changing Bases
-
-We can express any state in any basis:
-
-$$|D\rangle = \frac{1}{\sqrt{2}}|H\rangle + \frac{1}{\sqrt{2}}|V\rangle$$
-
-$$|H\rangle = \frac{1}{\sqrt{2}}|D\rangle + \frac{1}{\sqrt{2}}|A\rangle$$
-
-$$|H\rangle = \frac{1}{\sqrt{2}}|R\rangle + \frac{1}{\sqrt{2}}|L\rangle$$
-
-```python
-# Verify: |H⟩ in the D/A basis
-# |H⟩ = (1/√2)|D⟩ + (1/√2)|A⟩
-
-H_from_DA = (1/np.sqrt(2)) * D.data + (1/np.sqrt(2)) * A.data
-print(f"|H⟩ from D/A basis: {H_from_DA}")
-print(f"|H⟩ directly: {H.data}")
-print(f"Equal? {np.allclose(H_from_DA, H.data)}")
-```
-
-### The Three Axes on the Bloch Sphere
+The six states form three pairs of orthogonal states, corresponding to three measurement bases:
 
 | Axis | Basis | Physical Measurement |
-|------|-------|---------------------|
+|----------------|----------------|-----------------------------------------|
 | z | $\|H\rangle$, $\|V\rangle$ | Horizontal/Vertical polarizer |
 | x | $\|D\rangle$, $\|A\rangle$ | Polarizer at ±45° |
-| y | $\|R\rangle$, $\|L\rangle$ | Circular polarizer (with quarter-wave plate) |
+| y | $\|R\rangle$, $\|L\rangle$ | Circular polarizer (quarter-wave plate + linear polarizer) |
 
-Each axis corresponds to a different type of polarization measurement!
+------------------------------------------------------------------------
 
----
+## Polarizers and Projective Measurement
 
-## iClicker Question 2
+A polarizer transmits light polarized along one direction and blocks the orthogonal component. Let's figure out two things: how much power comes through, and what is the state of the light afterward.
 
-**What is $|\langle H|D\rangle|^2$?**
+### How Much Power Passes?
 
-- (A) 0
-- (B) 1/4
-- (C) 1/2 ✓
-- (D) 1
+Consider a general input state $|\psi\rangle = c_0|H\rangle + c_1|V\rangle$ hitting a vertical polarizer. The polarizer only passes the $|V\rangle$ component.
 
-**Solution:** 
-$$\langle H|D\rangle = \begin{pmatrix} 1 & 0 \end{pmatrix} \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \frac{1}{\sqrt{2}}$$
+The amplitude to pass is the overlap with $|V\rangle$:
 
-$$|\langle H|D\rangle|^2 = \frac{1}{2}$$
+$$\text{amplitude} = \langle V|\psi\rangle = \langle V|(c_0|H\rangle + c_1|V\rangle) = c_1$$
 
-This is the probability that D-polarized light passes through an H polarizer.
+The power (intensity) detected is the magnitude squared of the amplitude:
 
----
+$$\text{power detected} = |c_1|^2 = |\langle V|\psi\rangle|^2$$
 
-## Polarizers: Projective Measurement
+This is Malus's Law in Dirac notation: the fraction of power transmitted through a polarizer $|\chi\rangle$ is $|\langle \chi|\psi\rangle|^2$.
 
-A **polarizer** transmits light polarized along one axis and blocks the orthogonal polarization.
+### What Is the State Afterward?
 
-### Horizontal Polarizer
+After the vertical polarizer, the output state is:
 
-A horizontal polarizer projects onto $|H\rangle$:
+$$|\psi_{\text{out}}\rangle = |V\rangle\langle V|\psi\rangle$$
 
-$$P_H = |H\rangle\langle H| = \begin{pmatrix} 1 \\ 0 \end{pmatrix}\begin{pmatrix} 1 & 0 \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$$
+The polarizer doesn't just filter — it **projects** the state onto $|V\rangle$. Whatever the input was, what comes out is always proportional to $|V\rangle$.
 
-**What happens to various input states?**
+### The Projection Operator
 
-**H-polarized input:**
-$$P_H|H\rangle = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}\begin{pmatrix} 1 \\ 0 \end{pmatrix} = \begin{pmatrix} 1 \\ 0 \end{pmatrix} = |H\rangle$$
+We can write this as the action of a **projection operator**:
 
-All light passes, state unchanged.
+$$P_V = |V\rangle\langle V| = \begin{pmatrix} 0 \\ 1 \end{pmatrix}\begin{pmatrix} 0 & 1 \end{pmatrix} = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix}$$
 
-**V-polarized input:**
-$$P_H|V\rangle = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}\begin{pmatrix} 0 \\ 1 \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$$
+Acting on an arbitrary state:
 
-No light passes.
+$$P_V |\psi\rangle = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix}\begin{pmatrix} c_0 \\ c_1 \end{pmatrix} = \begin{pmatrix} 0 \\ c_1 \end{pmatrix}$$
 
-**D-polarized input:**
-$$P_H|D\rangle = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 0 \end{pmatrix}$$
+The $H$ component is gone; only the $V$ component survives.
 
-The output has norm $1/\sqrt{2}$, so the **intensity** transmitted is $|1/\sqrt{2}|^2 = 1/2$.
+Similarly, the horizontal projector is:
 
-After normalizing, the output state is $|H\rangle$.
+$$P_H = |H\rangle\langle H| = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}$$
 
-### Malus's Law
+### Projectors Are Idempotent
 
-For a polarizer oriented along direction $|\chi\rangle$, the transmitted intensity is:
+A key property of projectors: applying the same projection twice gives the same result as applying it once.
 
-$$\boxed{I_{out} = |\langle\chi|\psi_{in}\rangle|^2 \cdot I_{in}}$$
+$$P_V P_V = |V\rangle\langle V|V\rangle\langle V| = |V\rangle(1)\langle V| = |V\rangle\langle V| = P_V$$
 
-This is **Malus's Law** (1809), written in modern notation.
+$$P_V^2 = P_V$$
 
-The quantity $|\langle\chi|\psi\rangle|^2$ is the fraction of light that passes through.
+And more generally:
 
----
+$$P_V^N = P_V$$
 
-## iClicker Question 3
+This makes physical sense: once you've projected onto $|V\rangle$, the state is already $|V\rangle$. Running it through the same polarizer again changes nothing.
 
-**R-polarized light passes through a horizontal polarizer. What fraction of the intensity is transmitted?**
+------------------------------------------------------------------------
 
-- (A) 0
-- (B) 1/4
-- (C) 1/2 ✓
-- (D) 1
+## From Waves to Single Photons
 
-**Solution:**
-$$|R\rangle = \frac{1}{\sqrt{2}}(|H\rangle + i|V\rangle)$$
+Everything so far has been classical wave optics. Malus's Law tells us what fraction of the **intensity** passes through a polarizer. Now let's ask: what happens when we turn the power way down?
 
-$$\langle H|R\rangle = \frac{1}{\sqrt{2}}$$
+### Photons as Discrete Energy Packets
 
-$$|\langle H|R\rangle|^2 = \frac{1}{2}$$
+From the blackbody radiation problem (one of the founding puzzles of quantum mechanics), we know that the electromagnetic field carries energy in discrete packets — **photons** — each with energy:
 
-Half the light passes through.
+$$E_{\text{photon}} = h\nu$$
 
-```python
-# Verify with Qiskit
-R = Statevector([1/np.sqrt(2), 1j/np.sqrt(2)])
-H = Statevector([1, 0])
+where $h = 6.626 \times 10^{-34}$ J·s is Planck's constant and $\nu$ is the frequency of the light.
 
-# Probability of measuring |H⟩
-prob_H = np.abs(np.vdot(H.data, R.data))**2
-print(f"P(H|R) = {prob_H}")  # Should be 0.5
-```
+Let's calculate what this energy actually is. For a helium-neon (HeNe) laser at $\lambda = 633$ nm:
 
----
+$$\nu = \frac{c}{\lambda} = \frac{3 \times 10^8 \text{ m/s}}{633 \times 10^{-9} \text{ m}} \approx 4.7 \times 10^{14} \text{ Hz}$$
 
-## From Waves to Photons: The Quantum Leap
+$$E_{\text{photon}} = h\nu \approx (6.6 \times 10^{-34})(4.7 \times 10^{14}) \approx 3.1 \times 10^{-19} \text{ J}$$
 
-So far, everything we've done is classical wave optics. Malus's Law tells us what fraction of the **intensity** passes through a polarizer.
+That is an incredibly small amount of energy.
 
-Now we take the quantum leap.
+### How Many Photons in a Laser Pointer?
 
-### Light is Quantized
+A typical laser pointer has a power of about $P = 1$ mW $= 10^{-3}$ W. Power is energy per unit time, so the number of photons emitted per second is:
 
-Light comes in discrete packets called **photons**, each carrying energy $E = \hbar\omega$.
+$$\dot{N} = \frac{P}{E_{\text{photon}}} = \frac{10^{-3} \text{ W}}{3.1 \times 10^{-19} \text{ J}} \approx 3.2 \times 10^{15} \text{ photons/s}$$
 
-What happens when we turn down the intensity until only one photon at a time hits the polarizer?
+That's about 3 quadrillion photons per second! At this power level, the photons arrive so densely packed that the light appears perfectly continuous. Your detector sees a smooth signal proportional to $|E|^2$.
 
-### The Experiment
+### Turning Down the Power
 
-Send D-polarized photons through an H polarizer, one at a time.
+Now imagine we gradually reduce the power. What do we expect to see on a detector?
 
-**Classical prediction:** Each photon should "half pass" — we'd see a continuous dim beam.
+At 1 mW, we have $\sim 10^{15}$ photons/s — a smooth, continuous signal.
 
-**What actually happens:** Each photon either passes completely OR is absorbed completely. There is no "half a photon."
+At 1 nW ($10^{-9}$ W), we have $\sim 10^{9}$ photons/s — still essentially continuous.
 
-Over many photons, 50% pass and 50% are absorbed. But each individual event is all-or-nothing.
+But at extremely low power — say, a few photons per second — something qualitatively different happens.
 
-```{admonition} The Fundamental Discreteness
-:class: important
+### How Do You Actually Detect Single Photons?
 
-**A photon is indivisible.**
+A standard photodetector works like this: an incoming photon hits a semiconductor and promotes an electron from the valence band to the conduction band. That electron flows as a current. The current passes through a resistor, and by Ohm's law ($V = IR$), you measure a voltage drop.
 
-When a photon encounters a polarizer:
-- It either passes through completely, OR
-- It is absorbed completely
+The problem is that one photon produces one electron, which is a fantastically tiny current — far too small to measure directly.
 
-The classical "intensity fraction" becomes a **probability** for individual photon events.
-```
+The solution is an **Avalanche Photodetector (APD)**. In an APD, a strong reverse bias voltage accelerates the initial photoelectron so that it knocks out additional electrons through impact ionization. Those electrons are also accelerated, knock out more, and so on — creating a cascade, an *avalanche*. A single absorbed photon triggers a macroscopic current pulse that you can easily measure.
 
-### The Born Rule
+A more modern alternative is the **Superconducting Nanowire Single-Photon Detector (SNSPD)**. An SNSPD consists of a thin superconducting nanowire, cooled well below its critical temperature and biased with a current just below the critical current. When a single photon is absorbed, it breaks Cooper pairs in a small region of the wire, creating a resistive hotspot. The bias current is forced to divert around this hotspot, which pushes the current density in the remaining superconducting cross-section above the critical value. The entire wire cross-section goes normal (resistive), and the sudden appearance of resistance in the circuit produces a measurable voltage pulse. The wire then cools back to superconducting on a timescale of nanoseconds, ready for the next photon.
 
-This forces us to reinterpret Malus's Law:
+Regardless of the detection method, the end result is the same: a voltage spike on our oscilloscope, roughly 1 ps to 1 ns wide, that tells us exactly one photon has arrived.
 
-**Classical (waves):** $I_{out}/I_{in} = |\langle\chi|\psi\rangle|^2$ — "What fraction of intensity passes?"
+------------------------------------------------------------------------
 
-**Quantum (photons):** $P(\text{pass}) = |\langle\chi|\psi\rangle|^2$ — "What is the probability this photon passes?"
+## Single Photons in the Mach-Zehnder Interferometer
 
-This is the **Born Rule**, a fundamental postulate of quantum mechanics.
+Now put a single-photon detector at each output port of a Mach-Zehnder interferometer, and send in photons one at a time — on average, about one per second.
 
----
+Classically, we found that the output intensities depend on the phase difference $\Delta\phi$ between the two arms:
 
-## Measurement Changes the State
+$$I_{D1} = \frac{1}{2}(1 + \cos\Delta\phi), \qquad I_{D2} = \frac{1}{2}(1 - \cos\Delta\phi)$$
 
-Here's something crucial: **if a photon passes through an H polarizer, what is its polarization afterward?**
+With single photons, you don't see continuous intensities. Instead, each photon produces a click at exactly one detector — never both, never neither. The photon is indivisible.
 
-**Answer:** It's $|H\rangle$, regardless of what it was before!
+But if you accumulate many clicks, the statistics reproduce the classical interference pattern. If $\Delta\phi = 0$ (constructive interference at D1), every photon clicks at D1. If $\Delta\phi = \pi/2$, each photon has a 50/50 chance of clicking at either detector.
 
-The polarizer doesn't just filter — it **prepares** a definite state. A photon that passes through an H polarizer emerges horizontally polarized.
+### Which Path Did the Photon Take?
 
-$$|\psi\rangle \xrightarrow{\text{passes H polarizer}} |H\rangle$$
+This is the central question — the MZI version of the double-slit argument.
 
-This is called **state collapse** or **projection**.
+After the first beam splitter, the quantum state of the photon is:
 
----
+$$|\psi\rangle = \frac{1}{\sqrt{2}}\big(|\text{arm 1}\rangle + |\text{arm 2}\rangle\big)$$
 
-## iClicker Question 4
+The photon is in a superposition of being in both arms. It accumulates phase in each arm, arrives at the second beam splitter, and interference determines which detector clicks.
 
-**A photon in state $|D\rangle$ passes through an H polarizer. What is its state afterward?**
+How can we be confident the photon really went both ways? Because we see interference. If we block one arm, the interference disappears — both detectors click with equal probability regardless of $\Delta\phi$. The fact that $\Delta\phi$ controls the outcome means both arms must be contributing amplitudes. The only consistent picture is that the single photon traveled both paths simultaneously, as a wave with complex amplitudes along each arm. This is exactly the quantum description we've been building: multiple configurations, each carrying a complex amplitude.
 
-- (A) $|D\rangle$ (unchanged)
-- (B) $|H\rangle$ ✓
-- (C) $\frac{1}{\sqrt{2}}|H\rangle$ (reduced amplitude)
-- (D) Could be either $|H\rangle$ or $|V\rangle$
+### The Wave Picture Works — Until Detection
 
-**Solution:** If the photon passes, it must now be horizontally polarized. The measurement has changed (collapsed) its state to $|H\rangle$.
+So let's trace the photon through the interferometer:
 
-The factor of $1/\sqrt{2}$ determined the *probability* of passing, not the output state.
+-   At the first beam splitter: the photon is a wave, split into two amplitudes. Fine.
+-   Traveling through the arms: still a wave, accumulating phase. Fine.
+-   At the second beam splitter: still a wave, interfering. Fine.
+-   Right before the detectors: still a wave, with amplitudes at both output ports. Fine.
 
----
+$$|\psi\rangle = c_1|\text{D1}\rangle + c_2|\text{D2}\rangle$$
 
-## The Three-Polarizer Paradox
+At every stage, the wave picture is perfectly logical and consistent. But then the photon hits a detector — and we get a click at exactly one location. The wave, which had amplitude at both detectors, seems to "choose" one.
 
-Now we can understand a striking quantum effect.
+What happened?
 
-### Setup 1: H polarizer → V polarizer
+------------------------------------------------------------------------
 
-1. Light starts H-polarized: $|H\rangle$
-2. H polarizer: all passes (state remains $|H\rangle$)
-3. V polarizer: $P = |\langle V|H\rangle|^2 = 0$
+## The Measurement Problem
 
-**Result: 0% transmission.** H and V are orthogonal.
+This has been a source of a great deal of headache in physics. It's called the **measurement problem**: how does a quantum superposition become a definite classical outcome?
 
-```python
-# Setup 1: H → V
-print("Setup 1: H → V")
-prob_V_given_H = np.abs(np.vdot(V.data, H.data))**2
-print(f"Transmission: {prob_V_given_H * 100}%")
-```
+Our goal here is not to resolve the full philosophical debate, but to understand the physical process that occurs during detection. The key framework is called **open quantum system theory** — a formalism that describes what happens to a quantum system when information or energy leaks out into an environment and can never be recovered. We won't develop the full formalism here, but we can understand the essential physics by following the quantum state step by step through the detection process.
 
-### Setup 2: H polarizer → D polarizer → V polarizer
+### Step 1: Superposition at the Detectors
 
-1. Light starts H-polarized: $|H\rangle$
-2. H polarizer: all passes (state is $|H\rangle$)
-3. D polarizer: $P = |\langle D|H\rangle|^2 = 1/2$ passes, state becomes $|D\rangle$
-4. V polarizer: $P = |\langle V|D\rangle|^2 = 1/2$ of that passes, state becomes $|V\rangle$
+Just before detection, the photon is in a superposition of arriving at the two detectors:
 
-**Total transmission:** $1 \times \frac{1}{2} \times \frac{1}{2} = \frac{1}{4}$
+$$|\Psi\rangle = \frac{1}{\sqrt{2}}|\gamma_{\text{D1}}\rangle + \frac{1}{\sqrt{2}}|\gamma_{\text{D2}}\rangle$$
 
-**Result: 25% transmission!**
+where $|\gamma_{\text{D1}}\rangle$ means "photon heading toward detector D1" and likewise for D2.
 
-```python
-# Setup 2: H → D → V
-print("\nSetup 2: H → D → V")
-prob_D_given_H = np.abs(np.vdot(D.data, H.data))**2
-prob_V_given_D = np.abs(np.vdot(V.data, D.data))**2
-total = prob_D_given_H * prob_V_given_D
-print(f"P(D|H) = {prob_D_given_H}")
-print(f"P(V|D) = {prob_V_given_D}")
-print(f"Total transmission: {total * 100}%")
-```
+### Step 2: The Photon Interacts with One Electron
 
-### The Paradox
+The photon hits the semiconductor in one of the detectors and is absorbed, promoting an electron from the valence band to the conduction band. But the photon was in a superposition of *which* detector it was at, so now the superposition transfers to the electron:
 
-**Adding a polarizer INCREASED the transmission from 0% to 25%!**
+$$|\Psi\rangle = \frac{1}{\sqrt{2}}|\text{photon absorbed, } e^-\text{ excited at D1}\rangle + \frac{1}{\sqrt{2}}|\text{photon absorbed, } e^-\text{ excited at D2}\rangle$$
 
-Classically, this makes no sense. A polarizer can only absorb light, never create it. How can adding an obstacle let more light through?
+This is still a perfectly valid quantum superposition. The photon is gone, but its "which-detector" superposition has been handed off to the electron. In principle, if we could carefully isolate just these two electrons — one at D1, one at D2 — we could interfere them and still find evidence that the photon went both ways.
 
-### The Resolution
+### Step 3: The Avalanche
 
-The key is that **measurement changes the state**.
+But we don't isolate the electron. In an APD, that electron is accelerated and collides with other atoms, liberating more electrons. Those electrons hit more atoms. Within nanoseconds, the initial single-electron excitation has spread into an avalanche involving billions of electrons, atoms, and phonons.
 
-After the H polarizer, the state is $|H\rangle$. In the H/V basis, this state is definite — it has zero probability of passing a V polarizer.
+Now the state looks something like:
 
-But the D polarizer asks a *different* question. In the D/A basis, $|H\rangle$ is NOT definite:
+$$|\Psi\rangle = \frac{1}{\sqrt{2}}|\text{avalanche}_{\text{D1}},\; \text{quiet}_{\text{D2}}\rangle + \frac{1}{\sqrt{2}}|\text{quiet}_{\text{D1}},\; \text{avalanche}_{\text{D2}}\rangle$$
 
-$$|H\rangle = \frac{1}{\sqrt{2}}|D\rangle + \frac{1}{\sqrt{2}}|A\rangle$$
+The superposition hasn't disappeared — it has *spread* to an enormous number of particles.
 
-So there's a 50% chance of passing. Crucially, photons that pass are now in state $|D\rangle$ — they've been *changed* by the measurement.
+### Step 4: The Two Branches Become Orthogonal
 
-In the H/V basis, $|D\rangle$ is again not definite:
+Here is the crucial point. As the entanglement spreads to more and more particles, the two terms in the superposition **diverge**. By "diverge" we mean they become orthogonal:
 
-$$|D\rangle = \frac{1}{\sqrt{2}}|H\rangle + \frac{1}{\sqrt{2}}|V\rangle$$
+$$\langle \text{avalanche}_{\text{D1}},\, \text{quiet}_{\text{D2}} \;|\; \text{quiet}_{\text{D1}},\, \text{avalanche}_{\text{D2}}\rangle \;\approx\; 0$$
 
-So there's now a 50% chance of passing the V polarizer!
+When the overlap between two branches of a superposition reaches zero, they can no longer interfere with each other. For all practical purposes, they have become two completely independent macroscopic events — unaware of each other, unable to ever communicate or recombine. You might picture it as two independent simulations running in parallel: one universe where the photon clicked at D1, and another where it clicked at D2.
 
-The intermediate measurement "scrambles" the H/V relationship, giving the photon another chance.
+### The Schrödinger Equation Is Enough
 
-```{admonition} The Lesson
-:class: important
+This process is called **decoherence**, and it is described entirely by the Schrödinger equation. We did not need to add any special "measurement postulate" or "wavefunction collapse" rule to quantum mechanics. The Schrödinger equation, applied to the photon *and* the detector *and* the environment together, naturally produces the branching into orthogonal, non-interfering outcomes.
 
-**Measurement is not passive observation — it's an active intervention that changes the state.**
+What the Schrödinger equation does *not* do is select one branch over the other. From the perspective of the equation, both branches continue to exist. But from our perspective — trapped inside one branch — it appears that nature "chose" one outcome. We experience a click at D1 *or* D2, never both.
 
-The D polarizer doesn't just "check" the polarization. It projects onto a new basis, fundamentally altering what the photon "is."
-```
+This is admittedly unsatisfying. But it is the current state of the art: the Schrödinger equation fully describes the measurement process, including the apparent randomness, without requiring any additional postulates. The "randomness" we experience emerges from our inability to access the other branch once decoherence has made the two branches orthogonal.
 
----
+------------------------------------------------------------------------
 
-## iClicker Question 5
+## Homework 2.3
 
-**In the three-polarizer setup H → D → V, we get 25% transmission. If we replace the D polarizer with an A polarizer (H → A → V), what transmission do we get?**
+### Problem 1: Changing Basis
 
-- (A) 0%
-- (B) 12.5%
-- (C) 25% ✓
-- (D) 50%
+A photon is prepared in the state $|H\rangle$.
 
-**Solution:** 
-- $P(A|H) = |\langle A|H\rangle|^2 = 1/2$
-- $P(V|A) = |\langle V|A\rangle|^2 = 1/2$
-- Total: $1/2 \times 1/2 = 1/4 = 25\%$
+**(a)** Write $|H\rangle$ in the circular polarization basis $\{|R\rangle, |L\rangle\}$. That is, find coefficients $\alpha$ and $\beta$ such that $|H\rangle = \alpha|R\rangle + \beta|L\rangle$.
 
-Same answer! Both D and A are at 45° to H and V.
+*Hint:* Use the definitions $|R\rangle = \frac{1}{\sqrt{2}}(|H\rangle + i|V\rangle)$ and $|L\rangle = \frac{1}{\sqrt{2}}(|H\rangle - i|V\rangle)$, and solve for $|H\rangle$.
 
----
+**(b)** If this $|H\rangle$-polarized photon passes through a right-circular polarizer, what is the probability it is transmitted? What about a left-circular polarizer?
 
-## Visualizing on the Bloch Sphere
+**(c)** Do your answers to (b) sum to 1? Why must this be the case?
 
-The three-polarizer paradox has a beautiful interpretation on the Bloch sphere.
+**(d)** Now write $|D\rangle$ in the circular basis $\{|R\rangle, |L\rangle\}$. What is the probability that a $|D\rangle$-polarized photon passes through an $|R\rangle$ polarizer?
 
-```python
-import numpy as np
-from qiskit.visualization import plot_bloch_multivector
-from qiskit.quantum_info import Statevector
+------------------------------------------------------------------------
 
-def show_state(name, state_vector):
-    """Display a state on the Bloch sphere"""
-    state = Statevector(state_vector)
-    print(f"\n{name}:")
-    return plot_bloch_multivector(state)
+### Problem 2: Sequential Polarizers
 
-# The three-polarizer sequence
-print("=== Three-Polarizer Paradox on Bloch Sphere ===")
+**(a)** A photon is prepared in the state $|H\rangle$ and sent through a $|V\rangle$ polarizer. What fraction of the light is transmitted?
 
-# Step 1: Start with |H⟩ (north pole)
-show_state("Step 1: |H⟩ (after H polarizer)", [1, 0])
+**(b)** Now insert a $|D\rangle$ polarizer between the $|H\rangle$ source and the $|V\rangle$ polarizer. Walk through the sequence step by step: what is the state after each polarizer, and what is the total fraction of light transmitted?
 
-# Step 2: Project onto D (moves to +x axis)
-show_state("Step 2: |D⟩ (after D polarizer)", [1/np.sqrt(2), 1/np.sqrt(2)])
+**(c)** Instead of a $|D\rangle$ polarizer, insert a polarizer oriented at angle $\theta$ from horizontal. The corresponding state is $|\theta\rangle = \cos\theta\,|H\rangle + \sin\theta\,|V\rangle$. Show that the total transmission through the sequence $|H\rangle \to |\theta\rangle\text{ polarizer} \to |V\rangle\text{ polarizer}$ is:
 
-# Step 3: Project onto V (moves to south pole)
-show_state("Step 3: |V⟩ (after V polarizer)", [0, 1])
-```
+$$T(\theta) = \cos^2\theta\,\sin^2\theta = \frac{1}{4}\sin^2(2\theta)$$
 
-**The path on the Bloch sphere:**
-1. Start at north pole ($|H\rangle$)
-2. D measurement projects to +x axis ($|D\rangle$) — moved to equator!
-3. V measurement projects to south pole ($|V\rangle$) — reached the "forbidden" destination
+What angle $\theta$ maximizes the transmission, and what is the maximum?
 
-Without the D polarizer, we'd try to go directly from north pole to south pole via a V measurement — impossible since they're orthogonal.
+**(d)** Now insert $n$ polarizers evenly spaced in angle between 0° and 90°, at angles $\theta_k = k \cdot \frac{90°}{n+1}$ for $k = 1, 2, \ldots, n$. Each consecutive pair of polarizers differs by $\Delta\theta = \frac{90°}{n+1}$. Show that the total transmission is:
 
----
+$$T(n) = \cos^{2(n+1)}\!\left(\frac{\pi}{2(n+1)}\right)$$
 
-## Summary
+**(e)** Compute $T(n)$ numerically for $n = 1, 2, 3, 5, 10, 50, 100$. What happens as $n \to \infty$?
 
-1. **Polarization is a qubit:** The Jones vector $(E_x, E_y)^T$ is a 2D complex vector, just like qubit states
+**(f)** Explain physically why adding more polarizers — each of which can only absorb light — *increases* the total transmission. What does this have to do with measurement changing the state?
 
-2. **Polarization ↔ Bloch sphere:**
-   - H/V = north/south poles (z-axis)
-   - D/A = ±x axis
-   - R/L = ±y axis
+------------------------------------------------------------------------
 
-3. **Relative phase is physical:** D and A have the same amplitudes but differ by a phase of $\pi$ — completely different polarizations
+### Problem 3: Polarizer Round Trips
 
-4. **Three orthogonal bases:** H/V, D/A, R/L each form a complete basis; correspond to three measurement types
+**(a)** A photon starts in state $|H\rangle$ and passes through an $|H\rangle$ polarizer. What is the state afterward? What fraction of the light is transmitted? (This should be trivial — that's the point.)
 
-5. **Polarizers = projective measurement:** Transmitted intensity given by Malus's Law: $I = |\langle\chi|\psi\rangle|^2$
+**(b)** A photon starts in $|H\rangle$ and passes through a $|D\rangle$ polarizer. What is the state afterward? Now that photon passes through an $|H\rangle$ polarizer. What is the state afterward, and what is the total fraction of light transmitted through both polarizers?
 
-6. **Photons are discrete:** Each photon passes or doesn't — Born Rule gives probability
+**(c)** Compare parts (a) and (b). In both cases the photon starts as $|H\rangle$ and ends (if it survives) as $|H\rangle$. But in (b) only a fraction of the light makes it through. Where did the "lost" light go? What did the intermediate $|D\rangle$ polarizer actually do to the state?
 
-7. **Measurement changes the state:** A photon that passes a polarizer emerges in that polarization state
+**(d)** Repeat part (b), but replace the $|D\rangle$ polarizer with an $|R\rangle$ (right circular) polarizer. What is the state after the $|R\rangle$ polarizer? What is the state after the final $|H\rangle$ polarizer? What is the total transmission?
 
-8. **Three-polarizer paradox:** Adding a polarizer can increase transmission because measurement changes the state
+**(e)** In part (d), the photon starts as $|H\rangle$ and ends as $|H\rangle$, passing through $|R\rangle$ along the way. But $|R\rangle$ involves a complex phase ($i$). Did the complex phase have any observable effect on the final transmission probability? Why or why not?
 
----
+------------------------------------------------------------------------
 
-## Looking Ahead
+### Problem 4: Can You Tell the Difference?
 
-Next lecture: 
-- Pauli matrices as the generators of rotations
-- How to rotate states on the Bloch sphere
-- Connection to spin-1/2 particles and the Stern-Gerlach experiment
+Alice prepares single photons in one of two ways, but won't tell Bob which:
 
----
+-   **Method 1:** She prepares every photon in state $|D\rangle$.
+-   **Method 2:** She prepares each photon randomly as either $|H\rangle$ or $|V\rangle$ with equal probability (she flips a coin each time).
 
-## Homework
+**(a)** Bob sends each photon through a $|D\rangle$ polarizer. Under Method 1, what fraction of photons pass? Under Method 2, what fraction pass on average? Can Bob distinguish the two methods this way?
 
-### Problem 1: Jones Vectors
+**(b)** Bob instead sends each photon through an $|H\rangle$ polarizer. Under Method 1, what fraction pass? Under Method 2, what fraction pass on average? Can Bob distinguish the two methods this way?
 
-Write the normalized Jones vector for each polarization state:
+**(c)** Can Bob distinguish the methods using a $|V\rangle$ polarizer?
 
-**(a)** Linear polarization at 30° from horizontal
+**(d)** Can Bob distinguish the two methods using *any* single polarizer measurement? Try a general polarizer $|\theta\rangle = \cos\theta\,|H\rangle + \sin\theta\,|V\rangle$ and compare the two methods.
 
-**(b)** Linear polarization at 60° from horizontal
+*Hint for Method 2:* Average the transmission probability over the two equally likely preparations.
 
-**(c)** Linear polarization at angle $\theta$ from horizontal (general formula)
+**(e)** Discuss: the states are clearly different — $|D\rangle$ is a definite quantum state, while Method 2 is a statistical mixture. Yet Bob cannot tell them apart with any single polarizer. What type of measurement *would* reveal the difference?
 
-**(d)** Verify that your answer to (c) gives the correct results for $\theta = 0°$ (H), $\theta = 45°$ (D), and $\theta = 90°$ (V).
+*Hint:* Think about what basis you would need to measure in.
 
----
+------------------------------------------------------------------------
 
-### Problem 2: Orthogonality and Inner Products
+### Problem 5: The Projector Algebra
 
-**(a)** Verify that $\langle D|A\rangle = 0$ by explicit calculation.
+**(a)** Write out the projection operator $P_D = |D\rangle\langle D|$ as a $2\times 2$ matrix in the $\{|H\rangle, |V\rangle\}$ basis.
 
-**(b)** Verify that $\langle R|L\rangle = 0$ by explicit calculation.
+**(b)** Verify by explicit matrix multiplication that $P_D^2 = P_D$.
 
-**(c)** Calculate $\langle H|R\rangle$ and $|\langle H|R\rangle|^2$. Interpret physically.
+**(c)** Compute $P_H + P_V$ where $P_H = |H\rangle\langle H|$ and $P_V = |V\rangle\langle V|$. What matrix do you get? Why does this make physical sense?
 
-**(d)** Calculate $\langle D|R\rangle$ and $|\langle D|R\rangle|^2$. Interpret physically.
+**(d)** Compute $P_D + P_A$. What do you get? Is this the same as your answer to (c)? Should it be?
 
----
+**(e)** Compute the product $P_H P_V$. What matrix do you get? Interpret physically: what does it mean to project onto $|V\rangle$ and then onto $|H\rangle$?
 
-### Problem 3: Polarizer Calculations
+**(f)** Compute $P_H P_D P_V$ as a matrix. This represents the three-polarizer sequence H → D → V. Show that this operator is not zero, even though $P_H P_V = 0$. Relate the nonzero matrix elements to the 25% transmission we found in class.
 
-A photon is prepared in state $|R\rangle = \frac{1}{\sqrt{2}}(|H\rangle + i|V\rangle)$.
+------------------------------------------------------------------------
 
-**(a)** What is the probability it passes an H polarizer?
+### Problem 6: Energy Conservation in Measurement
 
-**(b)** What is the probability it passes a V polarizer?
+When a photon is absorbed by a polarizer, its energy doesn't disappear — it is transferred to the polarizer material (as heat, lattice vibrations, etc.).
 
-**(c)** What is the probability it passes a D polarizer?
+**(a)** In the three-polarizer setup H → D → V with 25% total transmission: what fraction of the photon energy is absorbed by the D polarizer? What fraction by the V polarizer?
 
-**(d)** What is the probability it passes an R polarizer?
+**(b)** A single $|H\rangle$ photon with energy $E = h\nu$ enters the three-polarizer sequence. There are four possible outcomes. List them and give the probability of each:
 
-**(e)** What is the probability it passes an L polarizer?
+1.  Photon is absorbed by the D polarizer
+2.  Photon passes D but is absorbed by V
+3.  Photon passes both
+4.  Any other outcome?
 
-**(f)** Verify that $P(H) + P(V) = 1$, $P(D) + P(A) = 1$, and $P(R) + P(L) = 1$.
+Verify your probabilities sum to 1.
 
----
+**(c)** In each outcome, where did the photon's energy $h\nu$ go? Verify that energy is conserved in every case.
 
-### Problem 4: Three-Polarizer Paradox — Quantitative
+------------------------------------------------------------------------
 
-**(a)** Calculate the transmission for H → V (verify it's 0%).
+### Problem 7: States on the Bloch Sphere
 
-**(b)** Calculate the transmission for H → D → V (verify it's 25%).
+Recall the Bloch sphere parametrization:
 
-**(c)** Calculate the transmission for H → (polarizer at 30°) → V.
+$$|\psi\rangle = \cos\frac{\theta}{2}|H\rangle + e^{i\phi}\sin\frac{\theta}{2}|V\rangle$$
 
-**(d)** Calculate the transmission for H → (polarizer at 60°) → V.
+**(a)** A state has Bloch coordinates $\theta = \pi/3$, $\phi = 0$. Write out the state explicitly as $\alpha|H\rangle + \beta|V\rangle$ with numerical values for $\alpha$ and $\beta$.
 
-**(e)** For an intermediate polarizer at angle $\theta$, show that the transmission through H → θ → V is:
-$$T(\theta) = \cos^2\theta \sin^2\theta = \frac{1}{4}\sin^2(2\theta)$$
+**(b)** For this state, calculate the probability of passing each of the following polarizers: $|H\rangle$, $|V\rangle$, $|D\rangle$, $|A\rangle$, $|R\rangle$, $|L\rangle$. Verify that each complementary pair sums to 1.
 
-**(f)** What angle $\theta$ maximizes the transmission? What is the maximum?
+**(c)** Where on the Bloch sphere is this state? Describe its location in words (e.g., "halfway between the north pole and the equator, on the +x side"). Is it closer to $|H\rangle$ or to $|V\rangle$? Do your probabilities from (b) confirm this?
 
----
+**(d)** The state orthogonal to $|\psi\rangle$ is located at the antipodal point on the Bloch sphere: $\theta' = \pi - \theta$, $\phi' = \phi + \pi$. Find the orthogonal state for the state in part (a) and verify explicitly that $\langle\psi|\psi_\perp\rangle = 0$.
 
-### Problem 5: Many Intermediate Polarizers
+**(e)** Now consider a state with $\theta = \pi/2$, $\phi = \pi/4$. Write out this state. This state lies on the equator — where exactly? It's not one of the six cardinal states. Calculate $P(H)$, $P(D)$, and $P(R)$. Which of the three measurement bases comes closest to giving a definite (probability $\approx 1$) outcome?
 
-Consider inserting $n$ polarizers evenly spaced in angle between H (0°) and V (90°).
-
-**(a)** For $n = 1$ (one polarizer at 45°), the transmission is 25%. Verify this.
-
-**(b)** For $n = 2$ (polarizers at 30° and 60°), calculate the transmission.
-
-**(c)** For $n = 3$ (polarizers at 22.5°, 45°, 67.5°), calculate the transmission.
-
-**(d)** For general $n$, the polarizers are at angles $\theta_k = k \cdot 90°/(n+1)$ for $k = 1, 2, ..., n$. Each step rotates by angle $\Delta\theta = 90°/(n+1)$. Show that the total transmission is:
-$$T(n) = \cos^{2(n+1)}\left(\frac{\pi}{2(n+1)}\right)$$
-
-*Hint:* Each polarizer transmits $\cos^2(\Delta\theta)$ of the incoming light.
-
-**(e)** Calculate $T(n)$ numerically for $n = 1, 2, 3, 5, 10, 100$.
-
-**(f)** What happens as $n \to \infty$? Explain physically why adding more polarizers *increases* transmission.
-
----
-
-### Problem 6: Bloch Sphere and Measurement
-
-**(a)** A state has Bloch coordinates $\theta = \pi/3$, $\phi = 0$. Write out the state in the form $\alpha|H\rangle + \beta|V\rangle$.
-
-**(b)** For this state, calculate $P(H)$, $P(V)$, $P(D)$, and $P(A)$.
-
-**(c)** Where on the Bloch sphere is this state located? Sketch it.
-
-**(d)** What state is orthogonal to this one? Give its Bloch coordinates.
-
----
-
-### Problem 7: Circular Polarization
-
-**(a)** Show that $|R\rangle$ and $|L\rangle$ can be written as:
-$$|R\rangle = \frac{1}{\sqrt{2}}(|D\rangle + i|A\rangle)$$
-$$|L\rangle = \frac{1}{\sqrt{2}}(|D\rangle - i|A\rangle)$$
-
-**(b)** A right-circularly polarized photon hits a D polarizer. What is the probability it passes? What is its state after passing?
-
-**(c)** That photon then hits an A polarizer. What is the probability it passes?
-
-**(d)** What is the total probability of passing both D then A polarizers, starting from $|R\rangle$?
-
----
-
-### Problem 8: Quantum vs Classical (Conceptual)
-
-**(a)** In classical wave optics, we say "half the intensity passes through." In quantum mechanics, we say "each photon has a 50% probability of passing." Explain why these give the same experimental predictions for large numbers of photons.
-
-**(b)** Describe an experiment that would distinguish between the classical and quantum descriptions. *Hint:* Think about what happens with single photons.
-
-**(c)** The three-polarizer paradox seems impossible classically: adding an absorber increases transmission. Explain in your own words why this happens quantum mechanically.
+**(f)** A state is prepared such that $P(H) = 3/4$ and $P(D) = 1/2$. What are the Bloch coordinates $\theta$ and $\phi$? Is the state uniquely determined by these two probabilities? If not, what additional measurement would pin it down?
