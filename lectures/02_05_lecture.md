@@ -1,837 +1,273 @@
 # Lecture 2.5: Generators, Pauli Matrices, and SU(2)
 
-## Review: From SO(2) to SO(3)
-
-Last lecture we established:
-
--   **SO(2)** describes 2D rotations. One axis, one generator, commutative. The rotation matrix $R(\theta)$ satisfies $R(\theta_1)R(\theta_2) = R(\theta_2)R(\theta_1)$ — order doesn't matter.
-
--   **SO(3)** describes 3D rotations. Three axes, three generators, **non-commutative**. $R_x(\theta_1)R_z(\theta_2) \neq R_z(\theta_2)R_x(\theta_1)$ — order matters.
-
-We also saw (in the homework) that an infinitesimal rotation can be written as:
-
-$$R(\delta\theta) \approx I + \delta\theta\, G$$
-
-where $G$ is called the **generator**. A finite rotation is the exponential:
-
-$$R(\theta) = e^{\theta G}$$
-
-For SO(2), there was one generator $G$ satisfying $G^2 = -I$, and the exponential gave us:
-
-$$e^{\theta G} = \cos\theta\, I + \sin\theta\, G$$
-
-Today we extend this to 3D, find the generators of SO(3), then move to the quantum version — SU(2) and the Pauli matrices.
-
-------------------------------------------------------------------------
-
-## Generators of SO(3)
+## What Is a Generator?
 
 ### Infinitesimal Rotations
 
-The 3D rotation matrices around the three axes are:
+We've been working with rotation matrices — $R(\theta)$ rotates a vector by angle $\theta$. But rotations can be understood more deeply by asking: what happens when the angle is very, very small?
 
-$$R_x(\theta) = \begin{pmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{pmatrix}, \quad R_y(\theta) = \begin{pmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{pmatrix}, \quad R_z(\theta) = \begin{pmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{pmatrix}$$
+Start with the 2D rotation matrix:
 
-For a small angle $\delta\theta$, we Taylor expand: $\cos\delta\theta \approx 1$ and $\sin\delta\theta \approx \delta\theta$:
+$$R(\theta) = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}$$
 
-$$R_x(\delta\theta) \approx \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 & -\delta\theta \\ 0 & \delta\theta & 1 \end{pmatrix} = I + \delta\theta \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & -1 \\ 0 & 1 & 0 \end{pmatrix}$$
+For a tiny angle $\delta\theta$, Taylor expand: $\cos\delta\theta \approx 1$ and $\sin\delta\theta \approx \delta\theta$:
 
-$$R_y(\delta\theta) \approx \begin{pmatrix} 1 & 0 & \delta\theta \\ 0 & 1 & 0 \\ -\delta\theta & 0 & 1 \end{pmatrix} = I + \delta\theta \begin{pmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ -1 & 0 & 0 \end{pmatrix}$$
+$$R(\delta\theta) \approx \begin{pmatrix} 1 & -\delta\theta \\ \delta\theta & 1 \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} + \delta\theta\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$$
 
-$$R_z(\delta\theta) \approx \begin{pmatrix} 1 & -\delta\theta & 0 \\ \delta\theta & 1 & 0 \\ 0 & 0 & 1 \end{pmatrix} = I + \delta\theta \begin{pmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix}$$
+$$R(\delta\theta) \approx I + \delta\theta\, G$$
 
-### The Three Generators
-
-Reading off the matrices that multiply $\delta\theta$, the three generators of SO(3) are:
-
-$$J_x = \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & -1 \\ 0 & 1 & 0 \end{pmatrix}, \qquad J_y = \begin{pmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ -1 & 0 & 0 \end{pmatrix}, \qquad J_z = \begin{pmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix}$$
-
-Each generator is an antisymmetric matrix ($J^T = -J$), which follows from the orthogonality condition $R^T R = I$.
-
-Notice the pattern: each generator has the SO(2) generator $\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$ embedded in the $2\times 2$ block corresponding to the plane of rotation, with zeros along the rotation axis. For example, $J_z$ rotates in the $x$-$y$ plane and has the familiar $2\times 2$ block in the upper left.
-
-Finite rotations are exponentials of the generators:
-
-$$R_x(\theta) = e^{\theta J_x}, \qquad R_y(\theta) = e^{\theta J_y}, \qquad R_z(\theta) = e^{\theta J_z}$$
-
-### The Generators Don't Commute
-
-The non-commutativity of 3D rotations shows up at the generator level. Let's compute:
-
-$$J_x J_y = \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & -1 \\ 0 & 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ -1 & 0 & 0 \end{pmatrix} = \begin{pmatrix} 0 & 0 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix}$$
-
-$$J_y J_x = \begin{pmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ -1 & 0 & 0 \end{pmatrix}\begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & -1 \\ 0 & 1 & 0 \end{pmatrix} = \begin{pmatrix} 0 & 1 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix}$$
-
-The commutator is:
-
-$$[J_x, J_y] = J_x J_y - J_y J_x = \begin{pmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix} = J_z$$
-
-The full set of commutation relations (verify the others as an exercise):
-
-$$\boxed{[J_x, J_y] = J_z, \qquad [J_y, J_z] = J_x, \qquad [J_z, J_x] = J_y}$$
-
-Or compactly: $[J_i, J_j] = \epsilon_{ijk} J_k$, where $\epsilon_{ijk}$ is $+1$ for cyclic permutations (xyz, yzx, zxy), $-1$ for anti-cyclic, and $0$ if any indices repeat.
-
-These commutation relations are the **defining structure** of rotations. Any set of three matrices satisfying these relations generates a rotation group. This is the key idea that connects SO(3) to SU(2).
-
-------------------------------------------------------------------------
-
-## The Stern-Gerlach Experiment
-
-We've been developing abstract mathematics. Now let's see how nature hands us a quantum system that needs all of this machinery.
-
-### The Setup (1922)
-
-Otto Stern and Walther Gerlach sent a beam of silver atoms through an **inhomogeneous magnetic field** — a field that is stronger at the top than at the bottom. A magnetic dipole in a field gradient experiences a force proportional to its component along the field direction. Atoms with their magnetic moment pointing up get deflected up; atoms pointing down get deflected down.
-
-### Classical vs. Quantum
-
-**Classical prediction:** If the silver atoms have randomly oriented magnetic moments, each atom should be deflected by a different amount depending on its orientation. The beam should spread out into a **continuous band**.
-
-**Quantum result:** The beam split into exactly **two discrete spots**.
-
-Angular momentum is quantized. For the outermost electron in silver, it can only take two values. This is **spin-1/2**: the smallest nontrivial quantum angular momentum.
-
-### Spin as a Qubit
-
-The two spin states define a qubit:
-
-$$|\uparrow\rangle \equiv |0\rangle = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \qquad |\downarrow\rangle \equiv |1\rangle = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$$
-
-The spin angular momentum along the $z$-axis can only be:
-
-$$S_z = +\frac{\hbar}{2} \quad (\text{spin up}) \qquad \text{or} \qquad S_z = -\frac{\hbar}{2} \quad (\text{spin down})$$
-
-### Rotating the Apparatus
-
-If we orient the Stern-Gerlach apparatus along different axes, we measure different components of spin:
-
-**Z-oriented:** Eigenstates $|\uparrow_z\rangle = |0\rangle$ and $|\downarrow_z\rangle = |1\rangle$.
-
-**X-oriented:** Eigenstates $|\uparrow_x\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) = |+\rangle$ and $|\downarrow_x\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) = |-\rangle$.
-
-**Y-oriented:** Eigenstates $|\uparrow_y\rangle = \frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle) = |+i\rangle$ and $|\downarrow_y\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle) = |-i\rangle$.
-
-This is exactly our polarization story — the same Bloch sphere, the same three bases.
-
-### iClicker: Measuring Spin Along a Different Axis
-
-**An electron is prepared in state** $|\uparrow_z\rangle = |0\rangle$ (spin-up along z). You measure its spin along the x-axis. What do you get?
-
--   
-
-    (A) Always spin-up along x
-
--   
-
-    (B) Always spin-down along x
-
--   
-
-    (C) 50% up, 50% down ✓
-
--   
-
-    (D) The measurement is undefined
-
-**Solution:** Express $|0\rangle$ in the x-basis:
-
-$$|0\rangle = \frac{1}{\sqrt{2}}|+\rangle + \frac{1}{\sqrt{2}}|-\rangle$$
-
-$$P(\uparrow_x) = |\langle +|0\rangle|^2 = \frac{1}{2}, \qquad P(\downarrow_x) = |\langle -|0\rangle|^2 = \frac{1}{2}$$
-
-A state with definite $S_z$ has completely uncertain $S_x$.
-
-------------------------------------------------------------------------
-
-## From SO(3) to SU(2)
-
-### The Problem
-
-SO(3) acts on real 3D vectors — positions in space, classical angular momenta. But qubits live in $\mathbb{C}^2$: a 2D complex vector space. We need a group that:
-
--   Acts on 2D complex vectors (the qubit state space)
--   Preserves the norm: $|c_0|^2 + |c_1|^2 = 1$
--   Has three generators with the same commutation relations as SO(3)
-
-### SU(2): The Quantum Rotation Group
-
-The group we need is **SU(2)**: the Special Unitary group in 2 dimensions.
-
--   **S** = Special: $\det(U) = 1$
--   **U** = Unitary: $U^\dagger U = I$
--   **2** = acts on 2D complex space ($\mathbb{C}^2$)
-
-Compare to SO(2):
-
-| Property    | SO(n)                         | SU(n)                            |
-|------------------------------|---------------------|---------------------|
-| Acts on     | Real vectors ($\mathbb{R}^n$) | Complex vectors ($\mathbb{C}^n$) |
-| Preserves   | $R^T R = I$ (orthogonal)      | $U^\dagger U = I$ (unitary)      |
-| Determinant | $\det R = 1$                  | $\det U = 1$                     |
-| Entries     | Real                          | Complex                          |
-
-Unitary is the complex generalization of orthogonal. Where orthogonality uses the transpose ($R^T$), unitarity uses the conjugate transpose ($U^\dagger$). Both preserve the length of vectors in their respective spaces.
-
-### The Key Relationship
-
-SU(2) and SO(3) are almost the same group. They have:
-
--   The same number of generators (three)
--   The same commutation relations
--   The same local structure
-
-But they differ globally: SU(2) is a **double cover** of SO(3). A $2\pi$ rotation in SO(3) gives $R(2\pi) = I$ (identity), but in SU(2) it gives $R(2\pi) = -I$ (minus the identity). You need $4\pi$ to get back to $+I$ in SU(2).
-
-Nature cares about this distinction deeply. Fermions (electrons, quarks) transform under SU(2) and pick up a $-1$ under $2\pi$ rotation. Bosons (photons) transform under SO(3) and return to $+1$. This is connected to the spin-statistics theorem.
-
-------------------------------------------------------------------------
-
-## The Pauli Matrices
-
-The generators of SU(2) are the **Pauli matrices**:
-
-$$\boxed{\sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \qquad \sigma_y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \qquad \sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}}$$
-
-The spin angular momentum operators are $S_i = \frac{\hbar}{2}\sigma_i$.
-
-### Property 1: Hermitian
-
-$$\sigma_x^\dagger = \sigma_x, \qquad \sigma_y^\dagger = \sigma_y, \qquad \sigma_z^\dagger = \sigma_z$$
-
-Hermitian matrices represent **observables** — quantities we can measure. Their eigenvalues are guaranteed to be real.
-
-### Property 2: Traceless
-
-$$\text{Tr}(\sigma_x) = 0 + 0 = 0, \qquad \text{Tr}(\sigma_y) = 0 + 0 = 0, \qquad \text{Tr}(\sigma_z) = 1 + (-1) = 0$$
-
-### Property 3: Square to Identity
-
-$$\sigma_x^2 = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = I$$
-
-Similarly $\sigma_y^2 = I$ and $\sigma_z^2 = I$.
-
-Since $\sigma_i^2 = I$, the eigenvalues must satisfy $\lambda^2 = 1$, giving $\lambda = \pm 1$.
-
-### Eigenstates: The Six Cardinal Points
-
-$\sigma_z$ eigenstates (z-axis):
-
-$$\sigma_z|0\rangle = +1 \cdot |0\rangle, \qquad \sigma_z|1\rangle = -1 \cdot |1\rangle$$
-
-$\sigma_x$ eigenstates (x-axis):
-
-$$\sigma_x|+\rangle = +1 \cdot |+\rangle, \qquad \sigma_x|-\rangle = -1 \cdot |-\rangle$$
-
-Let's verify the first one:
-
-$$\sigma_x|+\rangle = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}\frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = +1 \cdot |+\rangle \quad \checkmark$$
-
-$\sigma_y$ eigenstates (y-axis):
-
-$$\sigma_y|{+i}\rangle = +1 \cdot |{+i}\rangle, \qquad \sigma_y|{-i}\rangle = -1 \cdot |{-i}\rangle$$
-
-The eigenstates of the three Pauli matrices are exactly the six cardinal points on the Bloch sphere.
-
-### The Complete Dictionary
-
-| Pauli | $+1$ eigenstate | $-1$ eigenstate | Bloch axis | Spin | Polarization |
-|------------|------------|------------|------------|------------|------------|
-| $\sigma_z$ | $\|0\rangle$ | $\|1\rangle$ | z (poles) | $\uparrow_z / \downarrow_z$ | H / V |
-| $\sigma_x$ | $\|+\rangle$ | $\|-\rangle$ | x | $\uparrow_x / \downarrow_x$ | D / A |
-| $\sigma_y$ | $\|{+i}\rangle$ | $\|{-i}\rangle$ | y | $\uparrow_y / \downarrow_y$ | R / L |
-
-------------------------------------------------------------------------
-
-## Pauli Algebra
-
-### Products of Pauli Matrices
-
-Let's compute $\sigma_x \sigma_y$:
-
-$$\sigma_x \sigma_y = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix} = \begin{pmatrix} i & 0 \\ 0 & -i \end{pmatrix} = i\sigma_z$$
-
-And $\sigma_y \sigma_x$:
-
-$$\sigma_y \sigma_x = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} = \begin{pmatrix} -i & 0 \\ 0 & i \end{pmatrix} = -i\sigma_z$$
-
-These are **not equal**. The Pauli matrices don't commute.
-
-### iClicker: Pauli Product
-
-**What is** $\sigma_x \sigma_y$?
-
--   
-
-    (A) $\sigma_z$
-
--   
-
-    (B) $-\sigma_z$
-
--   
-
-    (C) $i\sigma_z$ ✓
-
--   
-
-    (D) $-i\sigma_z$
-
-### Commutation Relations
-
-The commutator $[A, B] = AB - BA$ captures the failure to commute:
-
-$$[\sigma_x, \sigma_y] = \sigma_x\sigma_y - \sigma_y\sigma_x = i\sigma_z - (-i\sigma_z) = 2i\sigma_z$$
-
-The full set of commutation relations:
-
-$$\boxed{[\sigma_x, \sigma_y] = 2i\sigma_z, \qquad [\sigma_y, \sigma_z] = 2i\sigma_x, \qquad [\sigma_z, \sigma_x] = 2i\sigma_y}$$
-
-Compactly: $[\sigma_i, \sigma_j] = 2i\epsilon_{ijk}\sigma_k$.
-
-Compare to the SO(3) generators: $[J_i, J_j] = \epsilon_{ijk}J_k$. The same structure, with an extra factor of $2i$. This factor arises because the Pauli matrices are Hermitian (physicists' convention for quantum observables), while the SO(3) generators $J_i$ are antisymmetric. The underlying algebraic structure — the pattern of which commutator gives which generator — is identical.
-
-### Anticommutation Relations
-
-The anticommutator $\{A, B\} = AB + BA$ is:
-
-$$\{\sigma_x, \sigma_y\} = \sigma_x\sigma_y + \sigma_y\sigma_x = i\sigma_z + (-i\sigma_z) = 0$$
-
-In general:
-
-$$\boxed{\{\sigma_i, \sigma_j\} = 2\delta_{ij}I}$$
-
-Same Paulis anticommute to $2I$ (since $\sigma_i^2 = I$). Different Paulis anticommute to zero.
-
-### The Master Formula
-
-Combining the commutator and anticommutator:
-
-$$\sigma_i\sigma_j = \frac{1}{2}\{\sigma_i,\sigma_j\} + \frac{1}{2}[\sigma_i,\sigma_j] = \delta_{ij}I + i\epsilon_{ijk}\sigma_k$$
-
-This single formula captures everything about how Pauli matrices multiply.
-
-### Physical Consequence: The Uncertainty Principle
-
-If two operators don't commute, they can't be simultaneously diagonalized — they can't share eigenstates.
-
-Since $[\sigma_x, \sigma_z] = -2i\sigma_y \neq 0$:
-
--   A state cannot be an eigenstate of both $\sigma_x$ and $\sigma_z$ simultaneously
--   If $S_z$ is definite (the state is $|0\rangle$ or $|1\rangle$), then $S_x$ is uncertain
--   If $S_x$ is definite (the state is $|+\rangle$ or $|-\rangle$), then $S_z$ is uncertain
-
-We already saw this in the iClicker: $|0\rangle$ has definite $S_z = +\hbar/2$ but gives 50/50 results for $S_x$. The non-commutativity of the Pauli matrices is the mathematical origin of this complementarity.
-
-**You cannot simultaneously know spin along two perpendicular axes.** This is fundamentally different from classical physics, where all components of angular momentum can be known at once.
-
-------------------------------------------------------------------------
-
-## Paulis as Generators of SU(2)
-
-### Any Qubit Operator in Terms of Paulis
-
-The set $\{I, \sigma_x, \sigma_y, \sigma_z\}$ forms a basis for all $2\times 2$ matrices. Any $2\times 2$ Hermitian matrix can be written:
-
-$$H = h_0 I + h_x \sigma_x + h_y \sigma_y + h_z \sigma_z = h_0 I + \vec{h}\cdot\vec{\sigma}$$
-
-where $h_0, h_x, h_y, h_z$ are real numbers and $\vec{\sigma} = (\sigma_x, \sigma_y, \sigma_z)$.
-
-This means any qubit observable — any qubit Hamiltonian — can be decomposed into Pauli components.
-
-### Rotations from the Generator
-
-Following exactly the same logic as SO(2), a rotation by angle $\theta$ around axis $\hat{n} = (n_x, n_y, n_z)$ on the Bloch sphere is:
-
-$$R_{\hat{n}}(\theta) = e^{-i\theta(\hat{n}\cdot\vec{\sigma})/2}$$
-
-The factor of $1/2$ is because of spin-$1/2$ (the double cover). Let's expand this using the Taylor series, just as we did for SO(2).
-
-### Deriving the Rotation Formula
-
-Define $A = \hat{n}\cdot\vec{\sigma} = n_x\sigma_x + n_y\sigma_y + n_z\sigma_z$. First we need $A^2$.
-
-Using the master formula $\sigma_i\sigma_j = \delta_{ij}I + i\epsilon_{ijk}\sigma_k$:
-
-$$A^2 = \sum_{ij} n_i n_j \sigma_i\sigma_j = \sum_{ij} n_i n_j(\delta_{ij}I + i\epsilon_{ijk}\sigma_k)$$
-
-The $\epsilon_{ijk}$ term vanishes: $\sum_{ij} n_i n_j \epsilon_{ijk} = 0$ because $n_i n_j$ is symmetric in $i,j$ while $\epsilon_{ijk}$ is antisymmetric. What remains:
-
-$$A^2 = \sum_i n_i^2 I = |\hat{n}|^2 I = I$$
-
-since $\hat{n}$ is a unit vector. So $(\hat{n}\cdot\vec{\sigma})^2 = I$, just like $\sigma_i^2 = I$ for each individual Pauli.
-
-Now expand the exponential. Let $\alpha = \theta/2$:
-
-$$e^{-i\alpha A} = I + (-i\alpha)A + \frac{(-i\alpha)^2}{2!}A^2 + \frac{(-i\alpha)^3}{3!}A^3 + \frac{(-i\alpha)^4}{4!}A^4 + \cdots$$
-
-Using $A^2 = I$, so $A^3 = A$, $A^4 = I$, etc.:
-
-$$= I - i\alpha A + \frac{(-i\alpha)^2}{2!}I + \frac{(-i\alpha)^3}{3!}A + \frac{(-i\alpha)^4}{4!}I + \cdots$$
-
-$$= \left(1 - \frac{\alpha^2}{2!} + \frac{\alpha^4}{4!} - \cdots\right)I - i\left(\alpha - \frac{\alpha^3}{3!} + \frac{\alpha^5}{5!} - \cdots\right)A$$
-
-$$= \cos\alpha\, I - i\sin\alpha\, A$$
-
-Substituting back $\alpha = \theta/2$ and $A = \hat{n}\cdot\vec{\sigma}$:
-
-$$\boxed{R_{\hat{n}}(\theta) = \cos\frac{\theta}{2}\, I - i\sin\frac{\theta}{2}\,(\hat{n}\cdot\vec{\sigma})}$$
-
-Compare this to the SO(2) result $e^{\theta G} = \cos\theta\, I + \sin\theta\, G$. The structure is identical — the $-i$ and $\theta/2$ reflect the fact that the Pauli matrices are Hermitian (not antisymmetric) and that SU(2) is a double cover.
-
-### Explicit Rotation Matrices
-
-**Rotation around z-axis:**
-
-$$R_z(\theta) = e^{-i\theta\sigma_z/2} = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,\sigma_z = \begin{pmatrix} \cos\frac{\theta}{2} - i\sin\frac{\theta}{2} & 0 \\ 0 & \cos\frac{\theta}{2} + i\sin\frac{\theta}{2} \end{pmatrix} = \begin{pmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{pmatrix}$$
-
-**Rotation around x-axis:**
-
-$$R_x(\theta) = e^{-i\theta\sigma_x/2} = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,\sigma_x = \begin{pmatrix} \cos\frac{\theta}{2} & -i\sin\frac{\theta}{2} \\ -i\sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}$$
-
-**Rotation around y-axis:**
-
-$$R_y(\theta) = e^{-i\theta\sigma_y/2} = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,\sigma_y = \begin{pmatrix} \cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\ \sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}$$
-
-### The Double Cover
-
-Notice what happens at $\theta = 2\pi$:
-
-$$R_{\hat{n}}(2\pi) = \cos\pi\, I - i\sin\pi\, (\hat{n}\cdot\vec{\sigma}) = -I$$
-
-A full $2\pi$ rotation gives **minus the identity**, not the identity. The state picks up a global minus sign. At $\theta = 4\pi$:
-
-$$R_{\hat{n}}(4\pi) = \cos 2\pi\, I - i\sin 2\pi\, (\hat{n}\cdot\vec{\sigma}) = +I$$
-
-You need to rotate twice around to get back to where you started. This is the double cover of SO(3) by SU(2).
-
-### Connection to Gates We Know
-
-**Phase gate:**
-
-$$P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix} = e^{i\phi/2}\begin{pmatrix} e^{-i\phi/2} & 0 \\ 0 & e^{i\phi/2} \end{pmatrix} = e^{i\phi/2}\, R_z(\phi)$$
-
-Up to global phase, the phase gate is a rotation around the z-axis. This is why $P(\phi)$ applied to $|+\rangle$ traces around the equator of the Bloch sphere — it's a z-rotation.
-
-**Hadamard gate:**
-
-$$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix} = \frac{1}{\sqrt{2}}(\sigma_x + \sigma_z)$$
-
-This is a $\pi$ rotation around the axis $\hat{n} = (\hat{x} + \hat{z})/\sqrt{2}$, halfway between $x$ and $z$:
-
-$$H = -i\, R_{(\hat{x}+\hat{z})/\sqrt{2}}(\pi)$$
-
-The Hadamard swaps the z-axis and the x-axis: $|0\rangle \leftrightarrow |+\rangle$ and $|1\rangle \leftrightarrow |-\rangle$.
-
-**The Pauli gates X, Y, Z:**
-
-The Pauli matrices themselves are $\pi$ rotations (up to global phase):
-
-$$X = \sigma_x = -iR_x(\pi), \qquad Y = \sigma_y = -iR_y(\pi), \qquad Z = \sigma_z = -iR_z(\pi)$$
-
-The X gate is a bit flip: $|0\rangle \leftrightarrow |1\rangle$ (rotation by $\pi$ around x, swaps the poles). The Z gate is a phase flip: $|+\rangle \leftrightarrow |-\rangle$ (rotation by $\pi$ around z).
-
-### The Fundamental Result
-
-$$\boxed{\text{Every single-qubit unitary is a rotation on the Bloch sphere.}}$$
-
-Any $U \in SU(2)$ can be written as $U = e^{-i\theta(\hat{n}\cdot\vec{\sigma})/2}$ for some axis $\hat{n}$ and angle $\theta$. There are no other single-qubit gates — rotations are everything.
-
-------------------------------------------------------------------------
-
-## Summary
-
-1.  **SO(3) generators:** Three $3\times 3$ antisymmetric matrices $J_x, J_y, J_z$ generate rotations around the three axes. They satisfy $[J_i, J_j] = \epsilon_{ijk}J_k$.
-
-2.  **Stern-Gerlach:** Nature provides a qubit — electron spin-$1/2$. Two discrete outcomes, three measurement bases, same Bloch sphere structure as polarization.
-
-3.  **SU(2):** The quantum rotation group. Acts on $\mathbb{C}^2$, preserves norm ($U^\dagger U = I$), three generators, non-commutative. Double cover of SO(3): $R(2\pi) = -I$.
-
-4.  **Pauli matrices:** The generators of SU(2). Hermitian, traceless, $\sigma_i^2 = I$, eigenvalues $\pm 1$. Eigenstates are the six Bloch sphere cardinal points.
-
-5.  **Pauli algebra:** $\sigma_i\sigma_j = \delta_{ij}I + i\epsilon_{ijk}\sigma_k$. Non-commutativity leads to the uncertainty principle: you can't know spin along two perpendicular axes simultaneously.
-
-6.  **Rotations:** $R_{\hat{n}}(\theta) = \cos(\theta/2)I - i\sin(\theta/2)(\hat{n}\cdot\vec{\sigma})$. Every qubit gate is a rotation. Phase gate $\sim R_z$, Hadamard $\sim R_{(x+z)/\sqrt{2}}(\pi)$, Paulis $\sim R_i(\pi)$.
-
-### The Generator of Rotations
-
-Here's a powerful idea. Instead of thinking about finite rotations $R(\theta)$, think about infinitesimal rotations.
-
-For small $\delta\theta$:
-
-$$R(\delta\theta) = \begin{pmatrix} \cos\delta\theta & -\sin\delta\theta \\ \sin\delta\theta & \cos\delta\theta \end{pmatrix} \approx \begin{pmatrix} 1 & -\delta\theta \\ \delta\theta & 1 \end{pmatrix} = I + \delta\theta \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$$
-
-Define the **generator**:
+where:
 
 $$G = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$$
 
-Then: $$R(\delta\theta) \approx I + \delta\theta \cdot G$$
-
-An infinitesimal rotation is "the identity plus a little bit of $G$."
+$G$ is called the **generator** of rotations. It tells you *which direction you move* when you begin to rotate. The identity $I$ says "stay where you are," and $\delta\theta\, G$ is the tiny nudge that starts the rotation.
 
 ### From Generator to Finite Rotation
 
-How do we get a finite rotation from the generator?
+How do you build a large rotation from the generator? The same way you walk a mile — one step at a time.
 
-Think of a finite rotation as many infinitesimal rotations:
+To rotate by a finite angle $\theta$, break it into $N$ tiny steps, each of size $\theta/N$:
 
-$$R(\theta) = \lim_{N \to \infty} \left(I + \frac{\theta}{N} G\right)^N$$
+$$R(\theta) = R(\theta/N) \cdot R(\theta/N) \cdots R(\theta/N) = \left[R(\theta/N)\right]^N$$
+
+For large $N$, each step is infinitesimal, so $R(\theta/N) \approx I + \frac{\theta}{N}G$:
+
+$$R(\theta) = \lim_{N \to \infty}\left(I + \frac{\theta}{N}G\right)^N$$
 
 This limit is the definition of the matrix exponential:
 
 $$\boxed{R(\theta) = e^{\theta G}}$$
 
-**Finite rotations are exponentials of the generator!**
+A finite rotation is the exponential of the generator. This is one of the most important ideas in physics: **the generator encodes all rotations**. You don't need to memorize the full rotation matrix — just the generator, and exponentiation does the rest.
 
-### Verifying the Exponential
+### Evaluating the Exponential
 
-Let's verify this works. First, compute powers of $G$:
+Let's verify this actually works. We need to compute $e^{\theta G}$ using the Taylor series:
+
+$$e^{\theta G} = I + \theta G + \frac{\theta^2}{2!}G^2 + \frac{\theta^3}{3!}G^3 + \frac{\theta^4}{4!}G^4 + \cdots$$
+
+First, what is $G^2$?
 
 $$G^2 = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix} = \begin{pmatrix} -1 & 0 \\ 0 & -1 \end{pmatrix} = -I$$
 
-So $G^2 = -I$. This is just like $i^2 = -1$!
+So $G^2 = -I$. This is the key property of the generator. The higher powers follow immediately:
 
-Continuing: - $G^3 = G^2 \cdot G = -G$ - $G^4 = G^2 \cdot G^2 = (-I)(-I) = I$ - $G^5 = G$, and so on...
+$$G^3 = G^2 \cdot G = (-I)G = -G$$ $$G^4 = G^2 \cdot G^2 = (-I)(-I) = +I$$ $$G^5 = G^4 \cdot G = G$$
 
-Now expand $e^{\theta G}$ as a Taylor series:
+The pattern repeats with period 4: $I, G, -I, -G, I, G, \ldots$
 
-$$e^{\theta G} = I + \theta G + \frac{(\theta G)^2}{2!} + \frac{(\theta G)^3}{3!} + \frac{(\theta G)^4}{4!} + \cdots$$
+Substituting into the Taylor series:
 
-$$= I + \theta G + \frac{\theta^2 G^2}{2!} + \frac{\theta^3 G^3}{3!} + \frac{\theta^4 G^4}{4!} + \cdots$$
+$$e^{\theta G} = I + \theta G - \frac{\theta^2}{2!}I - \frac{\theta^3}{3!}G + \frac{\theta^4}{4!}I + \frac{\theta^5}{5!}G - \cdots$$
 
-Using $G^2 = -I$, $G^3 = -G$, $G^4 = I$, etc.:
-
-$$= I + \theta G - \frac{\theta^2}{2!}I - \frac{\theta^3}{3!}G + \frac{\theta^4}{4!}I + \cdots$$
-
-Group the terms with $I$ and with $G$:
+Group the terms with $I$ and the terms with $G$:
 
 $$= \left(1 - \frac{\theta^2}{2!} + \frac{\theta^4}{4!} - \cdots\right)I + \left(\theta - \frac{\theta^3}{3!} + \frac{\theta^5}{5!} - \cdots\right)G$$
 
-$$= \cos\theta \cdot I + \sin\theta \cdot G$$
+These are the Taylor series for cosine and sine:
 
-$$= \begin{pmatrix} \cos\theta & 0 \\ 0 & \cos\theta \end{pmatrix} + \begin{pmatrix} 0 & -\sin\theta \\ \sin\theta & 0 \end{pmatrix} = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix} = R(\theta)$$
+$$\boxed{e^{\theta G} = \cos\theta\, I + \sin\theta\, G}$$
 
-**It works!**
+Let's check:
 
-\`\`\`{admonition} The Generator-Exponential Relationship :class: important
+$$e^{\theta G} = \cos\theta\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} + \sin\theta\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix} = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix} = R(\theta) \quad \checkmark$$
 
-$$e^{\theta G} = \cos\theta \cdot I + \sin\theta \cdot G$$
-
-Compare to Euler's formula: $$e^{i\theta} = \cos\theta + i\sin\theta$$
-
-The matrix $G$ plays the role of $i$! Both satisfy: - $G^2 = -I$ (like $i^2 = -1$) - Exponentiating gives rotations
-
-```         
-
-### Why This Matters for Quantum Mechanics
-
-We've shown that:
-- Complex numbers encode rotations (SO(2))
-- Phase factors $e^{i\theta}$ are rotations by angle $\theta$
-- The generator $G$ (or equivalently, $i$) is what makes rotation possible
-
-In quantum mechanics, **phase is rotation**. The complex structure of quantum mechanics isn't arbitrary — it's because quantum amplitudes can rotate, interfere, and accumulate phase.
-
----
-
-## Part 3: From SO(2) to SU(2)
-
-### SO(2): One-Dimensional Rotations
-
-SO(2) describes rotations in a plane — rotations around a single axis. Key features:
-
-- **One generator** ($G$, or equivalently $i$)
-- **Commutative:** $R(\theta_1)R(\theta_2) = R(\theta_2)R(\theta_1)$
-  - Rotating by $\theta_1$ then $\theta_2$ is the same as $\theta_2$ then $\theta_1$
-  - Addition of angles commutes
-
-### SO(3): Three-Dimensional Rotations
-
-In 3D, we can rotate around three axes: x, y, and z.
-
-**Crucially, 3D rotations do NOT commute!**
-
-Try this with a book:
-1. Rotate 90° around x-axis, then 90° around z-axis
-2. Rotate 90° around z-axis, then 90° around x-axis
-
-You get different final orientations!
-
-This means SO(3) has:
-- **Three generators** ($J_x, J_y, J_z$)
-- **Non-commutative:** $R_x R_z \neq R_z R_x$
-
-The non-commutativity is captured by the commutation relations:
-$$[J_i, J_j] = i\epsilon_{ijk}J_k$$
-
-where $\epsilon_{ijk}$ is +1 for cyclic permutations (xyz, yzx, zxy), -1 for anti-cyclic, and 0 if any indices repeat.
-
-### SU(2): Quantum Rotations
-
-Now here's the key for qubits.
-
-A qubit state is a point on the Bloch sphere. Transformations of qubits are **rotations of the Bloch sphere**.
-
-But qubits live in a 2D *complex* vector space ($\mathbb{C}^2$). The group that acts on this space while preserving:
-- The norm: $|\alpha|^2 + |\beta|^2 = 1$
-- The determinant: $\det(U) = 1$
-
-is called **SU(2)** (Special Unitary group in 2 dimensions).
-
-**SU(2) properties:**
-- **S** = Special (determinant 1)
-- **U** = Unitary ($U^\dagger U = I$, preserves norm)
-- **2** = Acts on 2-dimensional complex space
-
-Like SO(3), SU(2) has **three generators**. Unlike SO(2), it's **non-commutative**.
-
-The generators of SU(2) are the **Pauli matrices** — which we'll meet shortly.
-
-```{admonition} SU(2) and SO(3)
-:class: note
-
-SU(2) and SO(3) are closely related but not identical:
-- Both describe 3D rotations
-- Both have three generators with the same commutation relations
-- But SU(2) is a "double cover" of SO(3): a 360° rotation in SO(3) corresponds to a 720° rotation in SU(2)
-
-For qubits, this means rotating by $2\pi$ gives a *minus sign* (not the identity). This is related to spin being half-integer.
-```
+It works. The generator $G$ contains everything we need.
 
 ------------------------------------------------------------------------
 
-## Part 4: The Stern-Gerlach Experiment
+## The Generator and the Imaginary Unit
 
-We've been doing abstract math. Now let's see how nature hands us a qubit.
+### $G^2 = -I$ and $i^2 = -1$
 
-### The Setup (1922)
+We just found that the rotation generator satisfies $G^2 = -I$. Look at this property carefully — it's the matrix version of $i^2 = -1$.
 
-Otto Stern and Walther Gerlach sent a beam of silver atoms through an **inhomogeneous magnetic field** — a field that's stronger at the top than at the bottom.
+This is not a coincidence. Recall Euler's formula for complex number rotations:
 
-\`\`\`{figure} stern_gerlach_placeholder.svg :name: stern-gerlach :width: 80%
+$$e^{i\theta} = \cos\theta + i\sin\theta$$
 
-The Stern-Gerlach experiment. A beam of atoms passes through a magnetic field gradient. Classical physics predicts a continuous spread; quantum mechanics predicts discrete spots.
+Now compare our matrix rotation formula:
 
-```         
+$$e^{\theta G} = \cos\theta\, I + \sin\theta\, G$$
 
-**Classical prediction:** If atoms have randomly oriented magnetic moments, the force on each atom depends on its orientation. The beam should spread out into a **continuous band**.
+The structures are identical. Everywhere that $i$ appears in Euler's formula, $G$ appears in the matrix formula. Everywhere that 1 appears, $I$ appears.
 
-**Quantum result:** The beam split into exactly **two discrete spots**.
+**The generator** $G$ plays the role of $i$. Both satisfy the same algebraic property ($G^2 = -I$ and $i^2 = -1$), and both generate rotations through exponentiation.
 
-### What This Means
+### Two Representations of the Same Rotation
 
-1. **Angular momentum is quantized** — it can only take discrete values
+We saw last lecture that complex multiplication by $e^{i\theta}$ and matrix multiplication by $R(\theta)$ do the same thing to a vector. Now we see why: they are two representations of the same object, built from generators that obey the same algebra.
 
-2. **For silver atoms (and electrons), there are exactly two values** — "spin up" and "spin down"
+The complex number $i$ and the matrix $G$ are different representations of the same mathematical structure — the generator of 2D rotations.
 
-3. **This is spin-1/2** — the smallest non-trivial quantum angular momentum
+|   | Complex numbers | Matrices |
+|---------------|-------------------------------------|--------------------|
+| Element | $e^{i\theta}$ | $R(\theta) = e^{\theta G}$ |
+| Generator | $i$ | $G = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$ |
+| Key property | $i^2 = -1$ | $G^2 = -I$ |
+| Rotation formula | $e^{i\theta} = \cos\theta + i\sin\theta$ | $e^{\theta G} = \cos\theta\, I + \sin\theta\, G$ |
+| Acts on | $z \in \mathbb{C}$ | $(x, y)^T \in \mathbb{R}^2$ |
 
-The electron has intrinsic angular momentum called **spin** with quantum number $s = 1/2$. The z-component can only be:
+------------------------------------------------------------------------
 
-$$S_z = m_s \hbar, \quad \text{where } m_s = +\frac{1}{2} \text{ or } -\frac{1}{2}$$
+## Generators of SO(3)
 
-### The Qubit
+### From 2D to 3D: Things Get Complicated
 
-The two spin states define a qubit:
+In 2D there is one rotation axis and one generator. In 3D there are three rotation axes — $x$, $y$, and $z$ — so we expect three generators.
 
-$$|\uparrow\rangle \equiv |0\rangle = \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \qquad |\downarrow\rangle \equiv |1\rangle = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$$
+The full $3\times 3$ rotation matrices are:
 
-A general spin state is:
+$$R_x(\theta) = \begin{pmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{pmatrix}, \quad R_y(\theta) = \begin{pmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{pmatrix}, \quad R_z(\theta) = \begin{pmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{pmatrix}$$
 
-$$|\psi\rangle = \alpha|\uparrow\rangle + \beta|\downarrow\rangle$$
+These are already getting unwieldy. Multiplying two of them together — say to check if they commute — would be a mess of trig identities. And we already established last lecture that 3D rotations *don't* commute.
 
-This is *exactly* the same structure as polarization. The Bloch sphere works identically.
+The generator approach cuts through this complexity. Instead of working with the full rotation matrices, we extract the generators — much simpler objects that encode all the essential information.
 
-### Rotating the Apparatus
+### Extracting the Generators
 
-Here's where spin gets interesting. What if we rotate the Stern-Gerlach apparatus?
+Taylor expand each rotation matrix for small $\delta\theta$:
 
-**Z-oriented apparatus:** Measures $S_z$. Eigenstates are $|\uparrow_z\rangle = |0\rangle$ and $|\downarrow_z\rangle = |1\rangle$.
+$$R_x(\delta\theta) \approx I + \delta\theta \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & -1 \\ 0 & 1 & 0 \end{pmatrix}, \quad R_y(\delta\theta) \approx I + \delta\theta \begin{pmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ -1 & 0 & 0 \end{pmatrix}, \quad R_z(\delta\theta) \approx I + \delta\theta \begin{pmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix}$$
 
-**X-oriented apparatus:** Measures $S_x$. Eigenstates are:
+The three generators are:
 
-$$|\uparrow_x\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) = |+\rangle$$
-$$|\downarrow_x\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) = |-\rangle$$
+$$J_x = \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & -1 \\ 0 & 1 & 0 \end{pmatrix}, \qquad J_y = \begin{pmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ -1 & 0 & 0 \end{pmatrix}, \qquad J_z = \begin{pmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix}$$
 
-**Y-oriented apparatus:** Measures $S_y$. Eigenstates are:
+Notice the pattern: each generator has the familiar SO(2) block $\begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$ embedded in the $2\times 2$ subspace corresponding to its plane of rotation, with zeros along the rotation axis. For example, $J_z$ rotates in the $x$-$y$ plane, so the block sits in the upper-left corner. $J_x$ rotates in the $y$-$z$ plane, so the block sits in the lower-right corner.
 
-$$|\uparrow_y\rangle = \frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle) = |+i\rangle$$
-$$|\downarrow_y\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle) = |-i\rangle$$
+Finite rotations are exponentials:
 
-**This is exactly our polarization story!**
+$$R_x(\theta) = e^{\theta J_x}, \qquad R_y(\theta) = e^{\theta J_y}, \qquad R_z(\theta) = e^{\theta J_z}$$
 
-| Spin measurement | Polarization measurement |
-|------------------|-------------------------|
-| z-axis (up/down) | H/V basis |
-| x-axis | D/A basis |
-| y-axis | R/L basis |
+------------------------------------------------------------------------
 
----
+## SO(3) Commutation Relations
 
-## iClicker Question 2
+The non-commutativity of 3D rotations — which was messy to show with the full rotation matrices — becomes clean and elegant at the generator level. Let's compute the commutator $[J_x, J_y] = J_x J_y - J_y J_x$:
 
-**An electron is prepared in state $|\uparrow_z\rangle = |0\rangle$ (spin-up along z). You measure its spin along the x-axis. What do you get?**
+$$J_x J_y = \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & -1 \\ 0 & 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ -1 & 0 & 0 \end{pmatrix} = \begin{pmatrix} 0 & 0 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix}$$
 
-- (A) Always spin-up along x
-- (B) Always spin-down along x
-- (C) 50% up, 50% down ✓
-- (D) The measurement is undefined
+$$J_y J_x = \begin{pmatrix} 0 & 0 & 1 \\ 0 & 0 & 0 \\ -1 & 0 & 0 \end{pmatrix}\begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & -1 \\ 0 & 1 & 0 \end{pmatrix} = \begin{pmatrix} 0 & 1 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix}$$
 
-**Solution:** We need to express $|0\rangle$ in the x-basis:
+$$[J_x, J_y] = \begin{pmatrix} 0 & -1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix} = J_z$$
 
-$$|0\rangle = \frac{1}{\sqrt{2}}|+\rangle + \frac{1}{\sqrt{2}}|-\rangle$$
+The commutator of two generators gives the third! The full set of commutation relations:
 
-So:
-$$P(\uparrow_x) = |\langle + | 0 \rangle|^2 = \frac{1}{2}$$
-$$P(\downarrow_x) = |\langle - | 0 \rangle|^2 = \frac{1}{2}$$
+$$\boxed{[J_x, J_y] = J_z, \qquad [J_y, J_z] = J_x, \qquad [J_z, J_x] = J_y}$$
 
-A state with definite $S_z$ has completely uncertain $S_x$!
+Compactly: $[J_i, J_j] = \epsilon_{ijk}J_k$, where $\epsilon_{ijk} = +1$ for cyclic permutations (xyz, yzx, zxy), $-1$ for anti-cyclic, and $0$ if any indices repeat.
 
----
+These commutation relations are profound. They capture the **entire structure** of 3D rotations in a simple algebraic statement. Any set of three objects satisfying these relations generates a rotation group — even if those objects are $2\times 2$ matrices instead of $3\times 3$ matrices. This is the key insight that will connect SO(3) to SU(2).
 
-## Part 5: The Pauli Matrices
+The physical consequence of non-commuting generators is the **uncertainty principle**: if two physical quantities are described by non-commuting operators, they cannot both be known simultaneously. We'll make this precise shortly.
 
-We need operators to represent "measure spin along x" vs "measure spin along z."
+------------------------------------------------------------------------
 
-These are the **Pauli matrices**:
+## From SO(3) to SU(2)
 
-$$\boxed{\sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad \sigma_y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \quad \sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}}$$
+### A Different Kind of Space
 
-The spin operators are:
-$$S_x = \frac{\hbar}{2}\sigma_x, \quad S_y = \frac{\hbar}{2}\sigma_y, \quad S_z = \frac{\hbar}{2}\sigma_z$$
+SO(3) describes rotations of real 3D vectors — positions, velocities, electric field directions. These are vectors in $\mathbb{R}^3$.
 
-### Property 1: Hermitian
+But throughout this course, we've been working with a different kind of object: a qubit.
 
-$$\sigma_x^\dagger = \sigma_x, \quad \sigma_y^\dagger = \sigma_y, \quad \sigma_z^\dagger = \sigma_z$$
+$$|\psi\rangle = c_0|0\rangle + c_1|1\rangle$$
 
-Hermitian matrices represent **observables** — things we can measure. Their eigenvalues are real.
+This is a two-configuration system with **complex** amplitudes. The state is a vector in $\mathbb{C}^2$, and we've been visualizing it on the Bloch sphere. When we apply gates — Hadamard, phase gates, Pauli matrices — we rotate the state on the Bloch sphere.
 
-### Property 2: Traceless
+We need a group that describes these rotations: transformations of $\mathbb{C}^2$ that preserve the normalization $|c_0|^2 + |c_1|^2 = 1$.
 
-$$\text{Tr}(\sigma_x) = 0 + 0 = 0$$
-$$\text{Tr}(\sigma_y) = 0 + 0 = 0$$
-$$\text{Tr}(\sigma_z) = 1 + (-1) = 0$$
+### Defining SU(2)
 
-### Property 3: Square to Identity
+This group is **SU(2)**: the group of $2\times 2$ unitary matrices with determinant 1.
+
+-   **S** = Special: $\det(U) = 1$
+-   **U** = Unitary: $U^\dagger U = I$
+-   **2** = $2\times 2$ complex matrices
+
+Unitarity is the complex generalization of orthogonality:
+
+|   | SO(n) | SU(n) |
+|-----------------|----------------------------|----------------------------|
+| Acts on | Real vectors ($\mathbb{R}^n$) | Complex vectors ($\mathbb{C}^n$) |
+| Preserves | $R^T R = I$ (transpose) | $U^\dagger U = I$ (conjugate transpose) |
+| Entries | Real | Complex |
+| Determinant | 1 | 1 |
+
+Both preserve lengths. Orthogonal matrices preserve $\vec{v}^T\vec{v}$. Unitary matrices preserve $\vec{v}^\dagger\vec{v} = |c_0|^2 + |c_1|^2$ — exactly the normalization condition we need for quantum states.
+
+### What We Expect
+
+SU(2) should behave like SO(3) — after all, both describe rotations on a sphere. The Bloch sphere has three axes, so SU(2) should have **three generators**, and those generators should satisfy the same commutation relations as the SO(3) generators $J_x, J_y, J_z$.
+
+But SU(2) acts on complex space, so the generators will be $2\times 2$ complex matrices instead of $3\times 3$ real matrices.
+
+------------------------------------------------------------------------
+
+## The Pauli Matrices: Generators of SU(2)
+
+The three generators of SU(2) are the **Pauli matrices**:
+
+$$\boxed{\sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \qquad \sigma_y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \qquad \sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}}$$
+
+The spin angular momentum operators are related by $S_i = \frac{\hbar}{2}\sigma_i$.
+
+### Key Properties
+
+**Hermitian:** $\sigma_i^\dagger = \sigma_i$. Hermitian matrices represent observables — quantities we can measure. Their eigenvalues are guaranteed to be real.
+
+**Traceless:** $\text{Tr}(\sigma_x) = \text{Tr}(\sigma_y) = \text{Tr}(\sigma_z) = 0$.
+
+**Square to identity:** $\sigma_x^2 = \sigma_y^2 = \sigma_z^2 = I$. Let's verify one:
 
 $$\sigma_x^2 = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = I$$
 
-Similarly, $\sigma_y^2 = I$ and $\sigma_z^2 = I$.
+Since $\sigma_i^2 = I$, the eigenvalues satisfy $\lambda^2 = 1$, giving $\lambda = \pm 1$ for every Pauli matrix.
 
-Since $\sigma_i^2 = I$, the eigenvalues must satisfy $\lambda^2 = 1$, so $\lambda = \pm 1$.
+### Eigenstates: The Six Cardinal States
 
-### Property 4: Eigenvalues ±1
+Each Pauli matrix has eigenvalues $+1$ and $-1$. The eigenstates are:
 
-Each Pauli matrix has eigenvalues **+1 and -1**.
+$\sigma_z$:
 
-For spin, this means $S_i = \frac{\hbar}{2}\sigma_i$ has eigenvalues $\pm\frac{\hbar}{2}$.
+$$\sigma_z|0\rangle = +1\cdot|0\rangle, \qquad \sigma_z|1\rangle = -1\cdot|1\rangle$$
 
-### Eigenstates of Each Pauli Matrix
+$\sigma_x$:
 
-**$\sigma_z$ eigenstates:**
+$$\sigma_x|+\rangle = +1\cdot|+\rangle, \qquad \sigma_x|-\rangle = -1\cdot|-\rangle$$
 
-$$\sigma_z |0\rangle = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}\begin{pmatrix} 1 \\ 0 \end{pmatrix} = \begin{pmatrix} 1 \\ 0 \end{pmatrix} = +1 \cdot |0\rangle$$
+where $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$ and $|-\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$.
 
-$$\sigma_z |1\rangle = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}\begin{pmatrix} 0 \\ 1 \end{pmatrix} = \begin{pmatrix} 0 \\ -1 \end{pmatrix} = -1 \cdot |1\rangle$$
+$\sigma_y$:
 
-**$\sigma_x$ eigenstates:**
+$$\sigma_y|{+i}\rangle = +1\cdot|{+i}\rangle, \qquad \sigma_y|{-i}\rangle = -1\cdot|{-i}\rangle$$
 
-$$\sigma_x |+\rangle = \sigma_x \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = +1 \cdot |+\rangle$$
+where $|{+i}\rangle = \frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle)$ and $|{-i}\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$.
 
-$$\sigma_x |-\rangle = \sigma_x \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -1 \end{pmatrix} = \frac{1}{\sqrt{2}}\begin{pmatrix} -1 \\ 1 \end{pmatrix} = -1 \cdot |-\rangle$$
+These are exactly the six cardinal points on the Bloch sphere:
 
-**$\sigma_y$ eigenstates:**
+| Pauli      | $+1$ eigenstate           | $-1$ eigenstate           | Bloch axis |
+|----------------|--------------------|--------------------|----------------|
+| $\sigma_z$ | $\|0\rangle$ (north pole) | $\|1\rangle$ (south pole) | z          |
+| $\sigma_x$ | $\|+\rangle$              | $\|-\rangle$              | x          |
+| $\sigma_y$ | $\|{+i}\rangle$           | $\|{-i}\rangle$           | y          |
 
-$$\sigma_y |+i\rangle = +1 \cdot |+i\rangle, \quad \sigma_y |-i\rangle = -1 \cdot |-i\rangle$$
+### Pauli Commutation Relations
 
-where $|+i\rangle = \frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle)$ and $|-i\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$.
+Now the crucial check: do the Pauli matrices satisfy the same commutation relations as the SO(3) generators?
 
-### Summary: Paulis and the Bloch Sphere
+Compute $\sigma_x\sigma_y$:
 
-| Pauli | +1 eigenstate | −1 eigenstate | Bloch axis |
-|-------|---------------|---------------|------------|
-| $\sigma_z$ | $\|0\rangle$ | $\|1\rangle$ | z (poles) |
-| $\sigma_x$ | $\|+\rangle$ | $\|-\rangle$ | x (equator) |
-| $\sigma_y$ | $\|+i\rangle$ | $\|-i\rangle$ | y (equator) |
+$$\sigma_x\sigma_y = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix} = \begin{pmatrix} i & 0 \\ 0 & -i \end{pmatrix} = i\sigma_z$$
 
-The eigenstates of the three Pauli matrices are exactly the six cardinal points on the Bloch sphere!
+Compute $\sigma_y\sigma_x$:
 
-```python
-# Verify eigenstates with Qiskit
-import numpy as np
-from qiskit.quantum_info import Statevector, Operator
+$$\sigma_y\sigma_x = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} = \begin{pmatrix} -i & 0 \\ 0 & i \end{pmatrix} = -i\sigma_z$$
 
-# Define Pauli matrices
-sigma_x = Operator([[0, 1], [1, 0]])
-sigma_y = Operator([[0, -1j], [1j, 0]])
-sigma_z = Operator([[1, 0], [0, -1]])
+### iClicker: Pauli Products
 
-# Define states
-zero = Statevector([1, 0])
-one = Statevector([0, 1])
-plus = Statevector([1/np.sqrt(2), 1/np.sqrt(2)])
-minus = Statevector([1/np.sqrt(2), -1/np.sqrt(2)])
-plus_i = Statevector([1/np.sqrt(2), 1j/np.sqrt(2)])
-minus_i = Statevector([1/np.sqrt(2), -1j/np.sqrt(2)])
-
-# Check σ_z |0⟩ = +|0⟩
-result = zero.evolve(sigma_z)
-print(f"σ_z|0⟩ = {result.data}")  # Should be [1, 0]
-
-# Check σ_x |+⟩ = +|+⟩
-result = plus.evolve(sigma_x)
-print(f"σ_x|+⟩ = {result.data}")  # Should be [1/√2, 1/√2]
-```
-
-------------------------------------------------------------------------
-
-## Part 6: Commutation Relations
-
-The Pauli matrices have a crucial property: **they don't commute**.
-
-### Computing $\sigma_x \sigma_y$
-
-$$\sigma_x \sigma_y = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix} = \begin{pmatrix} i & 0 \\ 0 & -i \end{pmatrix} = i\sigma_z$$
-
-### Computing $\sigma_y \sigma_x$
-
-$$\sigma_y \sigma_x = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} = \begin{pmatrix} -i & 0 \\ 0 & i \end{pmatrix} = -i\sigma_z$$
-
-### The Commutator
-
-$$[\sigma_x, \sigma_y] = \sigma_x \sigma_y - \sigma_y \sigma_x = i\sigma_z - (-i\sigma_z) = 2i\sigma_z$$
-
-### All Commutation Relations
-
-By similar calculations:
-
-$$\boxed{[\sigma_x, \sigma_y] = 2i\sigma_z}$$ $$\boxed{[\sigma_y, \sigma_z] = 2i\sigma_x}$$ $$\boxed{[\sigma_z, \sigma_x] = 2i\sigma_y}$$
-
-Or compactly: $$[\sigma_i, \sigma_j] = 2i\epsilon_{ijk}\sigma_k$$
-
-where the sum over $k$ is implied.
-
-### The Anticommutator
-
-We can also compute the anticommutator $\{A, B\} = AB + BA$:
-
-$$\{\sigma_x, \sigma_y\} = \sigma_x\sigma_y + \sigma_y\sigma_x = i\sigma_z + (-i\sigma_z) = 0$$
-
-In general: $$\{\sigma_i, \sigma_j\} = 2\delta_{ij}I$$
-
-Different Paulis anticommute; same Paulis give $2I$.
-
-### Combining Both
-
-$$\sigma_i \sigma_j = \delta_{ij}I + i\epsilon_{ijk}\sigma_k$$
-
-This single formula captures everything about Pauli multiplication!
-
-------------------------------------------------------------------------
-
-## iClicker Question 3
-
-**What is** $\sigma_x \sigma_y$?
+**What is** $\sigma_x\sigma_y$?
 
 -   
 
@@ -849,180 +285,548 @@ This single formula captures everything about Pauli multiplication!
 
     (D) $-i\sigma_z$
 
-------------------------------------------------------------------------
+### Commutators
 
-### Why Non-Commuting Matters: The Uncertainty Principle
+$$[\sigma_x, \sigma_y] = \sigma_x\sigma_y - \sigma_y\sigma_x = i\sigma_z - (-i\sigma_z) = 2i\sigma_z$$
 
-If two operators don't commute, they can't be simultaneously diagonalized — they can't share eigenstates.
+The full set:
+
+$$\boxed{[\sigma_x, \sigma_y] = 2i\sigma_z, \qquad [\sigma_y, \sigma_z] = 2i\sigma_x, \qquad [\sigma_z, \sigma_x] = 2i\sigma_y}$$
+
+Compactly: $[\sigma_i, \sigma_j] = 2i\epsilon_{ijk}\sigma_k$.
+
+Compare to SO(3): $[J_i, J_j] = \epsilon_{ijk}J_k$. **The same structure** — just with a factor of $2i$. This factor is a convention: the Pauli matrices are Hermitian (so they can be observables), while the SO(3) generators are antisymmetric. The underlying pattern — which commutator gives which generator — is identical.
+
+SU(2) and SO(3) share the same algebraic DNA.
+
+### Anticommutators
+
+The anticommutator $\{A, B\} = AB + BA$ captures the symmetric part:
+
+$$\{\sigma_x, \sigma_y\} = i\sigma_z + (-i\sigma_z) = 0$$
+
+Different Pauli matrices anticommute to zero. Same Pauli matrices give $\{\sigma_i, \sigma_i\} = 2I$. In general:
+
+$$\boxed{\{\sigma_i, \sigma_j\} = 2\delta_{ij}\,I}$$
+
+### The Master Formula
+
+Adding the commutator and anticommutator:
+
+$$\boxed{\sigma_i\sigma_j = \delta_{ij}\,I + i\epsilon_{ijk}\sigma_k}$$
+
+If $i = j$: you get $I$ (squaring gives the identity). If $i \neq j$: you get $\pm i$ times the third Pauli matrix, with the sign given by cyclic ordering.
+
+### Physical Consequence: The Uncertainty Principle
+
+Non-commuting generators mean that the corresponding physical quantities cannot be simultaneously known.
 
 Since $[\sigma_x, \sigma_z] = -2i\sigma_y \neq 0$:
 
--   A state can't be an eigenstate of both $\sigma_x$ and $\sigma_z$
--   If you know $S_z$ precisely, $S_x$ is uncertain
--   If you know $S_x$ precisely, $S_z$ is uncertain
+-   No state can be an eigenstate of both $\sigma_x$ and $\sigma_z$
+-   If $S_z$ is definite ($|0\rangle$ or $|1\rangle$), then $S_x$ is completely uncertain
+-   If $S_x$ is definite ($|+\rangle$ or $|-\rangle$), then $S_z$ is completely uncertain
 
-This is the **uncertainty principle for spin**.
+**You cannot simultaneously know the spin along two perpendicular axes.** This is fundamentally different from classical physics, where all components of angular momentum can be known at once. The non-commutativity of the Pauli matrices — the same non-commutativity we saw for 3D rotations — is the mathematical origin of quantum uncertainty.
 
-The state $|0\rangle$ is an eigenstate of $\sigma_z$ (eigenvalue +1), so it has definite $S_z = +\hbar/2$. But it's a 50/50 superposition of $|+\rangle$ and $|-\rangle$, so $S_x$ is completely uncertain.
+------------------------------------------------------------------------
 
-\`\`\`{admonition} Uncertainty Principle :class: warning
+## The Double Cover: What Does $R(2\pi) = -I$ Mean?
 
-**You cannot simultaneously know spin along two perpendicular axes.**
+### SU(2) $\neq$ SO(3)
 
-If $S_z$ is definite, then $S_x$ and $S_y$ are uncertain (and vice versa).
+SU(2) and SO(3) have the same commutation relations, but they are not the same group. They differ in a fundamental way.
 
-This is fundamentally different from classical physics, where all components of angular momentum can be known simultaneously.
+In SO(3), a $2\pi$ rotation around any axis brings you back to the identity:
 
-```         
+$$R_{SO(3)}(2\pi) = +I$$
 
----
+This makes intuitive sense — spin a ball $360°$ and it's back where it started.
 
-## Part 7: Paulis as Generators of SU(2)
+In SU(2), a $2\pi$ rotation gives **minus** the identity:
 
-### Any Qubit Operator Can Be Written Using Paulis
+$$R_{SU(2)}(2\pi) = -I$$
 
-Any $2 \times 2$ Hermitian matrix can be decomposed as:
+You need to rotate by $4\pi$ — two full turns — to get back to $+I$. SU(2) is the **double cover** of SO(3): it wraps around twice for every single winding of SO(3).
 
-$$\boxed{H = h_0 I + h_x \sigma_x + h_y \sigma_y + h_z \sigma_z = h_0 I + \vec{h} \cdot \vec{\sigma}}$$
+### What Does the $-1$ Mean Physically?
 
-where $h_0, h_x, h_y, h_z$ are real numbers and $\vec{\sigma} = (\sigma_x, \sigma_y, \sigma_z)$.
+In quantum mechanics, the state of a system is described by a complex amplitude:
 
-**The Pauli matrices (plus identity) form a basis for all $2 \times 2$ Hermitian matrices.**
+$$|\psi\rangle = c_0|0\rangle + c_1|1\rangle$$
 
-This means any qubit observable, any qubit Hamiltonian, can be written in terms of Paulis.
+If $|\psi\rangle \to -|\psi\rangle$, every amplitude picks up a minus sign: $c_0 \to -c_0$, $c_1 \to -c_1$. That $-1$ is a **phase** — specifically, it's the phase $e^{i\pi} = -1$.
 
-### Rotations on the Bloch Sphere
+For a single isolated state, this phase is unobservable. The probabilities $|c_0|^2$ and $|c_1|^2$ don't change when you multiply by $-1$.
 
-Just as $G$ generates SO(2) rotations, the Pauli matrices generate SU(2) rotations.
+**But in a superposition, the phase matters.** Consider a state that is a superposition of a rotated part and an unrotated part. The rotated part picks up $-1$, the unrotated part doesn't. Where the two parts used to add constructively (interference maximum), they now add destructively (interference minimum). Where they used to cancel (minimum), they now reinforce (maximum).
 
-A rotation by angle $\theta$ around axis $\hat{n} = (n_x, n_y, n_z)$ is:
+**The interference pattern shifts.** The $-1$ is physically real.
 
-$$\boxed{R_{\hat{n}}(\theta) = e^{-i\theta(\hat{n} \cdot \vec{\sigma})/2} = \cos\frac{\theta}{2}I - i\sin\frac{\theta}{2}(\hat{n} \cdot \vec{\sigma})}$$
+This has been confirmed experimentally. In neutron interferometry experiments, a neutron beam is split, one path is rotated by $2\pi$ using a magnetic field, and the beams are recombined. The interference pattern shifts — exactly as predicted by the $-1$ phase from SU(2). The neutron must be rotated by $4\pi$ to restore the original interference pattern.
 
-The factor of 2 appears because of spin-1/2 (the "double cover" of SO(3)).
+### Fermions vs. Bosons
 
-### Explicit Rotation Matrices
+Nature has two kinds of particles:
 
-**Rotation around z:**
-$$R_z(\theta) = e^{-i\theta\sigma_z/2} = \begin{pmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{pmatrix}$$
+**Fermions** (electrons, quarks, neutrinos — the matter particles) have half-integer spin and transform under SU(2): $R(2\pi) = -1$.
 
-**Rotation around x:**
-$$R_x(\theta) = e^{-i\theta\sigma_x/2} = \begin{pmatrix} \cos\frac{\theta}{2} & -i\sin\frac{\theta}{2} \\ -i\sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}$$
+**Bosons** (photons, gluons, the Higgs — the force carriers) have integer spin and transform under SO(3): $R(2\pi) = +1$.
 
-**Rotation around y:**
-$$R_y(\theta) = e^{-i\theta\sigma_y/2} = \begin{pmatrix} \cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\ \sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}$$
+This distinction is connected to the spin-statistics theorem: fermions obey the Pauli exclusion principle (no two can occupy the same state), while bosons don't. The $-1$ under $2\pi$ rotation and the exclusion principle are two manifestations of the same deep mathematical structure. More on this later in the course.
 
-### Connection to Gates We Know
+------------------------------------------------------------------------
 
-**Phase gate:**
-$$P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix} = e^{i\phi/2} R_z(\phi)$$
+## Rotations on the Bloch Sphere
 
-Up to global phase, the phase gate IS $R_z$.
+### The General Rotation
 
-**Hadamard gate:**
+A rotation by angle $\theta$ around a unit axis $\hat{n} = (n_x, n_y, n_z)$ on the Bloch sphere is:
 
-The Hadamard is a 180° rotation around the axis $(\hat{x} + \hat{z})/\sqrt{2}$:
+$$R_{\hat{n}}(\theta) = e^{-i\theta(\hat{n}\cdot\vec{\sigma})/2}$$
 
-$$H = \frac{1}{\sqrt{2}}(\sigma_x + \sigma_z)$$
+where $\hat{n}\cdot\vec{\sigma} = n_x\sigma_x + n_y\sigma_y + n_z\sigma_z$.
 
-You can verify:
-$$H = e^{i\pi/2} \cdot e^{-i\pi(\sigma_x + \sigma_z)/(2\sqrt{2})} = e^{i\pi/2} R_{(\hat{x}+\hat{z})/\sqrt{2}}(\pi)$$
+The factor of $1/2$ is because of the double cover — SU(2) matrices make half-angle rotations on the Bloch sphere.
 
-**X, Y, Z gates:**
+### Deriving the Closed Form
 
-These are 180° rotations (up to global phase):
-- $X = \sigma_x = iR_x(\pi)$
-- $Y = \sigma_y = iR_y(\pi)$
-- $Z = \sigma_z = iR_z(\pi)$
+We can evaluate this exponential using the same Taylor series technique that worked for SO(2). Define $A = \hat{n}\cdot\vec{\sigma}$.
 
-```{admonition} The Fundamental Result
-:class: important
+**Step 1:** Compute $A^2$ using the master formula $\sigma_i\sigma_j = \delta_{ij}I + i\epsilon_{ijk}\sigma_k$:
 
-**Every single-qubit unitary is a rotation on the Bloch sphere.**
+$$A^2 = \sum_{i,j}n_in_j\,\sigma_i\sigma_j = \sum_{i,j}n_in_j(\delta_{ij}I + i\epsilon_{ijk}\sigma_k)$$
 
-Any $U \in SU(2)$ can be written as $U = e^{-i\theta(\hat{n} \cdot \vec{\sigma})/2}$ for some axis $\hat{n}$ and angle $\theta$.
+The symmetric piece gives $\sum_i n_i^2\,I = |\hat{n}|^2\,I = I$. The antisymmetric piece $\sum_{ij}n_in_j\epsilon_{ijk}$ vanishes because $n_in_j$ is symmetric while $\epsilon_{ijk}$ is antisymmetric.
 
-The Pauli matrices are the **generators** of these rotations.
-```
+$$(\hat{n}\cdot\vec{\sigma})^2 = I$$
 
-### Qiskit Verification
+Just like $\sigma_i^2 = I$ for each individual Pauli, the combination $(\hat{n}\cdot\vec\sigma)^2 = I$ for any unit vector $\hat{n}$.
 
-``` python
-import numpy as np
-from qiskit.quantum_info import Operator
-from qiskit import QuantumCircuit
+**Step 2:** Higher powers cycle: $A^2 = I$, $A^3 = A$, $A^4 = I$, ... — exactly the same pattern as $G$ in SO(2).
 
-# Verify R_z(θ) = e^{-iθσ_z/2}
-theta = np.pi/3
+**Step 3:** Taylor expand with $\alpha = \theta/2$:
 
-# Method 1: Direct matrix
-sigma_z = np.array([[1, 0], [0, -1]])
-Rz_direct = np.cos(theta/2) * np.eye(2) - 1j * np.sin(theta/2) * sigma_z
-print("R_z from formula:")
-print(Rz_direct)
+$$e^{-i\alpha A} = I + (-i\alpha)A + \frac{(-i\alpha)^2}{2!}I + \frac{(-i\alpha)^3}{3!}A + \frac{(-i\alpha)^4}{4!}I + \cdots$$
 
-# Method 2: Qiskit gate
-qc = QuantumCircuit(1)
-qc.rz(theta, 0)
-Rz_qiskit = Operator(qc).data
-print("\nR_z from Qiskit:")
-print(Rz_qiskit)
+**Step 4:** Group even powers ($I$) and odd powers ($A$):
 
-# They match up to global phase!
-```
+$$= \left(1 - \frac{\alpha^2}{2!} + \frac{\alpha^4}{4!} - \cdots\right)I + (-i)\left(\alpha - \frac{\alpha^3}{3!} + \frac{\alpha^5}{5!} - \cdots\right)A$$
+
+$$= \cos\alpha\,I - i\sin\alpha\,A$$
+
+**Step 5:** Substitute back $\alpha = \theta/2$:
+
+$$\boxed{R_{\hat{n}}(\theta) = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,(\hat{n}\cdot\vec{\sigma})}$$
+
+Compare to our SO(2) result: $e^{\theta G} = \cos\theta\,I + \sin\theta\,G$. The same structure — the generator multiplied by sine, the identity multiplied by cosine. The $-i$ and $\theta/2$ reflect the Hermitian convention and the double cover.
+
+**Verification:** At $\theta = 2\pi$: $R_{\hat{n}}(2\pi) = \cos\pi\,I - i\sin\pi\,(\hat{n}\cdot\vec\sigma) = -I$. ✓
+
+------------------------------------------------------------------------
+
+## Explicit Rotations and Gate Connections
+
+### Rotation Around the $z$-Axis
+
+$$R_z(\theta) = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,\sigma_z = \begin{pmatrix} e^{-i\theta/2} & 0 \\ 0 & e^{i\theta/2} \end{pmatrix}$$
+
+**Connection to the phase gate:**
+
+$$P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix} = e^{i\phi/2}\begin{pmatrix} e^{-i\phi/2} & 0 \\ 0 & e^{i\phi/2} \end{pmatrix} = e^{i\phi/2}\,R_z(\phi)$$
+
+Up to a global phase (which is unobservable), the phase gate IS a z-rotation. This is why applying $P(\phi)$ to $|+\rangle$ traces the equator of the Bloch sphere — it rotates around the z-axis.
+
+**Connection to the Z gate:**
+
+$$Z = \sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix} = iR_z(\pi)$$
+
+The Z gate is a $\pi$ rotation around the z-axis. It maps $|+\rangle \to |-\rangle$ and $|-\rangle \to |+\rangle$ — it flips the equatorial states.
+
+### Rotation Around the $x$-Axis
+
+$$R_x(\theta) = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,\sigma_x = \begin{pmatrix} \cos\frac{\theta}{2} & -i\sin\frac{\theta}{2} \\ -i\sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}$$
+
+**Connection to the X gate:**
+
+$$X = \sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} = iR_x(\pi)$$
+
+The X gate is a $\pi$ rotation around the x-axis. It swaps $|0\rangle \leftrightarrow |1\rangle$ — the quantum NOT gate, flipping the north and south poles.
+
+### Rotation Around the $y$-Axis
+
+$$R_y(\theta) = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,\sigma_y = \begin{pmatrix} \cos\frac{\theta}{2} & -\sin\frac{\theta}{2} \\ \sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}$$
+
+Note: $R_y(\theta)$ is a real matrix. This is because $-i\sigma_y = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}$, which is the SO(2) generator $G$. So y-rotations on the Bloch sphere look exactly like classical 2D rotations.
+
+**Connection to the Y gate:**
+
+$$Y = \sigma_y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix} = iR_y(\pi)$$
+
+The Y gate is a $\pi$ rotation around the y-axis.
+
+### The Hadamard Gate
+
+The Hadamard doesn't correspond to a rotation around a coordinate axis. Instead:
+
+$$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix} = \frac{1}{\sqrt{2}}(\sigma_x + \sigma_z)$$
+
+This is a $\pi$ rotation around the axis $\hat{n} = (\hat{x} + \hat{z})/\sqrt{2}$, halfway between $x$ and $z$ on the Bloch sphere. Geometrically, it swaps the z-axis and the x-axis:
+
+$$H|0\rangle = |+\rangle, \quad H|1\rangle = |-\rangle, \quad H|+\rangle = |0\rangle, \quad H|-\rangle = |1\rangle$$
+
+### The Fundamental Result
+
+$$\boxed{\text{Every single-qubit unitary is a rotation on the Bloch sphere.}}$$
+
+Any $U \in$ SU(2) can be written as $R_{\hat{n}}(\theta) = e^{-i\theta(\hat{n}\cdot\vec\sigma)/2}$ for some axis $\hat{n}$ and angle $\theta$. There are no other single-qubit gates. The three Pauli matrices generate all possible qubit operations through rotation.
 
 ------------------------------------------------------------------------
 
 ## Summary
 
-Today we covered the mathematical foundation of qubits:
+| Concept | SO(2) | SO(3) | SU(2) |
+|---------------------|-----------------|-----------------|-----------------|
+| Dimension | 1 axis | 3 axes | 3 axes |
+| Acts on | $\mathbb{R}^2$ | $\mathbb{R}^3$ | $\mathbb{C}^2$ |
+| Generators | $G$ | $J_x, J_y, J_z$ | $\sigma_x, \sigma_y, \sigma_z$ |
+| Key property | $G^2 = -I$ | $[J_i,J_j] = \epsilon_{ijk}J_k$ | $[\sigma_i,\sigma_j] = 2i\epsilon_{ijk}\sigma_k$ |
+| Commutative? | Yes | No | No |
+| $R(2\pi)$ | $+I$ | $+I$ | $-I$ |
 
-1.  **Quantum mechanics is fundamentally complex** — the $i$ in Schrödinger's equation is essential, not a trick
+### Key Results
 
-2.  **Complex numbers = SO(2) rotations**
+1.  **Generators** encode infinitesimal rotations. Exponentiating gives finite rotations: $R(\theta) = e^{\theta G}$.
 
-    -   $e^{i\theta}$ rotates by angle $\theta$
-    -   The generator $G$ satisfies $G^2 = -I$ (like $i^2 = -1$)
-    -   Finite rotations: $R(\theta) = e^{\theta G}$
+2.  $G$ and $i$ are the same thing in different representations. $G^2 = -I$ is the matrix version of $i^2 = -1$. Both generate rotations.
 
-3.  **Qubits transform under SU(2)**
+3.  **SO(3)** has three generators $J_x, J_y, J_z$ satisfying $[J_i, J_j] = \epsilon_{ijk}J_k$. Non-commutativity of generators → uncertainty principle.
 
-    -   Three generators (three axes)
-    -   Non-commutative (order matters)
-    -   Rotations of the Bloch sphere
+4.  **SU(2)** is the quantum rotation group. Its generators — the **Pauli matrices** — satisfy the same commutation relations as SO(3). They are Hermitian (observables), traceless, and square to the identity (eigenvalues $\pm 1$). Their eigenstates are the six Bloch sphere cardinal states.
 
-4.  **Stern-Gerlach reveals spin**
+5.  **The double cover:** $R_{SU(2)}(2\pi) = -I$. The minus sign is a physical phase that shifts interference patterns. Fermions transform under SU(2); bosons under SO(3).
 
-    -   Nature hands us a qubit: spin-1/2
-    -   Two discrete outcomes, not a continuum
-    -   Rotating the apparatus = choosing measurement basis
+6.  **Every qubit gate is a Bloch sphere rotation:**
 
-5.  **The Pauli matrices** $\sigma_x$, $\sigma_y$, $\sigma_z$:
+$$R_{\hat{n}}(\theta) = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,(\hat{n}\cdot\vec\sigma)$$
 
-    -   Hermitian, traceless, square to identity
-    -   Eigenvalues ±1
-    -   Eigenstates = Bloch sphere axes (z, x, y)
-    -   Non-commuting: $[\sigma_i, \sigma_j] = 2i\epsilon_{ijk}\sigma_k$
+Phase gate $\sim R_z$. X gate $\sim R_x(\pi)$. Hadamard $\sim R_{(\hat{x}+\hat{z})/\sqrt{2}}(\pi)$.
 
-6.  **Paulis generate SU(2):**
+### Next Lecture
 
-    -   Any qubit Hamiltonian: $H = h_0 I + \vec{h} \cdot \vec{\sigma}$
-    -   Rotations: $R_{\hat{n}}(\theta) = e^{-i\theta(\hat{n} \cdot \vec{\sigma})/2}$
-    -   Every single-qubit gate is a rotation!
-
-### Everything Connects
-
-| Polarization | Spin           | Bloch sphere    | Pauli eigenstate |
-|--------------|----------------|-----------------|------------------|
-| H            | $\uparrow_z$   | +z (north pole) | $\sigma_z = +1$  |
-| V            | $\downarrow_z$ | −z (south pole) | $\sigma_z = -1$  |
-| D            | $\uparrow_x$   | +x              | $\sigma_x = +1$  |
-| A            | $\downarrow_x$ | −x              | $\sigma_x = -1$  |
-| R            | $\uparrow_y$   | +y              | $\sigma_y = +1$  |
-| L            | $\downarrow_y$ | −y              | $\sigma_y = -1$  |
+The Stern-Gerlach experiment: nature hands us a real physical qubit. Electron spin, measurement in different bases, and the birth of the qubit.
 
 ------------------------------------------------------------------------
 
-## Looking Ahead
+## Homework 2.5
 
-**Next lecture (final of Chapter 2):** - Time evolution: Schrödinger equation $i\hbar\frac{d}{dt}|\psi\rangle = H|\psi\rangle$ - Hamiltonians generate rotations - Precession (rotation around z) - Rabi oscillations (rotation around x) - The Ramsey interferometer - Atomic clocks: the qubit as a sensor
+### Problem 1: A Different Kind of Generator — Lorentz Boosts
+
+Not all generators produce rotations. In special relativity, a **Lorentz boost** along the x-direction by rapidity $\beta$ is described by:
+
+$$B(\beta) = \begin{pmatrix} \cosh\beta & \sinh\beta \\ \sinh\beta & \cosh\beta \end{pmatrix}$$
+
+This matrix mixes space and time coordinates, just as a rotation matrix mixes $x$ and $y$.
+
+**(a)** Verify that the set of boost matrices $\{B(\beta)\}$ forms a group: show $B(\beta_1)B(\beta_2) = B(\beta_1 + \beta_2)$, identify the identity element and the inverse of $B(\beta)$.
+
+*Hint:* You will need the hyperbolic addition formulas: $\cosh(\alpha+\beta) = \cosh\alpha\cosh\beta + \sinh\alpha\sinh\beta$ and $\sinh(\alpha+\beta) = \sinh\alpha\cosh\beta + \cosh\alpha\sinh\beta$.
+
+**(b)** Find the generator $K$ by expanding $B(\delta\beta)$ for small $\delta\beta$ (use $\cosh\delta\beta \approx 1$, $\sinh\delta\beta \approx \delta\beta$):
+
+$$B(\delta\beta) \approx I + \delta\beta\, K$$
+
+Write out $K$.
+
+**(c)** Compute $K^2$. Compare to the rotation generator where $G^2 = -I$. What is different?
+
+**(d)** Using $K^2 = +I$, expand the exponential $e^{\beta K}$ as a Taylor series. Group even and odd powers (as we did in lecture for $e^{\theta G}$). What functions appear instead of cosine and sine?
+
+**(e)** Verify that your result matches $B(\beta)$.
+
+**(f)** Compute $\det B(\beta)$. Compare to $\det R(\theta) = 1$. Is a Lorentz boost a rotation?
+
+**(g)** Reflect on the difference: $G^2 = -I$ gives oscillatory behavior ($\cos, \sin$) — rotations go around in circles. $K^2 = +I$ gives hyperbolic behavior ($\cosh, \sinh$) — boosts grow without bound. What physical difference does this correspond to? (Can you rotate forever? Can you boost forever?)
+
+------------------------------------------------------------------------
+
+### Problem 2: The Pauli Vector Identity
+
+**(a)** Using the master formula $\sigma_i\sigma_j = \delta_{ij}I + i\epsilon_{ijk}\sigma_k$, prove the identity:
+
+$$(\vec{a}\cdot\vec\sigma)(\vec{b}\cdot\vec\sigma) = (\vec{a}\cdot\vec{b})\,I + i(\vec{a}\times\vec{b})\cdot\vec\sigma$$
+
+where $\vec{a}$ and $\vec{b}$ are arbitrary real 3-vectors.
+
+*Hint:* Write $\vec{a}\cdot\vec\sigma = \sum_i a_i\sigma_i$ and $\vec{b}\cdot\vec\sigma = \sum_j b_j\sigma_j$, multiply, and use the master formula on $\sigma_i\sigma_j$. You will need to recognize $\sum_i a_i b_i = \vec{a}\cdot\vec{b}$ and $\sum_{ijk}\epsilon_{ijk}a_i b_j = (\vec{a}\times\vec{b})_k$.
+
+**(b)** As a special case, set $\vec{a} = \vec{b} = \hat{n}$ (a unit vector). Show that $(\hat{n}\cdot\vec\sigma)^2 = I$.
+
+**(c)** Set $\vec{a} = \hat{x}$ and $\vec{b} = \hat{y}$. Evaluate both sides of the identity and verify they match.
+
+**(d)** Set $\vec{a} = \vec{b} = \hat{x} + \hat{z}$ (not a unit vector). What is $[(\hat{x}+\hat{z})\cdot\vec\sigma]^2$? How does this relate to the Hadamard gate?
+
+------------------------------------------------------------------------
+
+### Problem 3: Mystery Matrix
+
+Consider the unitary matrix:
+
+$$U = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & -i \\ -i & 1 \end{pmatrix}$$
+
+**(a)** Verify that $U$ is unitary: show $U^\dagger U = I$.
+
+**(b)** Verify that $\det U = 1$, confirming $U \in$ SU(2).
+
+**(c)** Every element of SU(2) can be written as:
+
+$$U = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,(\hat{n}\cdot\vec\sigma)$$
+
+By comparing $U$ to this formula, determine the rotation angle $\theta$ and axis $\hat{n}$.
+
+*Hint:* The coefficient of $I$ gives $\cos(\theta/2)$. The coefficients of $\sigma_x$, $\sigma_y$, $\sigma_z$ in the remainder give $\sin(\theta/2)\, n_x$, $\sin(\theta/2)\, n_y$, $\sin(\theta/2)\, n_z$.
+
+**(d)** Describe geometrically what this rotation does on the Bloch sphere. Where does it send $|0\rangle$? Where does it send $|+\rangle$?
+
+**(e)** Compute $U^2$. What rotation is this? What about $U^4$?
+
+------------------------------------------------------------------------
+
+### Problem 4: Visualizing Rotations on the Bloch Sphere (Qiskit)
+
+In this problem you'll use Qiskit to see rotations in action.
+
+**Setup:** You will need the following imports:
+
+``` python
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
+from qiskit.visualization import plot_bloch_multivector, plot_bloch_vector
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+**(a)** Start with $|0\rangle$ and apply $R_y(\theta)$ for $\theta = 0, \pi/6, \pi/3, \pi/2, 2\pi/3, 5\pi/6, \pi$. For each value of $\theta$: - Create a circuit with `qc.ry(theta, 0)` - Extract the statevector - Visualize on the Bloch sphere (or record the Bloch coordinates)
+
+Describe the path traced out. What curve on the Bloch sphere is this?
+
+**(b)** Now start with $|0\rangle$, apply $R_y(\pi/2)$ to move to the equator, and then apply $R_z(\phi)$ for $\phi = 0, \pi/4, \pi/2, 3\pi/4, \pi, 5\pi/4, 3\pi/2, 7\pi/4$. Describe the path.
+
+**(c)** Starting from $|0\rangle$, apply the following sequences and plot each final state on the Bloch sphere: 1. $R_y(\pi/2)$ 2. $R_y(\pi/2)$ then $R_z(\pi/2)$ 3. $R_z(\pi/2)$ then $R_y(\pi/2)$
+
+Are sequences 2 and 3 the same? Relate to what we learned about non-commutativity.
+
+**(d)** **The path of a general rotation.** Choose an axis $\hat{n} = (1, 1, 1)/\sqrt{3}$ and apply $R_{\hat{n}}(\theta)$ for $\theta$ from $0$ to $2\pi$ in 20 steps. Start from $|0\rangle$. Plot all 20 states on a single Bloch sphere.
+
+*Hint:* In Qiskit, use `qc.r(theta, phi, 0)` where `phi` is the azimuthal angle of $\hat{n}$, or construct the rotation matrix manually and use `qc.unitary(U, 0)`.
+
+------------------------------------------------------------------------
+
+### Problem 5: Phase Gate = Z-Rotation (Qiskit)
+
+This problem tests the lecture's claim that the phase gate $P(\phi)$ and the rotation $R_z(\phi)$ are the same up to a global phase.
+
+**Setup:**
+
+``` python
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
+from qiskit_aer import AerSimulator
+import numpy as np
+```
+
+**(a)** Create two circuits that act on $|+\rangle = H|0\rangle$:
+
+*Circuit A:* Apply $H$, then $P(\pi/3)$.
+
+*Circuit B:* Apply $H$, then $R_z(\pi/3)$.
+
+Use `Statevector.from_instruction(qc)` to extract the output states. Print both statevectors. Are they the same?
+
+**(b)** Compute the ratio of corresponding amplitudes: $(\text{state A})_0 / (\text{state B})_0$ and $(\text{state A})_1 / (\text{state B})_1$. Show that the ratio is the same for both components — this is the global phase $e^{i\phi/2}$.
+
+**(c)** Add measurements to both circuits. Run each on `AerSimulator()` with 10,000 shots. Compare the measurement statistics. Are they distinguishable?
+
+**(d)** Repeat parts (a)–(c) for $\phi = \pi$ (where $P(\pi) = Z$ and $R_z(\pi) = -iZ$). Verify that the measurement statistics are still identical despite different global phases.
+
+**(e)** Explain in your own words: if two unitaries differ only by a global phase, why can't any measurement distinguish them?
+
+------------------------------------------------------------------------
+
+### Problem 6: The Hadamard Gate as a Rotation
+
+The Hadamard gate is one of the most important single-qubit gates:
+
+$$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$$
+
+**(a)** Verify that $H = \frac{1}{\sqrt{2}}(\sigma_x + \sigma_z)$ by writing out the right-hand side explicitly.
+
+**(b)** The general SU(2) rotation is $R_{\hat{n}}(\theta) = \cos(\theta/2)\,I - i\sin(\theta/2)\,(\hat{n}\cdot\vec\sigma)$. Find the rotation axis $\hat{n}$ and angle $\theta$ such that $H = e^{i\phi}\,R_{\hat{n}}(\theta)$, where $e^{i\phi}$ is a global phase. Determine $\phi$ as well.
+
+*Hint:* Since $H$ is Hermitian and $H^2 = I$, what does that tell you about the rotation angle? What direction is $\sigma_x + \sigma_z$?
+
+**(c)** Verify your answer by computing $R_{\hat{n}}(\theta)$ explicitly and comparing to $e^{-i\phi}H$.
+
+**(d)** Compute $H^2$ directly. Show it equals $I$. Explain geometrically: why does applying the same rotation twice return to the identity? For what class of rotation angles $\theta$ is $R_{\hat{n}}(\theta)^2 = I$ (up to global phase)?
+
+**(e)** Where does $H$ send each of the six cardinal states? Describe the geometric action of $H$ on the Bloch sphere in one sentence.
+
+------------------------------------------------------------------------
+
+### Problem 7: Composition of Rotations
+
+When two rotations are applied in sequence, the result is another rotation. In this problem you'll find what that rotation is.
+
+**(a)** Write out $R_z(\pi/2)$ and $R_x(\pi/2)$ as explicit $2\times 2$ matrices.
+
+**(b)** Compute the product $U = R_z(\pi/2)\,R_x(\pi/2)$ by matrix multiplication.
+
+**(c)** Every SU(2) matrix can be written as $U = \cos(\theta/2)\,I - i\sin(\theta/2)\,(\hat{n}\cdot\vec\sigma)$. Use the following procedure to find $\theta$ and $\hat{n}$:
+
+1.  Compute $\text{Tr}(U) = 2\cos(\theta/2)$ to find $\theta$.
+2.  Compute $U - U^\dagger = -2i\sin(\theta/2)\,(\hat{n}\cdot\vec\sigma)$ to read off $\hat{n}$.
+
+**(d)** Verify: compute $R_{\hat{n}}(\theta)$ with your values and check it matches $U$.
+
+**(e)** Now compute $V = R_x(\pi/2)\,R_z(\pi/2)$ (opposite order). Find its $\theta$ and $\hat{n}$. Is it the same rotation as $U$? How are the two axes related?
+
+------------------------------------------------------------------------
+
+### Problem 8: Decomposing a Random Unitary (Qiskit)
+
+Every single-qubit gate is a rotation on the Bloch sphere. In this problem you'll verify this computationally.
+
+**Setup:**
+
+``` python
+from qiskit.quantum_info import random_unitary, Operator
+import numpy as np
+```
+
+**(a)** Generate a random $2\times 2$ unitary matrix:
+
+``` python
+U = random_unitary(2)
+mat = U.data  # 2x2 numpy array
+```
+
+Print the matrix. Verify it is unitary by checking `mat @ mat.conj().T` $\approx I$.
+
+**(b)** Extract the rotation angle $\theta$ and axis $\hat{n}$:
+
+The trace gives the angle: $\text{Tr}(U) = 2e^{i\alpha}\cos(\theta/2)$ where $e^{i\alpha}$ is a global phase. So $\cos(\theta/2) = |\text{Tr}(U)|/2$.
+
+The axis components come from: $U - U^\dagger = -2ie^{i\alpha}\sin(\theta/2)(\hat{n}\cdot\vec\sigma)$. Extract $n_x, n_y, n_z$ by identifying the coefficients of each Pauli matrix.
+
+Implement this extraction numerically.
+
+**(c)** Reconstruct the rotation matrix using your extracted $\theta$ and $\hat{n}$:
+
+``` python
+I2 = np.eye(2)
+sx = np.array([[0,1],[1,0]])
+sy = np.array([[0,-1j],[1j,0]])
+sz = np.array([[1,0],[0,-1]])
+R = np.cos(theta/2)*I2 - 1j*np.sin(theta/2)*(nx*sx + ny*sy + nz*sz)
+```
+
+Compare `R` to the original `mat` (up to a global phase). Verify they agree.
+
+**(d)** Repeat for 5 different random unitaries. Does the decomposition always work?
+
+**(e)** What happens if you generate a random unitary with $\det(U) \neq 1$? How would you handle the global phase?
+
+------------------------------------------------------------------------
+
+### Problem 9: Gate Sequence Trajectory (Qiskit)
+
+In this problem you'll track a qubit's path on the Bloch sphere as it passes through a sequence of gates.
+
+**Setup:**
+
+``` python
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+A useful function to extract Bloch coordinates from a statevector:
+
+``` python
+def bloch_coords(sv):
+    """Extract (x, y, z) Bloch coordinates from a Statevector."""
+    rho = np.outer(sv.data, sv.data.conj())
+    sx = np.array([[0,1],[1,0]])
+    sy = np.array([[0,-1j],[1j,0]])
+    sz = np.array([[1,0],[0,-1]])
+    x = np.real(np.trace(rho @ sx))
+    y = np.real(np.trace(rho @ sy))
+    z = np.real(np.trace(rho @ sz))
+    return x, y, z
+```
+
+**(a)** Starting from $|0\rangle$, apply the gate sequence $H \to S \to H \to T$, where $S = P(\pi/2)$ and $T = P(\pi/4)$. Record the state (and Bloch coordinates) after each gate:
+
+| Step | Gate applied | State        | $(x, y, z)$ |
+|------|--------------|--------------|-------------|
+| 0    | —            | $\|0\rangle$ | $(0, 0, 1)$ |
+| 1    | $H$          | ?            | ?           |
+| 2    | $S$          | ?            | ?           |
+| 3    | $H$          | ?            | ?           |
+| 4    | $T$          | ?            | ?           |
+
+**(b)** Compute the final state analytically (by multiplying the $2\times 2$ matrices). Verify it matches your Qiskit result.
+
+**(c)** Plot the trajectory on the Bloch sphere. You can use Qiskit's `plot_bloch_vector` or plot the 5 points in 3D with `matplotlib`.
+
+**(d)** The full sequence $THSH$ is equivalent to a single rotation $R_{\hat{n}}(\theta)$. Find $\theta$ and $\hat{n}$ using the trace method from Problem 7.
+
+**(e)** Now replace $T$ with $T^\dagger = P(-\pi/4)$ and repeat. How does the trajectory change? How do $\theta$ and $\hat{n}$ change?
+
+------------------------------------------------------------------------
+
+### Problem 10: The Uncertainty Principle — Quantified (Qiskit)
+
+The commutation relation $[\sigma_z, \sigma_x] = -2i\sigma_y$ implies that $S_z$ and $S_x$ cannot both be known precisely. The Robertson uncertainty relation makes this quantitative:
+
+$$\Delta\sigma_z \cdot \Delta\sigma_x \geq \frac{1}{2}|\langle[\sigma_z, \sigma_x]\rangle| = |\langle\sigma_y\rangle|$$
+
+where $\Delta\sigma_i = \sqrt{\langle\sigma_i^2\rangle - \langle\sigma_i\rangle^2}$ is the standard deviation.
+
+In this problem you'll verify this numerically.
+
+**Setup:**
+
+``` python
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
+import numpy as np
+import matplotlib.pyplot as plt
+
+sx = np.array([[0,1],[1,0]])
+sy = np.array([[0,-1j],[1j,0]])
+sz = np.array([[1,0],[0,-1]])
+
+def expectation(sv, op):
+    """Compute <psi|op|psi>."""
+    return np.real(sv.data.conj() @ op @ sv.data)
+
+def uncertainty(sv, op):
+    """Compute Delta(op) = sqrt(<op^2> - <op>^2)."""
+    exp = expectation(sv, op)
+    exp2 = expectation(sv, op @ op)
+    return np.sqrt(max(exp2 - exp**2, 0))
+```
+
+**(a)** Prepare the family of states $|\psi(\theta)\rangle = R_y(\theta)|0\rangle$ for $\theta \in [0, \pi]$ (say, 100 values). For each state, compute: - $\langle\sigma_z\rangle$ and $\Delta\sigma_z$ - $\langle\sigma_x\rangle$ and $\Delta\sigma_x$ - $\langle\sigma_y\rangle$
+
+**(b)** Plot $\Delta\sigma_z$ and $\Delta\sigma_x$ individually as functions of $\theta$. At what $\theta$ is $\Delta\sigma_z = 0$? At what $\theta$ is $\Delta\sigma_x = 0$? Can both be zero simultaneously?
+
+**(c)** Plot the product $\Delta\sigma_z \cdot \Delta\sigma_x$ as a function of $\theta$. On the same plot, show the lower bound $|\langle\sigma_y\rangle|$. Verify that the product is always greater than or equal to the bound.
+
+**(d)** At what value of $\theta$ is $\Delta\sigma_z \cdot \Delta\sigma_x$ minimized? What state is this? Is the uncertainty relation **saturated** (equality achieved) at this point?
+
+**(e)** The states $R_y(\theta)|0\rangle$ all lie in the $xz$-plane of the Bloch sphere, so $\langle\sigma_y\rangle = 0$ for all of them. This means the Robertson bound is zero — not very informative! Repeat the analysis for the family $|\psi(\theta, \phi)\rangle = R_z(\phi)R_y(\theta)|0\rangle$ with fixed $\theta = \pi/3$ and $\phi \in [0, 2\pi)$. Now plot $\Delta\sigma_z \cdot \Delta\sigma_x$ and $|\langle\sigma_y\rangle|$ vs $\phi$. For what $\phi$ is the bound tightest?
+
+**(f)** Explain in your own words: what does the uncertainty principle say, and what does it *not* say? Does it mean measurements are "noisy"? Does it apply to a single measurement or to an ensemble?
