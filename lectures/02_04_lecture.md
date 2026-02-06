@@ -186,7 +186,7 @@ turning it by angle $\theta$ counterclockwise.
 
 The matrix rotation and complex multiplication are doing the same thing. A complex number $z = x + iy$ corresponds to the vector $(x, y)^T$. Multiplying by $e^{i\theta} = \cos\theta + i\sin\theta$:
 
-$$e^{i\theta}z = (\cos\theta + i\sin\theta)(x + iy)$$ $$= (\cos\theta\cdot x - \sin\theta\cdot y) + i(\sin\theta\cdot x + \cos\theta\cdot y)$$
+$$e^{i\theta}z = (\cos\theta + i\sin\theta)(x + iy) = (\cos\theta\cdot x - \sin\theta\cdot y) + i(\sin\theta\cdot x + \cos\theta\cdot y)$$
 
 Reading off the real and imaginary parts:
 
