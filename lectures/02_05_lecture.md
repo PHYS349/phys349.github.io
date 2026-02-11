@@ -88,7 +88,7 @@ $$e^{i\theta} = \cos\theta + i\sin\theta$$
 
 Now compare our matrix rotation formula:
 
-$$e^{\theta G} = \cos\theta\, I + \sin\theta\, G$$
+$$e^{\theta G} = \cos\theta\ I + \sin\theta\ G$$
 
 The structures are identical. Everywhere that $i$ appears in Euler's formula, $G$ appears in the matrix formula. Everywhere that 1 appears, $I$ appears.
 
