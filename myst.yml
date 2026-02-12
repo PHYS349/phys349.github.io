@@ -29,6 +29,7 @@ project:
         - file: lectures/02_02_lecture.md
         - file: lectures/02_03_lecture.md
         - file: lectures/02_04_lecture.md
+        - file: lectures/02_05_lecture.md
 
     - title: Homework
       children:
