@@ -52,7 +52,7 @@ $$G^2 = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}\begin{pmatrix} 0 & -1 \\ 1
 
 So $G^2 = -I$. This is the key property of the generator. The higher powers follow immediately:
 
-$$G^3 = G^2 \cdot G = (-I)G = -G$$ $$G^4 = G^2 \cdot G^2 = (-I)(-I) = +I$$ $$G^5 = G^4 \cdot G = G$$
+$$G^3 = G^2 \cdot G = (-I)G = -G$, \; G^4 = G^2 \cdot G^2 = (-I)(-I) = +I$$ $$G^5 = G^4 \cdot G = G$$
 
 The pattern repeats with period 4: $I, G, -I, -G, I, G, \ldots$
 
