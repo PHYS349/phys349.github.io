@@ -88,7 +88,7 @@ $$e^{i\theta} = \cos\theta + i\sin\theta$$
 
 Now compare our matrix rotation formula:
 
-$$e^{\theta G} = \cos\theta\, I + \sin\theta\, G$$
+$$e^{\theta G} = \cos\theta\ I + \sin\theta\ G$$
 
 The structures are identical. Everywhere that $i$ appears in Euler's formula, $G$ appears in the matrix formula. Everywhere that 1 appears, $I$ appears.
 
@@ -829,4 +829,4 @@ def uncertainty(sv, op):
 
 **(e)** The states $R_y(\theta)|0\rangle$ all lie in the $xz$-plane of the Bloch sphere, so $\langle\sigma_y\rangle = 0$ for all of them. This means the Robertson bound is zero — not very informative! Repeat the analysis for the family $|\psi(\theta, \phi)\rangle = R_z(\phi)R_y(\theta)|0\rangle$ with fixed $\theta = \pi/3$ and $\phi \in [0, 2\pi)$. Now plot $\Delta\sigma_z \cdot \Delta\sigma_x$ and $|\langle\sigma_y\rangle|$ vs $\phi$. For what $\phi$ is the bound tightest?
 
-**(f)** Explain in your own words: what does the uncertainty principle say, and what does it *not* say? Does it mean measurements are "noisy"? Does it apply to a single measurement or to an ensemble? -->
+**(f)** Explain in your own words: what does the uncertainty principle say, and what does it *not* say? Does it mean measurements are "noisy"? Does it apply to a single measurement or to an ensemble?
