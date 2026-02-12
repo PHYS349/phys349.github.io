@@ -672,7 +672,7 @@ $$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$$
 **(e)** Where does $H$ send each of the six cardinal states? Describe the geometric action of $H$ on the Bloch sphere in one sentence.
 
 ------------------------------------------------------------------------
-
+<!-- 
 ### Problem 7: Composition of Rotations
 
 When two rotations are applied in sequence, the result is another rotation. In this problem you'll find what that rotation is.
@@ -690,9 +690,9 @@ When two rotations are applied in sequence, the result is another rotation. In t
 
 **(e)** Now compute $V = R_x(\pi/2)\,R_z(\pi/2)$ (opposite order). Find its $\theta$ and $\hat{n}$. Is it the same rotation as $U$? How are the two axes related?
 
-------------------------------------------------------------------------
+------------------------------------------------------------------------ -->
 
-### Problem 8: Decomposing a Random Unitary (Qiskit)
+<!-- ### Problem 8: Decomposing a Random Unitary (Qiskit)
 
 Every single-qubit gate is a rotation on the Bloch sphere. In this problem you'll verify this computationally.
 
@@ -736,8 +736,8 @@ Compare `R` to the original `mat` (up to a global phase). Verify they agree.
 
 **(e)** What happens if you generate a random unitary with $\det(U) \neq 1$? How would you handle the global phase?
 
-------------------------------------------------------------------------
-
+------------------------------------------------------------------------ -->
+<!-- 
 ### Problem 9: Gate Sequence Trajectory (Qiskit)
 
 In this problem you'll track a qubit's path on the Bloch sphere as it passes through a sequence of gates.
@@ -829,4 +829,4 @@ def uncertainty(sv, op):
 
 **(e)** The states $R_y(\theta)|0\rangle$ all lie in the $xz$-plane of the Bloch sphere, so $\langle\sigma_y\rangle = 0$ for all of them. This means the Robertson bound is zero — not very informative! Repeat the analysis for the family $|\psi(\theta, \phi)\rangle = R_z(\phi)R_y(\theta)|0\rangle$ with fixed $\theta = \pi/3$ and $\phi \in [0, 2\pi)$. Now plot $\Delta\sigma_z \cdot \Delta\sigma_x$ and $|\langle\sigma_y\rangle|$ vs $\phi$. For what $\phi$ is the bound tightest?
 
-**(f)** Explain in your own words: what does the uncertainty principle say, and what does it *not* say? Does it mean measurements are "noisy"? Does it apply to a single measurement or to an ensemble?
+**(f)** Explain in your own words: what does the uncertainty principle say, and what does it *not* say? Does it mean measurements are "noisy"? Does it apply to a single measurement or to an ensemble? -->
