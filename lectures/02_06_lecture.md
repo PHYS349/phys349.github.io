@@ -503,7 +503,7 @@ $$|\psi(t)\rangle = \cos\frac{\Omega t}{2}|0\rangle - i\sin\frac{\Omega t}{2}|1\
 **(d)** At what time does the qubit first reach $|1\rangle$ with certainty? What is this pulse called?
 
 **(e)** If $\Omega = 2\pi \times 10$ MHz, calculate the duration of a π-pulse in nanoseconds.
-
+<!-- 
 ---
 
 ### Problem: The Ramsey Sequence (Qiskit)
@@ -580,7 +580,7 @@ Plot $P_0$ vs $\phi$ for `noise_strength = 0`, `0.5`, and `1.5` on the same grap
 
 **(e)** In a real atomic clock, why does this washing out limit how long you can make the free precession time $T$?
 
----
+--- -->
 
 ### Problem: The Hadamard Gate
 

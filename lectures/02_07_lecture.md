@@ -655,32 +655,11 @@ $$\text{Need: } \underbrace{\text{perfect isolation}}_{\text{from environment}} 
 
 This dichotomy is why quantum computing is so hard.
 
----
 
-## Looking Ahead
-
-We've completed the single-qubit story. We understand:
-- States (Bloch sphere)
-- Gates (rotations)
-- Evolution (Hamiltonians, rotating frame)
-- Measurement
-- Noise ($T_1$, $T_2$)
-
-**Next lecture:** We expand our quantum computer to **two qubits**.
-
-This is where things get really interesting:
-- **Entanglement:** "Spooky action at a distance"
-- **Two-qubit gates:** How do we create controlled interactions?
-- **Bell states:** Maximally entangled qubit pairs
-- **Why quantum computers can outperform classical ones**
-
-How do we create the precisely controlled interactions we need, while maintaining isolation from the environment? That's the central challenge we'll explore.
-
----
 
 ## Homework 2.7
 
-### Problem 1: The Rotating Frame Transformation
+### Problem: The Rotating Frame Transformation
 
 This problem guides you through the rotating frame transformation — the key trick that turns a time-dependent Hamiltonian into a time-independent one.
 
@@ -764,7 +743,7 @@ where $\Delta = \omega_0 - \omega_L$ is the **detuning**.
 - What happens when $|\Delta| \gg \Omega$ (far off resonance)?
 
 ---
-
+<!-- 
 ### Problem 2: Clock Precision
 
 **(a)** A cesium fountain clock has free evolution time $T = 0.5$ s. What is the approximate frequency resolution $\delta\nu \sim 1/T$?
@@ -777,9 +756,9 @@ where $\Delta = \omega_0 - \omega_L$ is the **detuning**.
 
 **(e)** By what factor is the optical clock better than the cesium clock?
 
----
+--- -->
 
-### Problem 3: Simulating Dephasing
+### Problem: Simulating Dephasing
 
 This problem explores how random phase noise destroys coherent oscillations — the essence of $T_2$ decoherence.
 
