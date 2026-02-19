@@ -1,442 +1,353 @@
-# Lecture 2.6: Time Evolution, Rabi Oscillations, and Ramsey Interferometry
+# Lecture 2.6: Time Evolution and Rabi Oscillations
 
-{interesitng idea - we could simmulate decoherence as a random phase gate}. then we could explicitley see decoherence!!! i acutally love that in quiskit. }
+## Review: The Bloch Sphere and Rotations
 
-## Review: Where We Are
+### Qubit States on the Bloch Sphere
 
-In Lecture 2.4, we discovered that: - The Pauli matrices $\sigma_x$, $\sigma_y$, $\sigma_z$ are the generators of qubit rotations - Any rotation on the Bloch sphere: $R_{\hat{n}}(\theta) = e^{-i\theta(\hat{n}\cdot\vec{\sigma})/2}$ - The eigenstates of the Paulis are the six cardinal points on the Bloch sphere
+Any qubit state can be written as:
 
-Today we answer the question: **how do quantum states evolve in time?**
+$$|\psi\rangle = \cos\frac{\theta}{2}|0\rangle + e^{i\phi}\sin\frac{\theta}{2}|1\rangle$$
 
-The answer will connect everything we've learned: - Time evolution = rotation on the Bloch sphere - The Ramsey sequence = the MZI from Lecture 2.2, realized with spin - Atomic clocks = qubits as sensors
+where $\theta$ and $\phi$ are the polar and azimuthal angles on the Bloch sphere.
 
-------------------------------------------------------------------------
+The six cardinal states are:
+- **z-axis:** $|0\rangle$ (north pole), $|1\rangle$ (south pole)
+- **x-axis:** $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$, $|-\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$
+- **y-axis:** $|+i\rangle = \frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle)$, $|-i\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$
 
-## Part 1: The Schrödinger Equation
+### Rotations: SU(2)
 
-### The Fundamental Law of Quantum Dynamics
+Last lecture we learned that **SU(2)** is the group of rotations on the Bloch sphere.
 
-Quantum states evolve according to the **Schrödinger equation**:
+**Rotation about the z-axis:**
 
-$$\boxed{i\hbar\frac{d}{dt}|\psi(t)\rangle = H|\psi(t)\rangle}$$
+$$R_z(\theta) = e^{-i\sigma_z\theta/2} = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,\sigma_z$$
 
-Here $H$ is the **Hamiltonian** — the operator representing the total energy of the system.
+where $\sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$.
 
-Key features: - **First-order in time** (unlike classical wave equation) - **Linear** (superpositions evolve independently) - **Deterministic** (given initial state, evolution is fixed)
+**Rotation about an arbitrary axis $\hat{n}$:**
 
-### The Solution: Unitary Evolution
+$$R_{\hat{n}}(\theta) = e^{-i\theta(\hat{n}\cdot\vec{\sigma})/2} = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,(\hat{n}\cdot\vec{\sigma})$$
 
-For a time-independent Hamiltonian, we can solve this directly.
-
-Guess: $|\psi(t)\rangle = U(t)|\psi(0)\rangle$ for some operator $U(t)$.
-
-Substituting: $$i\hbar\frac{d}{dt}U(t)|\psi(0)\rangle = HU(t)|\psi(0)\rangle$$
-
-This must hold for any initial state, so: $$i\hbar\frac{dU}{dt} = HU$$
-
-The solution is: $$\boxed{U(t) = e^{-iHt/\hbar}}$$
-
-This is the **time evolution operator**.
-
-### Why Unitary?
-
-A unitary operator satisfies $U^\dagger U = I$. Let's verify:
-
-$$U^\dagger = \left(e^{-iHt/\hbar}\right)^\dagger = e^{+iH^\dagger t/\hbar} = e^{+iHt/\hbar}$$
-
-(using $H^\dagger = H$ since the Hamiltonian is Hermitian)
-
-$$U^\dagger U = e^{+iHt/\hbar}e^{-iHt/\hbar} = e^0 = I \quad \checkmark$$
-
-**Why does this matter?** Unitarity guarantees **probability conservation**:
-
-$$\langle\psi(t)|\psi(t)\rangle = \langle\psi(0)|U^\dagger U|\psi(0)\rangle = \langle\psi(0)|\psi(0)\rangle = 1$$
-
-The total probability stays 1 for all time. Probability can slosh around between outcomes, but it can't be created or destroyed.
-
-\`\`\`{admonition} The Deep Connection :class: note
-
-**Hermitian operators** (observables) ↔ **Unitary operators** (evolution)
-
-If $H$ is Hermitian, then $e^{-iHt/\hbar}$ is unitary.
-
-Observables generate evolution: - Energy generates time evolution - Momentum generates spatial translation - Angular momentum generates rotations
-
-```         
-
-### Energy Eigenstates Are Stationary
-
-What if the initial state is an eigenstate of $H$?
-
-Suppose $H|E\rangle = E|E\rangle$. Then:
-
-$$|\psi(t)\rangle = e^{-iHt/\hbar}|E\rangle = e^{-iEt/\hbar}|E\rangle$$
-
-The state just acquires a phase factor $e^{-iEt/\hbar}$.
-
-But global phase doesn't matter! So energy eigenstates are **stationary** — they don't change physically with time.
-
-### Superpositions DO Evolve
-
-What if the initial state is a superposition of energy eigenstates?
-
-$$|\psi(0)\rangle = c_1|E_1\rangle + c_2|E_2\rangle$$
-
-Then:
-$$|\psi(t)\rangle = c_1 e^{-iE_1t/\hbar}|E_1\rangle + c_2 e^{-iE_2t/\hbar}|E_2\rangle$$
-
-The **relative phase** between components changes:
-
-$$|\psi(t)\rangle = e^{-iE_1t/\hbar}\left(c_1|E_1\rangle + c_2 e^{-i(E_2-E_1)t/\hbar}|E_2\rangle\right)$$
-
-The relative phase oscillates at frequency:
-$$\omega = \frac{E_2 - E_1}{\hbar}$$
-
-This is real, physical evolution — the state moves on the Bloch sphere!
+where $\hat{n}\cdot\vec{\sigma} = n_x\sigma_x + n_y\sigma_y + n_z\sigma_z$.
 
 ---
 
-## Part 2: Qubit Hamiltonians
+## iClicker Question 1
 
-### General Form
+Consider the rotation $R_z(\theta) = e^{-i\sigma_z\theta/2}$.
 
-Any qubit Hamiltonian can be written as:
+**Which pair of states are unchanged by this rotation (up to a global phase)?**
 
-$$H = \frac{\hbar\omega}{2}\hat{n}\cdot\vec{\sigma} = \frac{\hbar\omega}{2}(n_x\sigma_x + n_y\sigma_y + n_z\sigma_z)$$
+- (A) $|+\rangle$ and $|-\rangle$ (the ±x states)
+- (B) $|+i\rangle$ and $|-i\rangle$ (the ±y states)
+- (C) $|0\rangle$ and $|1\rangle$ (the ±z states) ✓
+- (D) All six cardinal states
 
-where $\hat{n} = (n_x, n_y, n_z)$ is a unit vector.
+**Answer:** (C). The states $|0\rangle$ and $|1\rangle$ are eigenstates of $\sigma_z$, so they only pick up a phase under $R_z(\theta)$:
 
-(We ignore the $h_0 I$ term since it only contributes a global phase.)
+$$R_z(\theta)|0\rangle = e^{-i\theta/2}|0\rangle, \qquad R_z(\theta)|1\rangle = e^{+i\theta/2}|1\rangle$$
 
-### Time Evolution Is Rotation
+States on the equator ($|+\rangle$, $|-\rangle$, $|+i\rangle$, $|-i\rangle$) are *not* eigenstates of $\sigma_z$ — they precess around the z-axis.
 
-The time evolution operator is:
+**General principle:** Eigenstates of a generator are invariant under the transformation it generates.
 
-$$U(t) = e^{-iHt/\hbar} = e^{-i\omega t(\hat{n}\cdot\vec{\sigma})/2}$$
+---
 
-But we know from Lecture 2.4 that this is a rotation!
+## The Stern-Gerlach Experiment: Discovering Spin
 
-$$\boxed{U(t) = R_{\hat{n}}(\omega t) = \cos\frac{\omega t}{2}I - i\sin\frac{\omega t}{2}(\hat{n}\cdot\vec{\sigma})}$$
+### The 1922 Experiment
 
-**Time evolution under Hamiltonian $H \propto \hat{n}\cdot\vec{\sigma}$ is rotation around axis $\hat{n}$ at angular frequency $\omega$.**
+Before we write down the spin Hamiltonian, let's see where it comes from experimentally.
 
-### Physical Example: Spin in a Magnetic Field
+In 1922, Otto Stern and Walther Gerlach performed one of the most important experiments in quantum mechanics. They sent a beam of **silver atoms** through an **inhomogeneous magnetic field** and observed where the atoms landed on a detector screen.
 
-An electron spin in a magnetic field $\vec{B}$ has Hamiltonian:
+**Classical expectation:** A magnetic dipole in a non-uniform field feels a force proportional to its component along the field gradient. If the atomic magnetic moments were oriented randomly (like tiny compass needles pointing in all directions), the beam should spread into a **continuous smear**.
+
+**What they observed:** The beam split into **exactly two discrete spots**.
+
+### Why Deflection Measures Spin
+
+The key physics is straightforward:
+
+1. **Energy of a dipole in a field:** A magnetic moment $\vec{\mu}$ in a magnetic field has energy
+$$U = -\vec{\mu}\cdot\vec{B}$$
+
+2. **Force from a gradient:** Force is the negative gradient of energy. For a field pointing in the z-direction with a gradient:
+$$F_z = -\frac{\partial U}{\partial z} = \mu_z\frac{\partial B_z}{\partial z}$$
+
+3. **Magnetic moment comes from spin:** For an electron, $\mu_z = \gamma S_z$ where $\gamma$ is the gyromagnetic ratio.
+
+4. **Putting it together:**
+$$F_z = \gamma S_z \frac{\partial B_z}{\partial z}$$
+
+The force is **directly proportional to** $S_z$. Classically, $S_z$ could be anything, giving a continuous range of forces and a smeared spot. But quantum mechanics says $S_z$ can only be $+\hbar/2$ or $-\hbar/2$ — nothing in between.
+
+**Two allowed values of spin → two allowed forces → two spots.**
+
+This was shocking. The atoms behaved as if their magnetic moment could only point in two directions — "up" or "down" relative to the field — with nothing in between.
+
+### The Interpretation: Spin-1/2
+
+We now understand that:
+
+1. Silver has **one unpaired electron** in its outer shell (configuration: [Kr] 4d¹⁰ 5s¹)
+
+2. The electron has an intrinsic angular momentum called **spin**, with quantum number $s = 1/2$
+
+3. When measured along any axis, spin-1/2 can only yield two outcomes: $+\hbar/2$ ("spin up") or $-\hbar/2$ ("spin down")
+
+4. The two spots correspond to these two eigenstates
+
+**The Stern-Gerlach apparatus is a qubit measurement device.** It projects the electron spin onto the $|0\rangle$ or $|1\rangle$ state (relative to the field direction) and physically separates them.
+
+### Why This Matters for Us
+
+The Stern-Gerlach experiment shows that:
+- Quantum measurements give **discrete outcomes**, not continuous values
+- The spin state **collapses** upon measurement
+- A spin-1/2 particle is a natural **physical qubit**
+
+When we write $|\psi\rangle = c_0|0\rangle + c_1|1\rangle$ and talk about the Bloch sphere, we're describing something real: the quantum state of an electron spin.
+
+---
+
+## Back to Physics: Spin in a Magnetic Field
+
+### The Physical Setup
+
+An electron (or any spin-1/2 particle) in a magnetic field $\vec{B}$ has Hamiltonian:
 
 $$H = -\gamma\vec{S}\cdot\vec{B} = -\frac{\gamma\hbar}{2}\vec{\sigma}\cdot\vec{B}$$
 
 where $\gamma$ is the gyromagnetic ratio.
 
-For a field along z, $\vec{B} = B_0\hat{z}$:
+The spin precesses around the magnetic field direction — this is the quantum analog of a gyroscope.
 
-$$H = -\frac{\gamma\hbar B_0}{2}\sigma_z = \frac{\hbar\omega_0}{2}\sigma_z$$
+### The Question
 
-where $\omega_0 = -\gamma B_0$ is the **Larmor frequency**.
-
-The spin precesses around the magnetic field direction at the Larmor frequency!
+Given an initial state $|\psi(0)\rangle$, how do we find $|\psi(t)\rangle$?
 
 ---
 
-## Part 3: Precession — $H \propto \sigma_z$
+## The Schrödinger Equation
 
-Let's work out the simplest case in detail.
+### The Fundamental Law
 
-### The Setup
+Quantum states evolve according to:
 
-$$H = \frac{\hbar\omega_0}{2}\sigma_z$$
+$$H|\psi(t)\rangle = i\hbar\frac{\partial}{\partial t}|\psi(t)\rangle$$
 
-This describes a qubit with energy splitting $\hbar\omega_0$ (like a spin in a magnetic field along z).
+### Solving with the Time Evolution Operator
 
-### The Evolution Operator
+Define the **time evolution operator** $U(t)$ by:
 
-$$U(t) = e^{-i\omega_0 t\sigma_z/2} = R_z(\omega_0 t)$$
+$$U(t)|\psi(0)\rangle = |\psi(t)\rangle$$
 
-Using $\sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$:
+Substituting into the Schrödinger equation:
 
-$$U(t) = \begin{pmatrix} e^{-i\omega_0 t/2} & 0 \\ 0 & e^{i\omega_0 t/2} \end{pmatrix}$$
+$$H\,U(t)|\psi(0)\rangle = i\hbar\frac{\partial}{\partial t}U(t)|\psi(0)\rangle$$
 
-### Evolution of $|0\rangle$ (Energy Eigenstate)
+Since this must hold for *any* initial state:
 
-$$U(t)|0\rangle = \begin{pmatrix} e^{-i\omega_0 t/2} & 0 \\ 0 & e^{i\omega_0 t/2} \end{pmatrix}\begin{pmatrix} 1 \\ 0 \end{pmatrix} = e^{-i\omega_0 t/2}\begin{pmatrix} 1 \\ 0 \end{pmatrix} = e^{-i\omega_0 t/2}|0\rangle$$
+$$H\,U(t) = i\hbar\frac{\partial U}{\partial t}$$
 
-Just a global phase — $|0\rangle$ is stationary. (It's an eigenstate of $H$.)
+**The solution is:**
 
-Similarly, $|1\rangle \to e^{+i\omega_0 t/2}|1\rangle$ — also stationary.
+$$\boxed{U(t) = e^{-iHt/\hbar}}$$
 
-### Evolution of $|+\rangle$ (Superposition)
+You can verify this solves the equation: $\frac{\partial}{\partial t}e^{-iHt/\hbar} = \frac{-iH}{\hbar}e^{-iHt/\hbar}$.
 
-Now the interesting case:
+### The Hamiltonian as a Generator
 
-$$|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$$
+In the infinitesimal limit ($\Delta t$ small):
 
-$$U(t)|+\rangle = \frac{1}{\sqrt{2}}(e^{-i\omega_0 t/2}|0\rangle + e^{i\omega_0 t/2}|1\rangle)$$
+$$U(\Delta t) \approx I - \frac{iH}{\hbar}\Delta t$$
 
-Factor out the global phase:
+Compare to our rotation formula: $R(\delta\theta) \approx I + \delta\theta\, G$.
 
-$$= \frac{e^{-i\omega_0 t/2}}{\sqrt{2}}(|0\rangle + e^{i\omega_0 t}|1\rangle)$$
+**The Hamiltonian is the generator of time evolution.**
 
-Ignoring the global phase:
+Just as the Pauli matrices generate rotations in space, the Hamiltonian generates translations in time.
 
-$$|+\rangle \to \frac{1}{\sqrt{2}}(|0\rangle + e^{i\omega_0 t}|1\rangle)$$
+---
 
-This is a state on the equator with azimuthal angle $\phi = \omega_0 t$!
+## $U(t)$ is Unitary
 
-**The state rotates around the z-axis at angular frequency $\omega_0$.**
+### Why Unitarity Matters
 
-### The Trajectory
+We start with a normalized state: $\langle\psi(0)|\psi(0)\rangle = 1$.
 
-| Time | Phase $\phi = \omega_0 t$ | State | Bloch position |
-|------|---------------------------|-------|----------------|
-| $0$ | $0$ | $\|+\rangle$ | +x |
-| $\pi/(2\omega_0)$ | $\pi/2$ | $\|+i\rangle$ | +y |
-| $\pi/\omega_0$ | $\pi$ | $\|-\rangle$ | −x |
-| $3\pi/(2\omega_0)$ | $3\pi/2$ | $\|-i\rangle$ | −y |
-| $2\pi/\omega_0$ | $2\pi$ | $\|+\rangle$ | +x (back to start) |
+We need it to *stay* normalized:
 
-This is **precession** — the quantum analog of a gyroscope.
+$$\langle\psi(t)|\psi(t)\rangle = \langle\psi(0)|U^\dagger U|\psi(0)\rangle$$
 
-```{figure} precession_placeholder.svg
-:name: precession
-:width: 60%
+For this to equal 1 for any initial state, we need:
 
-Precession: Under $H \propto \sigma_z$, states on the equator rotate around the z-axis. States at the poles (eigenstates of $H$) are stationary.
-```
+$$\boxed{U^\dagger U = I}$$
 
-------------------------------------------------------------------------
+This is the definition of a **unitary** operator.
 
-## iClicker Question 1
+### Verification
 
-**Under the Hamiltonian** $H = \frac{\hbar\omega}{2}\sigma_z$, the state $|+\rangle$ evolves to $|-\rangle$ after time:
+For $U(t) = e^{-iHt/\hbar}$ with Hermitian $H$ (i.e., $H^\dagger = H$):
 
--   
+$$U^\dagger = \left(e^{-iHt/\hbar}\right)^\dagger = e^{+iH^\dagger t/\hbar} = e^{+iHt/\hbar}$$
 
-    (A) $t = \pi/\omega$ ✓
+$$U^\dagger U = e^{+iHt/\hbar}e^{-iHt/\hbar} = e^0 = I \quad \checkmark$$
 
--   
+**Unitarity guarantees probability conservation.**
 
-    (B) $t = 2\pi/\omega$
 
--   
+---
+## iClicker Questions
 
-    (C) $t = \pi/(2\omega)$
+### iClicker A: The Generator Pattern
 
--   
+The Hamiltonian generates time evolution: $e^{-iHt/\hbar}|\psi(0)\rangle = |\psi(t)\rangle$.
 
-    (D) Never
+**What does the operator $e^{-i\hat{p}x_0/\hbar}$ do to a wavefunction $\psi(x)$?**
 
-**Solution:** We need the phase to advance by $\pi$ (half a rotation around the equator):
+- (A) Translates it forward in time
+- (B) Translates it in position by $x_0$ ✓
+- (C) Rotates it on the Bloch sphere
+- (D) Decreases its amplitude
+- (E) Inverts it
 
-$$\omega_0 t = \pi \implies t = \pi/\omega_0$$
+**Answer:** (B). Just as the Hamiltonian $H$ generates time translations, the momentum operator $\hat{p}$ generates spatial translations:
 
-At this time: $$|+\rangle \to \frac{1}{\sqrt{2}}(|0\rangle + e^{i\pi}|1\rangle) = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) = |-\rangle$$
+$$e^{-i\hat{p}x_0/\hbar}\psi(x) = \psi(x + x_0)$$
 
-------------------------------------------------------------------------
 
-## Part 4: Rabi Oscillations — $H \propto \sigma_x$
+This is the same pattern: Hermitian operator in the exponent -> unitary transformation that "moves" the state.
 
-Now let's drive the qubit with a transverse field.
+---
 
-### The Setup
+## The Generator Pattern
+
+We've now seen the same mathematical structure three times:
+
+| Transformation | Unitary Operator | Hermitian Generator |
+|----------------|------------------|---------------------|
+| Spin rotation | $R_z(\theta) = e^{-i\sigma_z\theta/2}$ | $\sigma_z$ (and $\sigma_x, \sigma_y$) |
+| Time evolution | $U(t) = e^{-iHt/\hbar}$ | $H$ (Hamiltonian) |
+| Space translation | $T(x) = e^{-i\hat{p}x/\hbar}$ | $\hat{p} = -i\hbar\frac{\partial}{\partial x}$ |
+
+**The pattern:** Hermitian operators generate unitary transformations through exponentiation.
+
+This is one of the deepest ideas in physics: **symmetries (unitary transformations) are generated by observables (Hermitian operators)**.
+
+---
+
+## Example 1: Magnetic Field Along z — The Phase Gate
+
+### Setup
+
+$$\vec{B} = B_z\hat{z}$$
+
+$$H = -\gamma B_z \frac{\hbar}{2}\sigma_z = \frac{\hbar\omega_0}{2}\sigma_z$$
+
+where $\omega_0 = -\gamma B_z$ is the **Larmor frequency**.
+
+### Time Evolution
+
+$$U(t) = e^{-iHt/\hbar} = e^{-i\omega_0 t\,\sigma_z/2} = R_z(\omega_0 t)$$
+
+This is **rotation around the z-axis** at angular frequency $\omega_0$.
+
+### What Happens to Different States?
+
+**Starting in $|0\rangle$:**
+
+$$U(t)|0\rangle = e^{-i\omega_0 t/2}|0\rangle$$
+
+Just a global phase — the state doesn't move on the Bloch sphere.
+
+**Starting in $|+\rangle$:**
+
+$$U(t)|+\rangle = \frac{1}{\sqrt{2}}\left(e^{-i\omega_0 t/2}|0\rangle + e^{+i\omega_0 t/2}|1\rangle\right)$$
+
+The relative phase changes — the state precesses around the equator.
+
+This is **precession**: the quantum version of a spinning top in a gravitational field.
+
+---
+
+## Example 2: Magnetic Field Along x — Rabi Oscillations
+
+### Setup
+
+$$\vec{B} = B_x\hat{x}$$
 
 $$H = \frac{\hbar\Omega}{2}\sigma_x$$
 
-This describes a qubit being driven by a resonant field (e.g., microwave pulses on a superconducting qubit, or laser light on an atom).
+where $\Omega$ is the **Rabi frequency** (proportional to $B_x$).
 
-$\Omega$ is called the **Rabi frequency** — it depends on the strength of the driving field.
+### Time Evolution
 
-### The Evolution Operator
-
-$$U(t) = e^{-i\Omega t\sigma_x/2} = R_x(\Omega t)$$
+$$U(t) = e^{-i\Omega t\,\sigma_x/2} = R_x(\Omega t)$$
 
 Using the rotation formula:
 
-$$R_x(\theta) = \cos\frac{\theta}{2}I - i\sin\frac{\theta}{2}\sigma_x = \begin{pmatrix} \cos\frac{\theta}{2} & -i\sin\frac{\theta}{2} \\ -i\sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}$$
-
-With $\theta = \Omega t$:
-
-$$U(t) = \begin{pmatrix} \cos\frac{\Omega t}{2} & -i\sin\frac{\Omega t}{2} \\ -i\sin\frac{\Omega t}{2} & \cos\frac{\Omega t}{2} \end{pmatrix}$$
+$$R_x(\theta) = \cos\frac{\theta}{2}\,I - i\sin\frac{\theta}{2}\,\sigma_x = \begin{pmatrix} \cos\frac{\theta}{2} & -i\sin\frac{\theta}{2} \\ -i\sin\frac{\theta}{2} & \cos\frac{\theta}{2} \end{pmatrix}$$
 
 ### Evolution of $|0\rangle$
+
+Starting in the ground state $|0\rangle$:
 
 $$|\psi(t)\rangle = U(t)|0\rangle = \begin{pmatrix} \cos\frac{\Omega t}{2} \\ -i\sin\frac{\Omega t}{2} \end{pmatrix} = \cos\frac{\Omega t}{2}|0\rangle - i\sin\frac{\Omega t}{2}|1\rangle$$
 
 ### The Probabilities Oscillate!
 
-$$P_0(t) = \left|\cos\frac{\Omega t}{2}\right|^2 = \cos^2\frac{\Omega t}{2}$$
+$$P_0(t) = \cos^2\frac{\Omega t}{2}$$
 
-$$P_1(t) = \left|-i\sin\frac{\Omega t}{2}\right|^2 = \sin^2\frac{\Omega t}{2}$$
+$$P_1(t) = \sin^2\frac{\Omega t}{2}$$
 
-The population **oscillates** between $|0\rangle$ and $|1\rangle$!
-
-This is dramatically different from precession, where $P_0$ and $P_1$ stayed constant.
-
-\`\`\`{figure} rabi_oscillations_placeholder.svg :name: rabi-oscillations :width: 80%
-
-Rabi oscillations: The probabilities $P_0(t)$ and $P_1(t)$ oscillate sinusoidally. The state rotates from the north pole through the equator to the south pole and back.
-
-```         
+The population **oscillates** between $|0\rangle$ and $|1\rangle$. This is fundamentally different from precession (Example 1), where the populations stayed constant.
 
 ### Special Pulses
 
 **π-pulse** ($\Omega t = \pi$):
+$$|0\rangle \xrightarrow{\pi\text{-pulse}} -i|1\rangle \equiv |1\rangle$$
 
-$$|\psi\rangle = \cos\frac{\pi}{2}|0\rangle - i\sin\frac{\pi}{2}|1\rangle = -i|1\rangle$$
-
-Complete population inversion! The global phase $-i$ doesn't matter, so effectively:
-
-$$|0\rangle \xrightarrow{\pi\text{-pulse}} |1\rangle$$
+Complete population inversion — the qubit flips from ground to excited state.
 
 **π/2-pulse** ($\Omega t = \pi/2$):
-
-$$|\psi\rangle = \cos\frac{\pi}{4}|0\rangle - i\sin\frac{\pi}{4}|1\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$$
-
-This creates an equal superposition — the state is now on the equator!
-
 $$|0\rangle \xrightarrow{\pi/2\text{-pulse}} \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$$
 
-```{admonition} Pulse Summary
-:class: important
+Creates an equal superposition — the state moves from the pole to the equator.
 
-| Pulse | Condition | Effect | Bloch sphere |
-|-------|-----------|--------|--------------|
-| π-pulse | $\Omega t = \pi$ | $\|0\rangle \to \|1\rangle$ | North → South pole |
-| π/2-pulse | $\Omega t = \pi/2$ | $\|0\rangle \to$ superposition | North pole → Equator |
-```
+---
 
-### Qiskit Simulation
+## Eigenstates: States That Don't Change
 
-``` python
-import numpy as np
-import matplotlib.pyplot as plt
-from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector
+### Definition
 
-# Simulate Rabi oscillations: Rx(θ) applied to |0⟩
-thetas = np.linspace(0, 4*np.pi, 100)
-P0 = []
-P1 = []
+An **eigenstate** of the Hamiltonian is a state that evolves only by a global phase:
 
-for theta in thetas:
-    qc = QuantumCircuit(1)
-    qc.rx(theta, 0)  # Rotation around x-axis
-    state = Statevector(qc)
-    probs = state.probabilities()
-    P0.append(probs[0])
-    P1.append(probs[1])
+$$H|\psi_n\rangle = E_n|\psi_n\rangle$$
 
-# Plot
-plt.figure(figsize=(10, 5))
-plt.plot(thetas/np.pi, P0, 'b-', linewidth=2, label='$P_0(t)$')
-plt.plot(thetas/np.pi, P1, 'r-', linewidth=2, label='$P_1(t)$')
-plt.xlabel('$\\Omega t / \\pi$', fontsize=14)
-plt.ylabel('Probability', fontsize=14)
-plt.title('Rabi Oscillations', fontsize=16)
-plt.legend(fontsize=12)
-plt.grid(True, alpha=0.3)
-plt.axhline(y=0.5, color='gray', linestyle='--', alpha=0.5)
-plt.show()
-```
+Under time evolution:
 
-------------------------------------------------------------------------
+$$e^{-iHt/\hbar}|\psi_n\rangle = e^{-iE_n t/\hbar}|\psi_n\rangle$$
 
-## iClicker Question 2
+The state just picks up a phase factor — it doesn't move on the Bloch sphere.
 
-**A π/2-pulse (rotation by** $\pi/2$ around the x-axis) is applied to $|0\rangle$. The resulting state is located on the Bloch sphere at:
+### Examples
 
--   
+**For $H = \frac{\hbar\omega_0}{2}\sigma_z$:**
+- Eigenstates are $|0\rangle$ and $|1\rangle$ (the poles)
+- These don't precess — they're aligned with the field
 
-    (A) North pole
+**For $H = \frac{\hbar\Omega}{2}\sigma_x$:**
+- Eigenstates are $|+\rangle$ and $|-\rangle$ (the x-axis states)
+- Under a $B_x$ field, $|+\rangle$ doesn't undergo Rabi oscillations — it's aligned with the drive
 
--   
+**General rule:** Eigenstates of the Hamiltonian are stationary. Superpositions of different energy eigenstates oscillate.
 
-    (B) South pole
+---
 
--   
-
-    (C) On the equator ✓
-
--   
-
-    (D) Depends on the rotation axis
-
-**Solution:** A π/2-pulse rotates the state by 90°. Starting at the north pole and rotating around the x-axis by 90° lands us on the equator (specifically at the −y position due to the $-i$ phase).
-
-------------------------------------------------------------------------
-
-## Part 5: The Ramsey Sequence
-
-Now we combine both types of evolution to create an **interferometer**.
-
-### The Key Insight
-
--   **Rabi pulses** (π/2-pulses) create and recombine superpositions — like beam splitters
--   **Free precession** accumulates phase — like path length difference
-
-This is exactly the Mach-Zehnder interferometer, but with spin!
-
-### The Ramsey Sequence
-
-1.  **Start in** $|0\rangle$ (ground state)
-
-2.  **First π/2-pulse around x:** Creates superposition $$|0\rangle \xrightarrow{R_x(\pi/2)} \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$$
-
-3.  **Free evolution for time** $T$: Precession around z accumulates phase $$\xrightarrow{R_z(\phi)} \frac{1}{\sqrt{2}}(e^{-i\phi/2}|0\rangle - ie^{i\phi/2}|1\rangle)$$ where $\phi = \omega_0 T$
-
-4.  **Second π/2-pulse around x:** Converts phase to population $$\xrightarrow{R_x(\pi/2)} \text{final state}$$
-
-5.  **Measure** in the z-basis
-
-\`\`\`{figure} ramsey_sequence_placeholder.svg :name: ramsey-sequence :width: 90%
-
-The Ramsey sequence: π/2 pulse — free evolution — π/2 pulse — measure. This is identical to the MZI circuit $H \to P(\phi) \to H$.
-
-```         
-
-### The Full Calculation
-
-Let's work through this step by step.
-
-**Step 1: Initial state**
-$$|\psi_0\rangle = |0\rangle = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$$
-
-**Step 2: First π/2-pulse** ($R_x(\pi/2)$)
-
-$$R_x(\pi/2) = \begin{pmatrix} \cos(\pi/4) & -i\sin(\pi/4) \\ -i\sin(\pi/4) & \cos(\pi/4) \end{pmatrix} = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & -i \\ -i & 1 \end{pmatrix}$$
-
-$$|\psi_1\rangle = R_x(\pi/2)|0\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 \\ -i \end{pmatrix} = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$$
-
-**Step 3: Free evolution for time T** ($R_z(\phi)$ where $\phi = \omega_0 T$)
-
-$$R_z(\phi) = \begin{pmatrix} e^{-i\phi/2} & 0 \\ 0 & e^{i\phi/2} \end{pmatrix}$$
-
-$$|\psi_2\rangle = R_z(\phi)|\psi_1\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} e^{-i\phi/2} \\ -ie^{i\phi/2} \end{pmatrix}$$
-
-**Step 4: Second π/2-pulse** ($R_x(\pi/2)$)
-
-$$|\psi_3\rangle = R_x(\pi/2)|\psi_2\rangle = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & -i \\ -i & 1 \end{pmatrix} \cdot \frac{1}{\sqrt{2}}\begin{pmatrix} e^{-i\phi/2} \\ -ie^{i\phi/2} \end{pmatrix}$$
-
-$$= \frac{1}{2}\begin{pmatrix} e^{-i\phi/2} - i(-ie^{i\phi/2}) \\ -ie^{-i\phi/2} + (-ie^{i\phi/2}) \end{pmatrix} = \frac{1}{2}\begin{pmatrix} e^{-i\phi/2} - e^{i\phi/2} \\ -i(e^{-i\phi/2} + e^{i\phi/2}) \end{pmatrix}$$
-
-Using $e^{i\theta} - e^{-i\theta} = 2i\sin\theta$ and $e^{i\theta} + e^{-i\theta} = 2\cos\theta$:
-
-$$|\psi_3\rangle = \frac{1}{2}\begin{pmatrix} -2i\sin(\phi/2) \\ -2i\cos(\phi/2) \end{pmatrix} = -i\begin{pmatrix} \sin(\phi/2) \\ \cos(\phi/2) \end{pmatrix}$$
-
-**Step 5: Measurement probabilities**
-
-$$P_0 = |\langle 0|\psi_3\rangle|^2 = |-i\sin(\phi/2)|^2 = \sin^2(\phi/2)$$
-
-$$P_1 = |\langle 1|\psi_3\rangle|^2 = |-i\cos(\phi/2)|^2 = \cos^2(\phi/2)$$
-
-### The Ramsey Result
-
-$$\boxed{P_0 = \sin^2\frac{\phi}{2} = \sin^2\frac{\omega_0 T}{2} = \frac{1 - \cos(\omega_0 T)}{2}}$$
-
-The probability oscillates with the accumulated phase $\phi = \omega_0 T$!
-
-### Ramsey Fringes
-
-If we vary $T$ (or equivalently, scan the detuning $\delta = \omega_0 - \omega_{ref}$), the probability oscillates. These oscillations are called **Ramsey fringes**.
+## Qiskit Demonstration: Rabi Oscillations
 
 ```python
 import numpy as np
@@ -444,435 +355,347 @@ import matplotlib.pyplot as plt
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 
-# Ramsey sequence: Rx(π/2) - Rz(φ) - Rx(π/2)
-phases = np.linspace(0, 4*np.pi, 100)
-P0_ramsey = []
+# Rabi oscillations: Rx(θ) applied to |0⟩
+thetas = np.linspace(0, 4*np.pi, 100)
+P0 = []
+P1 = []
 
-for phi in phases:
+for theta in thetas:
     qc = QuantumCircuit(1)
-    qc.rx(np.pi/2, 0)   # First π/2 pulse
-    qc.rz(phi, 0)        # Free evolution (phase accumulation)
-    qc.rx(np.pi/2, 0)   # Second π/2 pulse
-    
+    qc.rx(theta, 0)  # Rotation around x-axis by angle theta
     state = Statevector(qc)
     probs = state.probabilities()
-    P0_ramsey.append(probs[0])
+    P0.append(probs[0])
+    P1.append(probs[1])
 
-# Compare to theory
-P0_theory = np.sin(phases/2)**2
-
+# Plot
 plt.figure(figsize=(10, 5))
-plt.plot(phases/np.pi, P0_ramsey, 'b-', linewidth=2, label='Qiskit simulation')
-plt.plot(phases/np.pi, P0_theory, 'r--', linewidth=2, label='Theory: $\\sin^2(\\phi/2)$')
-plt.xlabel('Phase $\\phi/\\pi$ (proportional to $\\omega_0 T$)', fontsize=14)
-plt.ylabel('$P_0$', fontsize=14)
-plt.title('Ramsey Fringes', fontsize=16)
+plt.plot(thetas/np.pi, P0, 'b-', linewidth=2, label='$P_0(t) = \\cos^2(\\Omega t/2)$')
+plt.plot(thetas/np.pi, P1, 'r-', linewidth=2, label='$P_1(t) = \\sin^2(\\Omega t/2)$')
+plt.xlabel('$\\Omega t / \\pi$', fontsize=14)
+plt.ylabel('Probability', fontsize=14)
+plt.title('Rabi Oscillations: Population Transfer Between $|0\\rangle$ and $|1\\rangle$', fontsize=14)
 plt.legend(fontsize=12)
 plt.grid(True, alpha=0.3)
+plt.axhline(y=0.5, color='gray', linestyle='--', alpha=0.5)
+plt.axvline(x=1, color='green', linestyle=':', alpha=0.7, label='π-pulse')
+plt.axvline(x=0.5, color='orange', linestyle=':', alpha=0.7, label='π/2-pulse')
 plt.show()
 ```
 
-### Connection to the MZI
+## Summary
 
-The Ramsey sequence is **mathematically identical** to the Mach-Zehnder interferometer:
+1. **Time evolution** is governed by the Schrödinger equation: $|\psi(t)\rangle = e^{-iHt/\hbar}|\psi(0)\rangle$
 
-| MZI (Lecture 2.2)        | Ramsey (spin)            |
-|--------------------------|--------------------------|
-| Input light in arm 1     | Spin in $\|0\rangle$     |
-| Beam splitter (Hadamard) | π/2-pulse ($R_x(\pi/2)$) |
-| Path length → phase      | Free precession → phase  |
-| Beam splitter (Hadamard) | π/2-pulse ($R_x(\pi/2)$) |
-| Detector intensity       | Measurement probability  |
+2. **The Hamiltonian generates time evolution**, just as Pauli matrices generate spatial rotations.
 
-The physics is different, but the math is the same!
+3. **Unitarity** ($U^\dagger U = I$) guarantees probability conservation.
 
-------------------------------------------------------------------------
+4. **Precession** ($H \propto \sigma_z$): States rotate around the z-axis. Poles are stationary; equator precesses.
 
-## iClicker Question 3
+5. **Rabi oscillations** ($H \propto \sigma_x$): Population oscillates between $|0\rangle$ and $|1\rangle$. π-pulse inverts; π/2-pulse creates superposition.
 
-**In a Ramsey sequence, what determines the period of the fringes (as a function of free evolution time T)?**
+6. **Eigenstates** of the Hamiltonian are stationary — they evolve only by a global phase.
 
--   
 
-    (A) The π/2-pulse duration
 
--   
 
-    (B) The energy splitting $\hbar\omega_0$ ✓
+### iClicker E: Energy Eigenstates
 
--   
+A qubit has Hamiltonian $H = \frac{\hbar\omega}{2}\sigma_z$, so the energy eigenstates are $|0\rangle$ (energy $+\hbar\omega/2$) and $|1\rangle$ (energy $-\hbar\omega/2$).
 
-    (C) The Rabi frequency $\Omega$
+**The state $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$ is prepared at $t=0$. At time $t$, the state is:**
 
--   
+- (A) Still $|+\rangle$ (stationary)
+- (B) $\frac{1}{\sqrt{2}}(e^{-i\omega t/2}|0\rangle + e^{+i\omega t/2}|1\rangle)$ ✓
+- (C) $|0\rangle$
+- (D) $|1\rangle$
+- (E) A mixed state
 
-    (D) The measurement time
+**Answer:** (B). Energy eigenstates each pick up their own phase factor $e^{-iE_n t/\hbar}$. Since $|+\rangle$ is a superposition of two energy eigenstates with different energies, the relative phase changes with time. The state precesses around the z-axis.
 
-**Solution:** The phase accumulated during free evolution is $\phi = \omega_0 T$. The fringes complete one cycle when $\phi$ changes by $2\pi$, which happens when $T$ changes by $2\pi/\omega_0$. The fringe period is:
+---
 
-$$\Delta T = \frac{2\pi}{\omega_0}$$
+### iClicker F: What Doesn't Change?
 
-Larger energy splitting → faster oscillation → shorter fringe period.
+Under the Hamiltonian $H = \frac{\hbar\Omega}{2}\sigma_x$, which quantity is CONSTANT in time?
 
-------------------------------------------------------------------------
+- (A) $\langle\sigma_z\rangle$ (z-component of spin)
+- (B) $\langle\sigma_x\rangle$ (x-component of spin) ✓
+- (C) $\langle\sigma_y\rangle$ (y-component of spin)
+- (D) The state $|\psi\rangle$
+- (E) None of these
 
-## Part 6: Atomic Clocks
+**Answer:** (B). The Hamiltonian $H \propto \sigma_x$ generates rotations around the x-axis. Under such rotations, the x-component of any vector is unchanged — only the y and z components rotate into each other.
 
-The Ramsey sequence isn't just a curiosity — it's the basis of the most precise instruments ever built.
+More formally: $[H, \sigma_x] = [\sigma_x, \sigma_x] = 0$, so $\langle\sigma_x\rangle$ is a conserved quantity.
 
-### The Principle
 
-Atoms have precise, universal energy levels. The transition frequency between two levels is a constant of nature.
 
-**Cesium-133:** The ground state hyperfine transition: $$\nu_{Cs} = 9,192,631,770 \text{ Hz (exactly)}$$
 
-This isn't a measurement — it's the **definition of the second** since 1967. One second is exactly 9,192,631,770 oscillations of cesium.
+---
 
-### How an Atomic Clock Works
+## Homework 2.6
 
-1.  **Prepare atoms in** $|0\rangle$ (one hyperfine level)
+### Problem: Eigenvectors of $\sigma_x$
 
-2.  **Apply π/2-pulse** from a local oscillator at frequency $\omega_{LO}$
+The Pauli matrix $\sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$.
 
-3.  **Free evolution for time T**
+**(a)** Find the eigenvalues of $\sigma_x$. (You should get $\pm 1$.)
 
-    -   If $\omega_{LO} = \omega_0$: no phase accumulates (on resonance)
-    -   If $\omega_{LO} \neq \omega_0$: phase $\phi = (\omega_0 - \omega_{LO})T$ accumulates
+**(b)** Find the normalized eigenvectors of $\sigma_x$. Express them in terms of $|0\rangle$ and $|1\rangle$.
 
-4.  **Apply second π/2-pulse**
+**(c)** Verify that your eigenvectors are the states $|+\rangle$ and $|-\rangle$ that we defined as the ±x cardinal states on the Bloch sphere.
 
-5.  **Measure population**
+**(d)** Now consider the rotation $R_x(\theta) = e^{-i\sigma_x\theta/2}$. Apply $R_x(\theta)$ to $|+\rangle$. Show that the result is just $|+\rangle$ multiplied by a phase factor $e^{-i\theta/2}$.
 
-6.  **Feedback:** Adjust $\omega_{LO}$ to stay on resonance (minimize phase accumulation)
+**(e)** Similarly, show that $R_x(\theta)|-\rangle = e^{+i\theta/2}|-\rangle$.
 
-\`\`\`{figure} atomic_clock_placeholder.svg :name: atomic-clock :width: 80%
+**(f)** Explain in one sentence why eigenstates of $\sigma_x$ don't change (except for a phase) under rotations generated by $\sigma_x$.
 
-Atomic clock schematic: The Ramsey sequence provides an error signal that locks the local oscillator to the atomic frequency.
+---
 
-```         
+### Problem: Unitarity and Probability Conservation
 
-The feedback loop keeps the local oscillator **exactly on resonance** with the atomic transition. The oscillator's ticks become "atomic ticks."
+A general $2\times 2$ unitary matrix can be written as:
+$$U = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$$
+where $a, b, c, d$ are complex numbers.
 
-### Why Ramsey Beats Direct Measurement
+**(a)** The condition for unitarity is $U^\dagger U = I$. Write out $U^\dagger$ explicitly.
 
-Why use this complicated sequence instead of just measuring the atomic frequency directly?
+**(b)** Compute the product $U^\dagger U$ and set it equal to $I$. This gives you four equations (one for each matrix element). Write them out.
 
-**Direct probing:** If you probe the transition for time $t_{probe}$, the spectral resolution is:
-$$\Delta\omega \sim \frac{1}{t_{probe}}$$
+**(c)** Show that one of these equations is $|a|^2 + |c|^2 = 1$. Interpret this: if the input state is $|0\rangle$, what does this equation say about the output probabilities?
 
-This is the time-energy uncertainty relation.
+**(d)** Show that another equation is $|b|^2 + |d|^2 = 1$. Interpret this for input state $|1\rangle$.
 
-**Ramsey's insight:** Separate the "probing" (π/2-pulses) from the "measuring" (free evolution).
+**(e)** The rotation matrix $R_x(\pi/2) = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & -i \\ -i & 1 \end{pmatrix}$. Verify explicitly that $R_x(\pi/2)^\dagger R_x(\pi/2) = I$.
 
-- The π/2-pulses can be **short** (microseconds)
-- The free evolution can be **long** (seconds)
-- The resolution is set by the **free evolution time**:
-$$\Delta\omega \sim \frac{1}{T}$$
+---
 
-You get the resolution of a long measurement with the control of short pulses!
-
-```{admonition} Norman Ramsey's Nobel Prize
-:class: note
-
-Norman Ramsey received the 1989 Nobel Prize in Physics for developing this technique. His "separated oscillatory fields" method is the basis of all modern precision spectroscopy and atomic clocks.
-```
-
-### Performance
-
-**Cesium fountain clocks:** - Fractional accuracy: $\sim 10^{-16}$ - Would gain or lose 1 second in: 300 million years
-
-**Optical atomic clocks** (using visible light transitions): - Fractional accuracy: $\sim 10^{-18}$ - Would gain or lose 1 second in: longer than the age of the universe
-
-### GPS: Atomic Clocks in Your Pocket
-
-The Global Positioning System relies on atomic clocks.
-
-**How it works:** 1. Each GPS satellite carries atomic clocks and broadcasts timing signals 2. Your phone receives signals from multiple satellites 3. The time delay tells you the distance: $d = c \cdot \Delta t$ 4. From multiple distances, you triangulate your position
-
-**The numbers:** - Light travels \~30 cm in 1 nanosecond - 1 meter position accuracy requires \~3 ns timing accuracy - Over one day, a clock must not drift more than \~1 μs - This requires fractional accuracy of $\sim 10^{-14}$
-
-Without atomic clocks, GPS would accumulate errors of **kilometers per day**.
-
-\`\`\`{admonition} Relativity in GPS :class: note
-
-GPS satellites orbit at high altitude and high speed. Both general relativity (gravity) and special relativity (velocity) affect the clock rates: - Gravitational time dilation: clocks run **faster** by \~45 μs/day (weaker gravity) - Velocity time dilation: clocks run **slower** by \~7 μs/day - Net effect: clocks run \~38 μs/day fast
-
-This is corrected for in the GPS system. GPS is a real-world test of Einstein's theories every day! \`\`\`
-
-------------------------------------------------------------------------
-
-## Part 7: Quantum Sensing
-
-Atomic clocks are the most famous application, but the principle is much broader.
-
-### The General Framework
-
-A qubit is sensitive to **anything that shifts its energy levels**.
-
-Any perturbation that causes a Hamiltonian $H = \frac{\hbar\omega}{2}\sigma_z$ leads to phase accumulation: $$\phi = \omega T$$
-
-If $\omega$ depends on some physical quantity $X$ (magnetic field, electric field, gravity, etc.), then measuring $\phi$ measures $X$:
-
-$$X \to \omega(X) \to \phi = \omega T \to P_0 = \sin^2(\phi/2)$$
-
-### Example: Magnetometry
-
-An electron spin in a magnetic field $B$ has: $$\omega = \gamma_e B$$
-
-where $\gamma_e = 2\pi \times 28$ GHz/T is the electron gyromagnetic ratio.
-
-A Ramsey sequence with free evolution time $T$ gives phase $\phi = \gamma_e B T$.
-
-**Sensitivity:** The minimum detectable field change: $$\delta B = \frac{\delta\phi}{\gamma_e T}$$
-
-Longer $T$ → better sensitivity (until decoherence sets in).
-
-### Example: Gravimetry
-
-Atom interferometers use matter waves to sense gravity: $$\phi = \frac{m g \Delta h \cdot T}{\hbar}$$
-
-These devices can measure: - Gravitational acceleration $g$ to 9 decimal places - Gravitational gradients (useful for underground mapping) - Tests of the equivalence principle
-
-### The Quantum Advantage
-
-Classical sensors measure a field by its direct effect (deflection, voltage, etc.).
-
-Quantum sensors measure through **interference** — they're sensitive to phase, which accumulates over time.
-
-The precision scales as: - **Classical:** $\delta X \propto 1/\sqrt{T}$ (averaging helps as square root) - **Quantum (Ramsey):** $\delta X \propto 1/T$ (phase accumulates linearly)
-
-This is the **Standard Quantum Limit**. With entanglement, you can do even better (Heisenberg Limit), but that's for a later chapter.
-
-------------------------------------------------------------------------
-
-## Part 8: Decoherence — The Enemy
-
-There's a catch. We've assumed the qubit evolves purely under our desired Hamiltonian. In reality, it also interacts with its environment.
-
-### What Goes Wrong
-
-Random interactions with the environment cause: 1. **Dephasing:** Random phase kicks scramble the accumulated phase 2. **Relaxation:** The qubit decays from $|1\rangle$ to $|0\rangle$
-
-Both effects destroy the interference pattern.
-
-### Coherence Times
-
-The characteristic timescales are: - $T_1$ (relaxation time): How long until the qubit decays - $T_2$ (dephasing time): How long until phase coherence is lost
-
-For quantum sensing or computing, you need: $$T_{operation} \ll T_2$$
-
-| System                   | Typical $T_2$      |
-|--------------------------|--------------------|
-| Trapped ions             | seconds to minutes |
-| Neutral atoms            | \~1 second         |
-| Superconducting qubits   | \~100 μs           |
-| NV centers in diamond    | \~ms               |
-| Electron spin in silicon | \~μs to ms         |
-
-### Effect on Ramsey Fringes
-
-As the free evolution time $T$ increases, the fringe contrast decays:
-
-$$P_0 = \frac{1}{2} + \frac{e^{-T/T_2}}{2}\sin(\omega_0 T)$$
-
-There's a trade-off: - Longer $T$ → better frequency resolution - Longer $T$ → worse contrast (decoherence)
-
-The optimal $T$ depends on the specific application and system.
-
-------------------------------------------------------------------------
-
-## Summary: The Complete Single-Qubit Picture
-
-We've now built a complete understanding of single qubits:
-
-### 1. States
-
-Points on the Bloch sphere: $$|\psi\rangle = \cos\frac{\theta}{2}|0\rangle + e^{i\phi}\sin\frac{\theta}{2}|1\rangle$$
-
-### 2. Observables
-
-Pauli matrices — the three axes: - $\sigma_z$: eigenstates $|0\rangle$, $|1\rangle$ (poles) - $\sigma_x$: eigenstates $|+\rangle$, $|-\rangle$ (x-axis) - $\sigma_y$: eigenstates $|+i\rangle$, $|-i\rangle$ (y-axis)
-
-### 3. Evolution
-
-Rotations generated by Hamiltonians: $$|\psi(t)\rangle = e^{-iHt/\hbar}|\psi(0)\rangle$$
-
--   $H \propto \sigma_z$: precession (rotation around z)
--   $H \propto \sigma_x$: Rabi oscillations (rotation around x)
-
-### 4. Measurement
-
-Projection onto an axis: $$P = |\langle\chi|\psi\rangle|^2$$
-
-State collapses to the measurement outcome.
-
-### 5. Interference
-
-The universal pattern: **Split → Phase → Recombine → Measure**
-
-| System        | Split         | Phase           | Recombine     | Measure       |
-|---------------|---------------|---------------|---------------|---------------|
-| MZI (light)   | Beam splitter | Path length     | Beam splitter | Detector      |
-| Polarization  | Waveplate     | Birefringence   | Waveplate     | Polarizer     |
-| Ramsey (spin) | π/2-pulse     | Free precession | π/2-pulse     | Stern-Gerlach |
-
-### 6. Physical Realizations
-
-| Qubit               | $\|0\rangle$ | $\|1\rangle$ |
-|---------------------|--------------|--------------|
-| Photon polarization | H            | V            |
-| Electron spin       | ↑            | ↓            |
-| Atom hyperfine      | ground       | excited      |
-| Superconducting     | ground       | excited      |
-
-------------------------------------------------------------------------
-
-## Looking Ahead: Chapter 3
-
-We now understand single qubits completely.
-
-But one qubit can only do so much. The real power of quantum mechanics — and quantum computing — emerges when we have **multiple qubits**.
-
-**Coming in Chapter 3:** - Two-qubit states: $|00\rangle$, $|01\rangle$, $|10\rangle$, $|11\rangle$ — and superpositions! - **Entanglement:** Correlations that have no classical explanation - The Bell states: maximally entangled qubits - Quantum gates: CNOT and controlled operations - Why quantum computers can outperform classical ones
-
-------------------------------------------------------------------------
-
-## Homework
-
-### Problem 1: Time Evolution Basics
+### Problem: Time Evolution Practice
 
 A qubit has Hamiltonian $H = \frac{\hbar\omega}{2}\sigma_z$.
 
-**(a)** Write the time evolution operator $U(t)$ as a $2 \times 2$ matrix.
+**(a)** Write the time evolution operator $U(t) = e^{-iHt/\hbar}$ as an explicit $2\times 2$ matrix.
 
-**(b)** Starting in $|0\rangle$, find $|\psi(t)\rangle$. Does the state change physically?
+**(b)** If the initial state is $|0\rangle$, find $|\psi(t)\rangle$. Does the state change physically, or just by a global phase?
 
-**(c)** Starting in $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$, find $|\psi(t)\rangle$.
+**(c)** If the initial state is $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$, find $|\psi(t)\rangle$. 
 
-**(d)** For part (c), compute $P_0(t)$ and $P_1(t)$. Do the populations change?
+**(d)** For part (c), compute $P_0(t) = |\langle 0|\psi(t)\rangle|^2$ and $P_1(t) = |\langle 1|\psi(t)\rangle|^2$. Do the populations change with time?
 
-**(e)** For part (c), compute $P_+(t) = |\langle +|\psi(t)\rangle|^2$. Does this change? Interpret physically.
+**(e)** For part (c), compute $P_+(t) = |\langle +|\psi(t)\rangle|^2$. At what time $t$ does the state first become orthogonal to $|+\rangle$? What state is it at that moment?
 
-------------------------------------------------------------------------
+---
 
-### Problem 2: Rabi Oscillations
+### Problem: Rabi Oscillations
 
-A qubit has Hamiltonian $H = \frac{\hbar\Omega}{2}\sigma_x$, starting in $|0\rangle$.
+A qubit has Hamiltonian $H = \frac{\hbar\Omega}{2}\sigma_x$ and starts in state $|0\rangle$.
 
-**(a)** Show that $|\psi(t)\rangle = \cos\frac{\Omega t}{2}|0\rangle - i\sin\frac{\Omega t}{2}|1\rangle$.
+**(a)** Using $R_x(\theta) = \cos\frac{\theta}{2}I - i\sin\frac{\theta}{2}\sigma_x$, show that:
+$$|\psi(t)\rangle = \cos\frac{\Omega t}{2}|0\rangle - i\sin\frac{\Omega t}{2}|1\rangle$$
 
-**(b)** Compute $P_1(t)$. At what time does the qubit first reach $|1\rangle$ with certainty?
+**(b)** Compute $P_1(t) = |\langle 1|\psi(t)\rangle|^2$. Sketch this function from $t=0$ to $t = 4\pi/\Omega$.
 
-**(c)** At what time does the qubit first reach an equal superposition?
+**(c)** At what time does the qubit first have a 50% probability of being in $|1\rangle$? What is this pulse called?
 
-**(d)** If $\Omega = 2\pi \times 10$ MHz, how long is a π-pulse in nanoseconds?
+**(d)** At what time does the qubit first reach $|1\rangle$ with certainty? What is this pulse called?
 
-**(e)** Sketch $P_0(t)$ and $P_1(t)$ from $t = 0$ to $t = 4\pi/\Omega$.
+**(e)** If $\Omega = 2\pi \times 10$ MHz, calculate the duration of a π-pulse in nanoseconds.
 
-------------------------------------------------------------------------
+---
 
-### Problem 3: Bloch Sphere Trajectories
+### Problem: The Ramsey Sequence (Qiskit)
 
-**(a)** Under $H = \frac{\hbar\omega}{2}\sigma_z$, describe the trajectory of a state that starts on the equator. What shape does it trace?
+The **Ramsey sequence** is: π/2 pulse → free precession → π/2 pulse → measure.
 
-**(b)** Under $H = \frac{\hbar\Omega}{2}\sigma_x$, describe the trajectory of a state that starts at the north pole. What shape does it trace?
+In Qiskit, this corresponds to: $R_x(\pi/2) \to R_z(\phi) \to R_x(\pi/2)$, where $\phi$ represents the phase accumulated during free precession.
 
-**(c)** Under $H = \frac{\hbar\Omega}{2}\sigma_y$, starting in $|0\rangle$, find $|\psi(t)\rangle$. Where is this state on the Bloch sphere at $t = \pi/(2\Omega)$?
+**(a)** Write a Qiskit function that implements the Ramsey sequence and returns $P_0$ (the probability of measuring $|0\rangle$) as a function of $\phi$:
 
-**(d)** A Hamiltonian $H = \frac{\hbar\omega}{2}(\sigma_x + \sigma_z)/\sqrt{2}$ corresponds to rotation around which axis? (No calculation needed — just identify the axis.)
+```python
+import numpy as np
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
 
-------------------------------------------------------------------------
+def ramsey(phi):
+    """
+    Implement Ramsey sequence: Rx(π/2) - Rz(φ) - Rx(π/2)
+    Return P_0 (probability of measuring |0⟩)
+    """
+    qc = QuantumCircuit(1)
+    # Your code here
+    
+    state = Statevector(qc)
+    return state.probabilities()[0]
+```
 
-### Problem 4: Ramsey Sequence
+**(b)** Plot $P_0$ vs $\phi$ for $\phi$ ranging from $0$ to $4\pi$. 
 
-**(a)** Verify the Ramsey calculation: Starting from $|0\rangle$, apply $R_x(\pi/2)$, then $R_z(\phi)$, then $R_x(\pi/2)$. Show that $P_0 = \sin^2(\phi/2)$.
+**(c)** From your plot, what is the period of the oscillation (in terms of $\phi$)?
 
-**(b)** For $\phi = 0$, what is $P_0$? Where does the state end up on the Bloch sphere?
+**(d)** Analytically, the Ramsey signal is $P_0 = \sin^2(\phi/2)$. Add this theoretical curve to your plot and verify it matches.
 
-**(c)** For $\phi = \pi$, what is $P_0$? Where does the state end up?
+**(e)** What happens if you change the second pulse to $R_x(-\pi/2)$ instead of $R_x(\pi/2)$? Plot this and explain the difference.
 
-**(d)** For $\phi = \pi/2$, what is $P_0$? Write out the final state explicitly.
+---
 
-**(e)** If the free evolution time is $T = 1$ ms and you observe 10 complete fringe oscillations, what is the frequency $\omega_0$?
+### Problem: Ramsey with Decoherence (Qiskit)
 
-------------------------------------------------------------------------
+In real experiments, the qubit interacts with its environment, causing **dephasing**. We can simulate this by adding random phase noise.
 
-### Problem 5: Atomic Clock Precision
+**(a)** Modify your Ramsey function to include random phase noise:
 
-A cesium atomic clock uses the hyperfine transition at $\nu_0 = 9.192631770$ GHz.
+```python
+def ramsey_noisy(phi, noise_strength):
+    """
+    Ramsey sequence with dephasing noise.
+    noise_strength controls the standard deviation of random phase kicks.
+    """
+    qc = QuantumCircuit(1)
+    qc.rx(np.pi/2, 0)
+    
+    # Add intended phase plus random noise
+    random_phase = np.random.normal(0, noise_strength)
+    qc.rz(phi + random_phase, 0)
+    
+    qc.rx(np.pi/2, 0)
+    state = Statevector(qc)
+    return state.probabilities()[0]
+```
 
-**(a)** If the Ramsey free evolution time is $T = 1$ s, what is the fringe period $\Delta\nu$ (the frequency change needed for one complete fringe)?
+**(b)** For a given $\phi$, the measured $P_0$ will fluctuate due to the noise. To see the average behavior, run many trials and average:
 
-**(b)** What fractional frequency precision $\Delta\nu/\nu_0$ does this correspond to?
+```python
+def ramsey_averaged(phi, noise_strength, n_trials=100):
+    return np.mean([ramsey_noisy(phi, noise_strength) for _ in range(n_trials)])
+```
 
-**(c)** Modern cesium fountain clocks achieve $T \approx 0.5$ s. What is their frequency resolution?
+Plot $P_0$ vs $\phi$ for `noise_strength = 0`, `0.5`, and `1.5` on the same graph.
 
-**(d)** An optical clock uses a transition at $\nu_0 = 429$ THz (strontium). If it achieves the same absolute frequency resolution as the cesium clock in part (c), what fractional precision does this give?
+**(c)** What happens to the **contrast** (the difference between max and min of the fringes) as noise increases?
 
-------------------------------------------------------------------------
+**(d)** In real experiments, we say the fringes "wash out" due to decoherence. Explain in your own words why random phase kicks cause this.
 
-### Problem 6: Magnetometry
+**(e)** In a real atomic clock, why does this washing out limit how long you can make the free precession time $T$?
 
-An electron spin magnetometer has gyromagnetic ratio $\gamma_e = 2\pi \times 28$ GHz/T.
+---
 
-**(a)** In Earth's magnetic field ($B \approx 50$ μT), what is the Larmor frequency?
+### Problem: The Hadamard Gate
 
-**(b)** If the Ramsey free evolution time is $T = 100$ μs, how much phase accumulates?
+The Hadamard gate is one of the most important single-qubit gates:
 
-**(c)** How many complete Ramsey fringes would you see if you scanned from $B = 0$ to $B = 50$ μT?
+$$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$$
 
-**(d)** If you can resolve a phase change of $\delta\phi = 0.01$ rad, what is the minimum detectable field change $\delta B$?
+**(a)** Verify that $H$ is unitary: compute $H^\dagger H$ and show it equals $I$.
 
-------------------------------------------------------------------------
+**(b)** Verify that $H^2 = I$. What does this tell you geometrically about the rotation?
 
-### Problem 7: Decoherence
+**(c)** The general rotation formula is:
+$$R_{\hat{n}}(\theta) = \cos\frac{\theta}{2}I - i\sin\frac{\theta}{2}(\hat{n}\cdot\vec{\sigma})$$
 
-A qubit has dephasing time $T_2 = 100$ μs.
+For $H^2 = I$, we need $\theta = \pi$ (a 180° rotation). So $H$ should equal $-i(\hat{n}\cdot\vec{\sigma})$ for some axis $\hat{n}$, up to a global phase.
 
-**(a)** In a Ramsey experiment with $\omega_0 = 2\pi \times 1$ MHz, the signal is: $$P_0(T) = \frac{1}{2} - \frac{1}{2}e^{-T/T_2}\cos(\omega_0 T)$$
+Show that:
+$$H = \frac{1}{\sqrt{2}}(\sigma_x + \sigma_z)$$
 
-Plot this from $T = 0$ to $T = 500$ μs (you can use Python or sketch by hand).
+**(d)** From part (c), what is the rotation axis $\hat{n}$? Express it as a unit vector.
 
-**(b)** At what time $T$ has the fringe contrast dropped to $1/e$ of its initial value?
+**(e)** Describe in words: where is this axis on the Bloch sphere? (Hint: it's in the xz-plane, halfway between...)
 
-**(c)** For sensing, you want to maximize the "signal" which goes like (contrast) × (phase sensitivity). Since contrast $\propto e^{-T/T_2}$ and phase sensitivity $\propto T$, the signal goes as $T \cdot e^{-T/T_2}$. Find the optimal $T$ that maximizes this.
+**(f)** The Hadamard swaps the z-basis and x-basis:
+- $H|0\rangle = |+\rangle$
+- $H|1\rangle = |-\rangle$
+- $H|+\rangle = |0\rangle$
+- $H|-\rangle = |1\rangle$
 
-**(d)** What fraction of the original contrast remains at this optimal time?
+Verify one of these by explicit matrix multiplication.
 
-------------------------------------------------------------------------
+**(g)** Why do you think the Hadamard gate is preferred over, say, $R_y(\pi/2)$ for creating superpositions? (Hint: look at the matrix elements of each.)
 
-### Problem 8: Rotation Matrices
+<!-- ---
 
-**(a)** Verify that $R_x(\pi) = -i\sigma_x$ by computing $e^{-i\pi\sigma_x/2}$ using the formula $e^{-i\theta\sigma_x/2} = \cos(\theta/2)I - i\sin(\theta/2)\sigma_x$.
+### Problem 8: Visualizing Trajectories (Qiskit)
 
-**(b)** Similarly, show that $R_z(\pi) = -i\sigma_z$.
+Use Qiskit to visualize how states move on the Bloch sphere.
 
-**(c)** The Hadamard gate can be written as $H = \frac{1}{\sqrt{2}}(\sigma_x + \sigma_z)$. Verify that $H^2 = I$.
+**(a)** Create a function that extracts Bloch sphere coordinates $(x, y, z)$ from a statevector:
 
-**(d)** Show that applying $H$ to $|0\rangle$ gives $|+\rangle$, and applying $H$ to $|+\rangle$ gives $|0\rangle$.
+```python
+def bloch_coords(statevector):
+    """Return (x, y, z) Bloch coordinates."""
+    sv = statevector.data
+    rho = np.outer(sv, sv.conj())  # density matrix
+    
+    sx = np.array([[0, 1], [1, 0]])
+    sy = np.array([[0, -1j], [1j, 0]])
+    sz = np.array([[1, 0], [0, -1]])
+    
+    x = np.real(np.trace(rho @ sx))
+    y = np.real(np.trace(rho @ sy))
+    z = np.real(np.trace(rho @ sz))
+    return x, y, z
+```
 
-------------------------------------------------------------------------
+**(b)** Starting from $|0\rangle$, apply $R_x(\theta)$ for $\theta$ from $0$ to $2\pi$ in 20 steps. Record the Bloch coordinates at each step. What shape does the trajectory trace?
 
-### Problem 9: Comparing Precession and Rabi
+**(c)** Starting from $|0\rangle$, apply $R_z(\theta)$ for $\theta$ from $0$ to $2\pi$. What happens? (This should be boring — explain why.)
 
-Consider two Hamiltonians: $H_z = \frac{\hbar\omega}{2}\sigma_z$ and $H_x = \frac{\hbar\omega}{2}\sigma_x$ (same frequency $\omega$).
+**(d)** Starting from $|+\rangle$, apply $R_z(\theta)$ for $\theta$ from $0$ to $2\pi$. Now what shape do you get?
 
-**(a)** For each Hamiltonian, list which states are stationary (energy eigenstates).
+**(e)** Create a 3D plot showing all three trajectories from parts (b), (c), and (d) on the same Bloch sphere. Use `matplotlib` with `projection='3d'`.
+ -->
 
-**(b)** Starting in $|0\rangle$, which Hamiltonian causes the populations $P_0$ and $P_1$ to change? Explain.
 
-**(c)** Starting in $|+\rangle$, which Hamiltonian causes the populations $P_0$ and $P_1$ to change?
+---
 
-**(d)** Explain in words why precession doesn't change populations but Rabi oscillations do.
+### Problem: Unitarity Implies Hermitian Generator
 
-------------------------------------------------------------------------
+This problem proves the deep connection between unitary operators and Hermitian generators.
 
-### Problem 10: Qiskit Exploration
+**(a)** Let $U = e^{iG}$ for some operator $G$. Write an expression for $U^\dagger$ in terms of $G^\dagger$.
 
-**(a)** Use Qiskit to simulate Rabi oscillations. Plot $P_0$ and $P_1$ vs rotation angle $\theta$ for $R_x(\theta)|0\rangle$ with $\theta$ from $0$ to $4\pi$. Verify the oscillation period is $2\pi$.
+**(b)** The condition for $U$ to be unitary is $U^\dagger U = I$. Substitute your expression from (a) and show that this requires:
+$$e^{-iG^\dagger}e^{iG} = I$$
 
-**(b)** Simulate a Ramsey sequence: $R_x(\pi/2) \to R_z(\phi) \to R_x(\pi/2)$ for $\phi$ from $0$ to $4\pi$. Plot $P_0$ vs $\phi$ and verify it matches $\sin^2(\phi/2)$.
+**(c)** For the equation in (b) to hold, we need $G^\dagger = G$. Explain why. 
 
-**(c)** Modify the Ramsey sequence to use $R_y(\pi/2)$ pulses instead of $R_x(\pi/2)$. How does the result change?
+*Hint:* If $A$ and $B$ are matrices, $e^A e^B = e^{A+B}$ only when $[A,B] = 0$. What does $e^{-iG^\dagger}e^{iG} = I = e^0$ tell you?
 
-**(d)** Simulate the effect of a "pulse error": use $R_x(\pi/2 + \epsilon)$ instead of $R_x(\pi/2)$ with $\epsilon = 0.1$. How does this affect the Ramsey fringes?
+**(d)** Conclude: If $U = e^{iG}$ is unitary, then $G$ must be Hermitian.
+
+**(e)** We've been writing time evolution as $U(t) = e^{-iHt/\hbar}$. Using your result, explain why the Hamiltonian $H$ must be Hermitian for time evolution to be unitary.
+
+**(f)** The Pauli matrices $\sigma_x$, $\sigma_y$, $\sigma_z$ are Hermitian. Verify that $\sigma_x^\dagger = \sigma_x$ by writing out the matrix and its conjugate transpose.
+
+**(g)** Using your result from (d), explain why $R_z(\theta) = e^{-i\sigma_z\theta/2}$ is guaranteed to be unitary without doing any explicit calculation.
+
+---
+
+### Problem: Space Translation Operator
+
+The momentum operator in one dimension is $\hat{p} = -i\hbar\frac{d}{dx}$.
+
+**(a)** Consider the translation operator $T(a) = e^{-i\hat{p}a/\hbar}$. Using $\hat{p} = -i\hbar\frac{d}{dx}$, show that:
+$$T(a) = e^{-a\frac{d}{dx}}$$
+
+**(b)** Taylor expand $e^{-a\frac{d}{dx}}$ acting on a function $\psi(x)$:
+$$e^{-a\frac{d}{dx}}\psi(x) = \left(1 - a\frac{d}{dx} + \frac{a^2}{2!}\frac{d^2}{dx^2} - \cdots\right)\psi(x)$$
+
+**(c)** Recognize this Taylor series as the expansion of $\psi(x-a)$ around $x$. Conclude:
+$$T(a)\psi(x) = \psi(x - a)$$
+
+(Note: The sign convention varies. With $T(a) = e^{+i\hat{p}a/\hbar}$, you get $\psi(x+a)$.)
+
+**(d)** Verify that $T(a)$ is unitary using the result from the previous problem.
+
+**(e)** The pattern is now complete:
+
+| Physical quantity | Operator (generator) | Transformation |
+|-------------------|---------------------|----------------|
+| Energy | $H$ | Time translation: $\psi(t) \to \psi(t + \Delta t)$ |
+| Momentum | $\hat{p}$ | Space translation: $\psi(x) \to \psi(x + \Delta x)$ |
+| Angular momentum | $\sigma_z$ (for spin) | Rotation: $|\psi\rangle \to R_z(\theta)|\psi\rangle$ |
+
+In your own words, explain the pattern: what is the relationship between a conserved quantity and the transformation it generates?
