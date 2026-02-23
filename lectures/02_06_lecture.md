@@ -436,7 +436,7 @@ More formally: $[H, \sigma_x] = [\sigma_x, \sigma_x] = 0$, so $\langle\sigma_x\r
 ---
 
 ## Homework 2.6
-
+<!-- 
 ### Problem: Eigenvectors of $\sigma_x$
 
 The Pauli matrix $\sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$.
@@ -469,7 +469,7 @@ where $a, b, c, d$ are complex numbers.
 
 **(d)** Show that another equation is $|b|^2 + |d|^2 = 1$. Interpret this for input state $|1\rangle$.
 
-**(e)** The rotation matrix $R_x(\pi/2) = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & -i \\ -i & 1 \end{pmatrix}$. Verify explicitly that $R_x(\pi/2)^\dagger R_x(\pi/2) = I$.
+**(e)** The rotation matrix $R_x(\pi/2) = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & -i \\ -i & 1 \end{pmatrix}$. Verify explicitly that $R_x(\pi/2)^\dagger R_x(\pi/2) = I$. -->
 
 ---
 
@@ -690,7 +690,7 @@ $$T(a)\psi(x) = \psi(x - a)$$
 
 **(d)** Verify that $T(a)$ is unitary using the result from the previous problem.
 
-**(e)** The pattern is now complete:
+<!-- **(e)** The pattern is now complete:
 
 | Physical quantity | Operator (generator) | Transformation |
 |-------------------|---------------------|----------------|
@@ -698,4 +698,4 @@ $$T(a)\psi(x) = \psi(x - a)$$
 | Momentum | $\hat{p}$ | Space translation: $\psi(x) \to \psi(x + \Delta x)$ |
 | Angular momentum | $\sigma_z$ (for spin) | Rotation: $|\psi\rangle \to R_z(\theta)|\psi\rangle$ |
 
-In your own words, explain the pattern: what is the relationship between a conserved quantity and the transformation it generates?
+In your own words, explain the pattern: what is the relationship between a conserved quantity and the transformation it generates? -->
