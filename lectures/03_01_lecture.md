@@ -29,13 +29,23 @@ $$P_B(0) = 0.5, \quad P_B(1) = 0.5$$
 
 Since there are two marbles, each with two possible colors, the **joint** system has four possible outcomes — all possible pairs:
 
-$$P(0,0), \quad P(0,1), \quad P(1,0), \quad P(1,1)$$
+$$(0,0), \quad (0,1), \quad (1,0), \quad (1,1)$$
 
 That's $2 \times 2 = 4$ outcomes. For $N$ marbles: $2^N$ outcomes. This combinatorial explosion isn't quantum mechanics yet — it's just counting. But quantum mechanics inherits this structure.
 
-The question is: **what joint probability distribution describes the pair?**
+### Joint Probability Distributions
 
-The individual marginals ($P_A$ and $P_B$) don't tell you the answer. The correlations matter.
+A **joint probability distribution** $P(i, j)$ assigns a probability to each of the four outcomes. It must satisfy:
+
+$$P(i, j) \geq 0, \qquad \sum_{i,j} P(i,j) = 1$$
+
+The **marginal distributions** are obtained by summing over the other variable:
+
+$$P_A(i) = \sum_j P(i, j), \qquad P_B(j) = \sum_i P(i, j)$$
+
+The marginals tell you about each marble individually. But they don't fully determine the joint distribution — different joint distributions can have the same marginals. The extra information is in the **correlations** between the marbles.
+
+The key question is: **what joint probability distribution describes a given pair?**
 
 ---
 
@@ -59,14 +69,12 @@ The answer is **(C)**: outcomes (0,0) and (1,1) each with probability 1/2. We ne
 
 **Are these marbles independent?**
 
-For independent systems, the joint probability factors:
-$$P_{AB}(i, j) = P_A(i) \cdot P_B(j)$$
+Two systems are **independent** (uncorrelated) if the joint probability factors into a product of the marginals:
+$$P(i, j) = P_A(i) \cdot P_B(j)$$
 
-Let's check. The marginals of distribution (C) are $P_A(0) = 0.5$ and $P_A(1) = 0.5$, and likewise $P_B(0) = 0.5$, $P_B(1) = 0.5$. The product gives $P_A(0) \cdot P_B(0) = 0.25 \neq 0.5 = P(0,0)$.
+Let's check. The marginals of distribution (C) are $P_A(0) = 0.5$, $P_A(1) = 0.5$, and $P_B(0) = 0.5$, $P_B(1) = 0.5$. The product gives $P_A(0) \cdot P_B(0) = 0.25 \neq 0.5 = P(0,0)$.
 
-The joint distribution **cannot be written as a product of marginals.** These marbles are **correlated**.
-
-This is a classical correlation — like Bertlmann's mismatched socks (one always pink, one always blue). The correlation was established when someone prepared the pair. There's nothing mysterious here: a hidden variable (the preparation procedure) explains everything.
+The joint distribution cannot be written as a product of marginals. These marbles are **classically correlated**.
 
 ---
 
@@ -90,15 +98,23 @@ The answer is **(A)**: outcomes (0,1) and (1,0) each with probability 1/2.
 
 Are they correlated? Try factoring: $P(i,j) = P_A(i) \cdot P_B(j)$. With $P_A(0) = 0.5$ and $P_B(0) = 0.5$, the product gives $P(0,0) = 0.25 \neq 0$. **Doesn't work.** We cannot write this as a product. The marbles are classically correlated — this time, anti-correlated.
 
+---
+
+### Classical Correlations Are Not Unusual
+
 ```{admonition} Classical Correlations
 :class: note
 
-Classical correlations arise from shared history or common causes. Learning about one part of a correlated system reveals information about the other part, but doesn't affect it.
-
-The information was always there — you just didn't know it.
+Classical correlations arise from shared history or common causes. Learning about one part of a correlated system reveals information about the other part, but doesn't affect it. The information was always there — you just didn't know it.
 ```
 
-Keep this in your back pocket: we're about to see quantum states with exactly the same measurement statistics — outcomes 00 and 11, or outcomes 01 and 10, each 50/50. The question will be: **is the explanation the same?** Can we always say "the answer was determined in advance"?
+There's nothing strange about classical correlations — they happen all the time. If I put one red marble and one blue marble into two boxes and shuffle them, the boxes are anti-correlated. Opening one box tells you the color of the other. This is perfectly described by a **hidden variable**: the shuffling procedure determined which marble went where, and opening a box just reveals a pre-existing fact.
+
+Any classical correlation, no matter how strong, can be explained by a hidden variable. The correlation was established in the past, encoded in some shared information, and measurement just reads it out. This is the picture Einstein wanted for quantum mechanics too.
+
+What we'll discover in the next lecture — through Bell's theorem — is that quantum mechanics produces correlations that are **too strong** to be explained this way. It's not that quantum systems are correlated (classical systems are too). It's that the *amount* and *structure* of quantum correlations exceed what any hidden variable model can produce.
+
+Keep this in your back pocket: we're about to see quantum states with exactly the same measurement statistics as these marbles — outcomes 00 and 11, or 01 and 10, each 50/50. The question will be: **is the explanation the same?**
 
 ---
 
@@ -113,38 +129,35 @@ It's a wave over two configurations, fully described by a point on the Bloch sph
 
 $$|\Psi\rangle = \begin{pmatrix} c_0 \\ c_1 \end{pmatrix}$$
 
+---
 
 ### Quantum Mechanics Is a Wave over Configurations
 
-Here is the key conceptual leap. For a single qubit, the state is a superposition over two possibilities:
+Here is the key conceptual leap.
 
+For a single qubit, the state is a superposition over two possibilities:
 $$|\psi\rangle = c_0|0\rangle + c_1|1\rangle$$
 
 Each possibility gets a complex amplitude. The squared magnitudes give probabilities.
 
 For two qubits, the state is a superposition over all four configurations of the pair:
-
 $$|\Psi\rangle = c_{00}|00\rangle + c_{01}|01\rangle + c_{10}|10\rangle + c_{11}|11\rangle$$
 
-Each configuration gets its own complex amplitude. This is the essential structure of quantum mechanics: **it assigns a complex number (an amplitude) to every possible configuration of the system.** The probabilities are the squared magnitudes: $P(01) = |c_{01}|^2$, etc.
+Each configuration gets its own complex amplitude. This is the essential structure of quantum mechanics: **it assigns a complex number — an amplitude with magnitude and phase — to every possible configuration of the system.** The probabilities are the squared magnitudes: $P(01) = |c_{01}|^2$, etc.
 
 For $N$ qubits, there are $2^N$ configurations, each with its own amplitude. This exponential growth is the fundamental resource of quantum computing — and the reason quantum systems are hard to simulate classically.
 
-Quantum dynamics is a wave over configurations.  Everything that can happen does happen, just with some complex amplitude (amplitude and phase).
-
+> Quantum dynamics is a wave over configurations. Everything that can happen does happen, just with some complex amplitude (magnitude and phase).
 
 ---
 
+### Two Independent Qubits: The Tensor Product
 
-
-
-### Two Indepedent Qubits: The Tensor Product
-
-Now suppose we have two qubits: qubit A in state $|\Psi\rangle = a|0\rangle + b|1\rangle$ and qubit B in state $|\phi\rangle = c|0\rangle + d|1\rangle$.
+Now suppose we have two qubits: qubit A in state $|\psi\rangle = a|0\rangle + b|1\rangle$ and qubit B in state $|\phi\rangle = c|0\rangle + d|1\rangle$.
 
 How do we describe the joint system? We need a mathematical operation that combines configuration spaces. This is the **tensor product**, written $\otimes$:
 
-$$|\Psi\rangle \otimes |\phi\rangle = (a|0\rangle + b|1\rangle) \otimes (c|0\rangle + d|1\rangle)$$
+$$|\psi\rangle \otimes |\phi\rangle = (a|0\rangle + b|1\rangle) \otimes (c|0\rangle + d|1\rangle)$$
 
 The tensor product distributes just like ordinary multiplication — $(a + b)(c + d) = ac + ad + bc + bd$:
 
@@ -159,15 +172,20 @@ $$|0\rangle \otimes |1\rangle \;=\; |0\rangle|1\rangle \;=\; |0,1\rangle \;=\; |
 
 We'll mostly use the compact form $|01\rangle$.
 
+---
 
+### The General Two-Qubit State
 
+The tensor product describes two independent, non-interacting particles. But the most general two-qubit state is richer:
 
+$$|\Psi\rangle = C_{00}|00\rangle + C_{01}|01\rangle + C_{10}|10\rangle + C_{11}|11\rangle$$
 
-### General 2 qubit state 
+with four complex amplitudes satisfying $\sum|C_{ij}|^2 = 1$.
 
-For two qubits, the state is a superposition over all four configurations of the pair:
+For a tensor product state, the amplitudes factor: $C_{ij} = u_i v_j$. But in general, the four amplitudes can be *anything* (subject to normalization). When they don't factor, the state describes particles whose correlations go beyond anything a product description can capture. These are **entangled states**, and they arise from interactions between particles or from correlated creation processes (like photon pair generation).
 
-$$|\Psi\rangle = c_{00}|00\rangle + c_{01}|01\rangle + c_{10}|10\rangle + c_{11}|11\rangle$$
+### Counting Degrees of Freedom
+
 How much information does a two-qubit state carry?
 
 $$\text{4 complex numbers} \;\to\; 8 \text{ real DOF}$$
@@ -180,59 +198,63 @@ Now compare: two *independent* qubits, each on its own Bloch sphere, have $2 + 2
 
 $$\underbrace{6}_{\text{two-qubit state}} \;=\; \underbrace{2}_{\text{Bloch sphere A}} \;+\; \underbrace{2}_{\text{Bloch sphere B}} \;+\; \underbrace{2}_{\text{correlations}}$$
 
-Those extra 2 degrees of freedom encode correlations between the qubits. A product state like $|+\rangle \otimes |0\rangle$ uses only the 4 Bloch sphere DOFs — the correlations are zero, and the qubits are independent. But some two-qubit states use all 6 DOFs. These are the entangled states, and they're what we'll explore next.
+Those extra 2 degrees of freedom encode **correlations between the qubits**. A product state like $|+\rangle \otimes |0\rangle$ uses only the 4 Bloch sphere DOFs — the correlations are zero, and the qubits are independent. But some two-qubit states use all 6 DOFs. These are the entangled states, and they're what we'll explore next.
 
+---
 
+### The Tensor Product as a Matrix and a Vector
 
+For two qubits with states $\vec{u} = \begin{pmatrix} u_0 \\ u_1 \end{pmatrix}$ and $\vec{v} = \begin{pmatrix} v_0 \\ v_1 \end{pmatrix}$, the tensor product defines a set of amplitudes:
 
+$$\Psi_{ij} = u_i \, v_j$$
 
+We can arrange these amplitudes in two equivalent ways.
 
+**As a $2 \times 2$ matrix** (the amplitude table):
 
+$$C = \begin{pmatrix} u_0 v_0 & u_0 v_1 \\ u_1 v_0 & u_1 v_1 \end{pmatrix} = \vec{u}\,\vec{v}^T$$
 
+Rows correspond to qubit A's state ($|0\rangle_A$ or $|1\rangle_A$), columns to qubit B's. For a product state, this matrix is an **outer product** of two vectors: $C = \vec{u}\,\vec{v}^T$.
 
+**As a $4$-component column vector:**
 
+$$|\Psi\rangle = \begin{pmatrix} u_0 v_0 \\ u_0 v_1 \\ u_1 v_0 \\ u_1 v_1 \end{pmatrix} = \begin{pmatrix} c_{00} \\ c_{01} \\ c_{10} \\ c_{11} \end{pmatrix}$$
 
+This is simply the matrix entries read off row by row into a single column. Both representations contain the same information. The vector form generalizes to $N$ qubits (a column of $2^N$ entries), while the matrix form is specific to two qubits — but it will be very useful when we introduce the **determinant test for entanglement** in the next lecture.
 
+For $N$ qubits, the state vector has $2^N$ components. A classical computer simulating 50 qubits must store $2^{50} \approx 10^{15}$ complex numbers — about a petabyte of memory. A quantum computer with 50 qubits just... has 50 qubits. This is the source of quantum computational power: the state space grows exponentially, but the physical resources grow linearly.
 
+---
 
+## Summary
 
+1. **Classical correlations** arise when two systems share a common cause. The joint probability $P(i,j)$ cannot be written as $P_A(i) \cdot P_B(j)$, but there's nothing mysterious — a hidden variable explains it. Classical correlations are perfectly normal; what Bell's theorem will show is that quantum correlations are *stronger* than any hidden variable can produce.
 
+2. **Quantum mechanics is a wave over configurations.** A two-qubit state assigns a complex amplitude to each of the four joint configurations $|00\rangle, |01\rangle, |10\rangle, |11\rangle$. For $N$ qubits: $2^N$ amplitudes.
 
+3. **The tensor product** $\otimes$ describes two independent qubits: amplitudes multiply ($\Psi_{ij} = u_i v_j$), and the result can be written as a $2 \times 2$ matrix (outer product $\vec{u}\,\vec{v}^T$) or a 4-component vector.
 
+4. **A general two-qubit state** has **6 real DOF** = 2 (Bloch sphere A) + 2 (Bloch sphere B) + 2 (correlations). The extra DOFs encode correlations — and when the amplitudes don't factor, we call the state **entangled**.
 
+<!-- ---
 
-
-
-
-### The Kronecker Product (Vector Form)
-
-As column vectors, the tensor product becomes the **Kronecker product**:
-
-$$\begin{pmatrix} u_0 \\ u_1 \end{pmatrix} \otimes \begin{pmatrix} v_0 \\ v_1 \end{pmatrix} = \begin{pmatrix} u_0 v_0 \\ u_0 v_1 \\ u_1 v_0 \\ u_1 v_1 \end{pmatrix}$$
-
-Multiply each component of the first vector by the entire second vector, and stack the results. Two $n = 2$ vectors produce one $n = 4$ vector. For $N$ qubits: dimension $2^N$.
-
-| Qubits | Configurations | Complex numbers needed |
-|--------|----------------|----------------------|
-| 1 | 2 | 2 |
-| 2 | 4 | 4 |
-| 10 | 1,024 | 1,024 |
-| 20 | ~1 million | ~1 million |
-| 50 | ~$10^{15}$ | ~$10^{15}$ |
-| 300 | ~$10^{90}$ | More than atoms in the universe |
-
-A classical computer simulating 50 qubits must store $2^{50} \approx 10^{15}$ complex numbers — about a petabyte of memory. A quantum computer with 50 qubits just... has 50 qubits. This is the source of quantum computational power: the state space grows exponentially, but the physical resources grow linearly.
-
-We can also arrange the amplitudes as a $2 \times 2$ **amplitude table**:
-
-$$C = \begin{pmatrix} u_0 v_0 & u_0 v_1 \\ u_1 v_0 & u_1 v_1 \end{pmatrix}$$
-
-Rows correspond to qubit A's state ($|0\rangle$ or $|1\rangle$), columns to qubit B's. For a product state, this matrix is an outer product of two vectors: $C = \vec{u}\,\vec{v}^T$.
-
-<!-- 
 ## Homework
 
-### Problem 1: Tensor Product Practice
+### Problem 1: Joint Probability Distributions
+
+Two classical bits are drawn from a joint distribution.
+
+**(a)** If $P(0,0) = 1/3$, $P(0,1) = 1/6$, $P(1,0) = 1/6$, $P(1,1) = 1/3$, compute the marginals $P_A(0), P_A(1), P_B(0), P_B(1)$.
+
+**(b)** Is this distribution independent (i.e., does $P(i,j) = P_A(i) \cdot P_B(j)$)?
+
+**(c)** Design a joint distribution over $(i,j) \in \{0,1\}^2$ that has marginals $P_A(0) = P_A(1) = 1/2$ and $P_B(0) = P_B(1) = 1/2$ but is **not** independent.
+
+**(d)** Design one that has the same marginals and **is** independent.
+
+---
+
+### Problem 2: Tensor Product Practice
 
 Compute the following tensor products and write the result as a 4-component column vector.
 
@@ -246,151 +268,52 @@ Compute the following tensor products and write the result as a 4-component colu
 
 ---
 
-### Problem 2: The Amplitude Table and Determinant Test
+### Problem 3: The Amplitude Table
 
-Arrange the amplitudes of a two-qubit state as a $2 \times 2$ matrix:
-$$C = \begin{pmatrix} C_{00} & C_{01} \\ C_{10} & C_{11} \end{pmatrix}$$
-
-**(a)** Show that if $|\Psi\rangle = |\psi\rangle_A \otimes |\phi\rangle_B$ is a product state, then $C$ is a rank-1 matrix (i.e., $C = \vec{u}\,\vec{v}^T$, the outer product of two vectors).
-
-**(b)** For a $2 \times 2$ matrix, rank 1 is equivalent to $\det(C) = 0$. Use this to verify that $|+\rangle \otimes |0\rangle$ is separable.
-
-**(c)** Show that $|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$ has $\det(C) = 1/2 \neq 0$, and is therefore entangled.
-
-**(d)** Compute $\det(C)$ for all four Bell states. What do you notice about $|\det(C)|$?
+For each tensor product in Problem 2, write the result as a $2 \times 2$ amplitude table $C$ (rows = qubit A, columns = qubit B). Verify that each table is an outer product $C = \vec{u}\,\vec{v}^T$ — i.e., that $C_{ij} = u_i v_j$.
 
 ---
 
-### Problem 3: Identifying Product vs. Entangled
+### Problem 4: Degrees of Freedom
 
-For each state, compute $\det(C)$ of the amplitude table. If separable, write it as $|\psi\rangle \otimes |\phi\rangle$. If entangled, state the determinant.
+**(a)** How many real degrees of freedom does a general $N$-qubit state have? (Remember to subtract normalization and global phase.)
 
-**(a)** $|\Psi\rangle = \frac{1}{2}(|00\rangle + |01\rangle + |10\rangle + |11\rangle)$
+**(b)** How many DOF do $N$ independent qubits have (each on its own Bloch sphere)?
 
-**(b)** $|\Psi\rangle = \frac{1}{\sqrt{2}}(|00\rangle - |11\rangle)$
+**(c)** For $N = 3$: how many DOF does a general 3-qubit state have? How many for three independent Bloch spheres? How many "correlation DOFs" are there?
 
-**(c)** $|\Psi\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |01\rangle)$
+**(d)** As $N$ grows, which grows faster — the total DOFs or the independent-qubit DOFs? What does this say about the importance of correlations in large quantum systems?
+
+---
+
+### Problem 5: Product or Not?
+
+For each two-qubit state, try to write it as $|\psi\rangle_A \otimes |\phi\rangle_B$. If you can, give the factors. If you can't, explain why.
+
+**(a)** $|\Psi\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |10\rangle)$
+
+**(b)** $|\Psi\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$
+
+**(c)** $|\Psi\rangle = \frac{1}{2}(|00\rangle + |01\rangle + |10\rangle + |11\rangle)$
 
 **(d)** $|\Psi\rangle = \frac{1}{2}(|00\rangle + |01\rangle + |10\rangle - |11\rangle)$
 
 ---
 
-### Problem 4: Bell State Measurements
+### Problem 6: Three Qubits
 
-**(a)** Write down the ZZ measurement probabilities for all four Bell states. Verify that $|\Phi^+\rangle$ and $|\Phi^-\rangle$ are indistinguishable under ZZ, and so are $|\Psi^+\rangle$ and $|\Psi^-\rangle$.
+**(a)** How many computational basis states are there for three qubits? List them all.
 
-**(b)** Using the X-basis expansions derived in lecture (for both $\Psi$ and $\Phi$ pairs), write down the XX measurement probabilities for all four Bell states. Verify that XX distinguishes the $+/-$ pairs that ZZ cannot.
+**(b)** Write $|+\rangle \otimes |0\rangle \otimes |1\rangle$ as a sum of computational basis states.
 
-**(c)** Using the correlation table from lecture, which single measurement basis (ZZ, XX, or YY) can distinguish the most Bell states? Which pairs remain ambiguous?
-
-**(d)** **YY for the $\Psi$ states.** The Y basis states are $|+i\rangle = \frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle)$ and $|-i\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$. Express $|\Psi^+\rangle$ and $|\Psi^-\rangle$ in the Y basis and verify the YY column of the correlation table.
-
-**(e)** Why do you need at least two measurement bases to identify all four Bell states?
-
----
-
-### Problem 5: Partial Measurement
-
-When you measure only one qubit of a two-qubit state, the other qubit's state changes. To find the post-measurement state, project onto the measured outcome and renormalize: apply $(|a\rangle\langle a| \otimes I)$ to the joint state.
-
-**(a)** For $|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$: if Alice measures qubit A and gets $|0\rangle$, what state is qubit B in? What if she gets $|1\rangle$?
-
-**(b)** Repeat for $|\Psi^-\rangle = \frac{1}{\sqrt{2}}(|01\rangle - |10\rangle)$.
-
-**(c)** Before Alice measures, what is the "state" of qubit B alone in $|\Phi^+\rangle$? Can it be described by a state vector $\alpha|0\rangle + \beta|1\rangle$? Explain. (We'll return to this when we study density matrices.)
-
-**(d)** **No-signaling check.** From Bob's perspective alone (without knowing Alice's result), does he see different measurement statistics depending on whether Alice has measured or not? Consider: if Alice measures Z, she gets 0 or 1 with 50% each, and Bob's qubit becomes $|0\rangle$ or $|1\rangle$ accordingly. If Bob then measures Z, what are his probabilities? Compare to what he'd see if Alice hadn't measured at all. (This is why entanglement can't be used for faster-than-light communication.)
-
----
-
-### Problem 6: Creating Entanglement
-
-**(a)** Explain in words why a product gate $A \otimes B$ (where $A$ acts on qubit A and $B$ acts on qubit B, independently) cannot create entanglement from a product state.
-
-**(b)** The CNOT gate is defined by: $|00\rangle \to |00\rangle$, $|01\rangle \to |01\rangle$, $|10\rangle \to |11\rangle$, $|11\rangle \to |10\rangle$. Can CNOT be written as $A \otimes B$ for any single-qubit gates $A$ and $B$? (Hint: consider what happens to $|10\rangle$ vs $|00\rangle$.)
-
-**(c)** Apply CNOT to the product state $|+\rangle \otimes |+\rangle$. Write the result as a sum of computational basis states. Is it entangled? Use the determinant test.
-
-**(d)** The circuit Hadamard-then-CNOT creates $|\Phi^+\rangle$ from $|00\rangle$. Show that different inputs to the same circuit produce all four Bell states:
-
-| Input | Output |
-|---|---|
-| $\|00\rangle$ | $\|\Phi^+\rangle$ |
-| $\|10\rangle$ | $\|\Phi^-\rangle$ |
-| $\|01\rangle$ | $\|\Psi^+\rangle$ |
-| $\|11\rangle$ | $\|\Psi^-\rangle$ |
-
-Verify at least two of these by tracing through the circuit.
-
----
-
-### Problem 7: Three Qubits
-
-The tensor product extends to more than two qubits.
-
-**(a)** How many basis states are there for three qubits? List them all.
-
-**(b)** Write the state $|+\rangle \otimes |0\rangle \otimes |1\rangle$ as a sum of computational basis states.
-
-**(c)** Consider the three-qubit state:
-$$|GHZ\rangle = \frac{1}{\sqrt{2}}(|000\rangle + |111\rangle)$$
-This is called the Greenberger-Horne-Zeilinger state. Is it a product state? How would you test this? (Hint: the $2 \times 2$ determinant test doesn't directly apply. Try to factor it.)
+**(c)** The GHZ state is $|GHZ\rangle = \frac{1}{\sqrt{2}}(|000\rangle + |111\rangle)$. Is it a product state? Try to factor it.
 
 **(d)** If you measure all three qubits of $|GHZ\rangle$ in the computational basis, what outcomes are possible?
 
 ---
 
-### Problem 8: Qiskit Exploration
+## Looking Ahead
 
-```{admonition} Qiskit Qubit Ordering
-:class: warning
+We've built the mathematical framework for two-qubit states: tensor products, the amplitude table, and the $6 = 4 + 2$ DOF counting that reveals where correlations live.
 
-Qiskit uses **little-endian** ordering: qubit 0 is the *rightmost* bit in output strings. So `qc.x(0)` produces state $|01\rangle$ in our notation, but Qiskit displays it as `'10'`. The state vectors are always correct — it's just the string labels that can be confusing.
-```
-
-```python
-# Setup
-import numpy as np
-from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector
-from qiskit_aer import AerSimulator
-
-simulator = AerSimulator()
-```
-
-**(a)** Create the Bell state $|\Phi^+\rangle$ in Qiskit using Hadamard + CNOT. Print the statevector and verify it matches $\frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$. Then add measurements and run 10,000 shots. Verify you only get 00 and 11.
-
-```python
-# Starter code
-qc_bell = QuantumCircuit(2)
-qc_bell.h(0)
-qc_bell.cx(0, 1)
-
-state = Statevector(qc_bell)
-print("Statevector:", state)
-```
-
-**(b)** Create $|\Psi^+\rangle = \frac{1}{\sqrt{2}}(|01\rangle + |10\rangle)$. (Hint: start from $|\Phi^+\rangle$ and apply $X$ to one qubit.) Measure 10,000 times and verify you only get 01 and 10.
-
-**(c)** Create the GHZ state $\frac{1}{\sqrt{2}}(|000\rangle + |111\rangle)$ using H on qubit 0, then CNOT(0,1), then CNOT(0,2). Measure all three qubits and verify the correlations.
-
-**(d)** Write a function that takes a two-qubit `Statevector` and computes $\det(C)$ of the amplitude table. Test it on a product state and an entangled state.
-
-```python
-def det_test(statevector):
-    """Compute det(C) for a two-qubit state."""
-    amps = np.array(statevector)
-    C = np.array([[amps[0], amps[1]],
-                  [amps[2], amps[3]]])
-    return C[0,0]*C[1,1] - C[0,1]*C[1,0]
-
-# Test on a product state: |+⟩|0⟩
-qc_prod = QuantumCircuit(2)
-qc_prod.h(0)
-print("Product state det:", det_test(Statevector(qc_prod)))
-
-# Test on Bell state
-print("Bell state det:", det_test(state))
-```
-
-**(e)** **XX measurement of Bell states.** Create $|\Phi^+\rangle$ and measure both qubits in the X basis (apply H to both qubits before measuring). Verify that you only see 00 and 11 (meaning $++$ and $--$). Then do the same for $|\Phi^-\rangle$ and verify you see 01 and 10 (meaning $+-$ and $-+$). Compare to the correlation table from lecture.
+But we haven't yet explored what makes quantum correlations *different* from classical ones. Next lecture, we'll introduce the Bell states — the four maximally entangled two-qubit states — and discover that their correlations persist across *every* measurement basis simultaneously. This is something no classical system can do, and it leads directly to Einstein's challenge, Bell's theorem, and the foundations of quantum information science. -->
