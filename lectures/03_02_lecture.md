@@ -46,7 +46,7 @@ $$ac|00\rangle + ad|01\rangle + bc|10\rangle + bd|11\rangle = |00\rangle + |01\r
 
 The pattern makes sense: qubit A contributes a minus sign whenever it's in state $|1\rangle$, because $b = -1$.
 
----
+<!-- ---
 
 ## Part 2: Entanglement
 
@@ -384,7 +384,7 @@ Next lecture, we'll extend the measurement formalism to **two qubits** — measu
 
 4. **Projective measurement** uses projectors $|m\rangle\langle m|$ to compute probabilities ($p_m = |\langle m|\Psi\rangle|^2$) and post-measurement states ($|m\rangle\langle m|\Psi\rangle / \sqrt{p_m}$). Measuring in a compatible basis gives a definite result; measuring in an incompatible basis gives a random one.
 
-5. **The uncertainty principle** for spin-$\frac{1}{2}$: an eigenstate of $S_x$, $S_y$, or $S_z$ is definite along one axis and maximally uncertain along the other two (50/50 outcomes). This follows from $[S_x, S_y] = i\hbar S_z$ and the generalized uncertainty relation $\Delta A \cdot \Delta B \geq \frac{1}{2}|\langle[A,B]\rangle|$.
+5. **The uncertainty principle** for spin-$\frac{1}{2}$: an eigenstate of $S_x$, $S_y$, or $S_z$ is definite along one axis and maximally uncertain along the other two (50/50 outcomes). This follows from $[S_x, S_y] = i\hbar S_z$ and the generalized uncertainty relation $\Delta A \cdot \Delta B \geq \frac{1}{2}|\langle[A,B]\rangle|$. -->
 
 <!-- ---
 
