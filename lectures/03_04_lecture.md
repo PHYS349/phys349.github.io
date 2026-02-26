@@ -1,1213 +1,509 @@
-# Lecture 3.4: Two-Qubit Gates and Hardware
 
-## From Theory to Implementation
+# Lecture 3.4 — Bell's Theorem
 
-We've established that entanglement is real, non-classical, and powerful. Now we learn how to **create** it.
+## Where We Left Off
 
-Single-qubit gates (H, X, Z, rotations) manipulate individual qubits. But they cannot create entanglement — a product state remains a product state under local operations.
+Last lecture we showed that three assumptions — **locality**, **realism**, and **completeness of QM** — are mutually inconsistent. The EPR argument (1935) assumed locality and realism and concluded that quantum mechanics is incomplete: there must be hidden variables carrying predetermined measurement outcomes.
 
-To create entanglement, we need **two-qubit gates**: operations that couple qubits together. Today we'll study the most important two-qubit gates and see how they're physically implemented in real quantum computers.
+We made this precise with the **lookup table** picture. If realism is true, each particle pair carries a table of predetermined $\pm 1$ answers. If locality is true, Alice's choice of measurement setting can't change Bob's table entries. The question we left open:
+
+> **Can any distribution over lookup tables reproduce the quantum predictions?**
+
+Today we answer that question. The answer is **no**.
 
 ---
 
-## Why Two-Qubit Gates?
+## Part 1: Two Settings — The Hidden Variable Model Works
 
-### The Limitation of Single-Qubit Gates
+### The Setup
 
-Suppose Alice has qubit A and Bob has qubit B, initially in state $|0\rangle_A \otimes |0\rangle_B = |00\rangle$.
+Alice and Bob share the singlet state
 
-If Alice applies any single-qubit gate $U_A$ to her qubit, and Bob applies any gate $U_B$ to his:
+$$|\Psi^-\rangle = \frac{1}{\sqrt{2}}(|01\rangle - |10\rangle).$$
 
-$$
-(U_A \otimes U_B)|00\rangle = U_A|0\rangle \otimes U_B|0\rangle = |\psi\rangle_A \otimes |\phi\rangle_B
-$$
+Each can choose to measure along either $Z$ or $X$. The quantum predictions are:
 
-The result is still a **product state**. No entanglement.
+- **Same axis:** perfect anti-correlation.
+  $$E(Z,Z) = -1, \qquad E(X,X) = -1.$$
+  Whenever they measure the same thing, they always get opposite outcomes.
 
-```{admonition} Single-Qubit Gates Cannot Create Entanglement
-:class: warning
+- **Different axes:** no correlation.
+  $$E(Z,X) = E(X,Z) = 0.$$
+  When they measure different things, the outcomes are completely random — each of the four possibilities $(+1,+1)$, $(+1,-1)$, $(-1,+1)$, $(-1,-1)$ occurs with probability $1/4$.
 
-If you start with a product state and apply only single-qubit gates (even different gates to each qubit), you always get a product state.
+### Building the Lookup Table
 
-Entanglement requires **interaction** between qubits.
+Let's try Einstein's program. Each pair carries a lookup table $\lambda$ with predetermined values:
+
+$$a_Z, \quad a_X \in \{+1, -1\} \qquad \text{(Alice's predetermined outcomes).}$$
+
+The singlet has perfect anti-correlation along any shared axis, so Bob's values are forced:
+
+$$b_Z = -a_Z, \qquad b_X = -a_X.$$
+
+That leaves only two free bits: Alice's $Z$-value and Alice's $X$-value. There are $2^2 = 4$ possible lookup tables:
+
+| Table $\lambda$ | $a_Z$ | $a_X$ | $b_Z$ | $b_X$ |
+|---|---|---|---|---|
+| 1 | $+1$ | $+1$ | $-1$ | $-1$ |
+| 2 | $+1$ | $-1$ | $-1$ | $+1$ |
+| 3 | $-1$ | $+1$ | $+1$ | $-1$ |
+| 4 | $-1$ | $-1$ | $+1$ | $+1$ |
+
+Assign each table equal probability: $p_1 = p_2 = p_3 = p_4 = 1/4$.
+
+### Checking the Predictions
+
+**ZZ correlation.** Every table has $b_Z = -a_Z$, so $a_Z \cdot b_Z = -1$ always. Therefore $E(Z,Z) = -1$. ✓
+
+**XX correlation.** Every table has $b_X = -a_X$, so $a_X \cdot b_X = -1$ always. Therefore $E(X,X) = -1$. ✓
+
+**ZX correlation (Alice measures Z, Bob measures X).** Compute $a_Z \cdot b_X$ for each table:
+
+| Table | $a_Z$ | $b_X$ | $a_Z \cdot b_X$ |
+|---|---|---|---|
+| 1 | $+1$ | $-1$ | $-1$ |
+| 2 | $+1$ | $+1$ | $+1$ |
+| 3 | $-1$ | $-1$ | $+1$ |
+| 4 | $-1$ | $+1$ | $-1$ |
+
+Average:
+
+$$E(Z,X) = \frac{1}{4}(-1 + 1 + 1 - 1) = 0.$$
+
+✓
+
+Every quantum prediction is reproduced exactly. The hidden variable model works perfectly.
+
+```{admonition} Einstein Wins (So Far)
+:class: note
+
+With two measurement settings, a simple lookup table model reproduces all quantum predictions for the singlet state. The correlations that seemed "spooky" are no different from classical correlations that were predetermined at the source.
+
+If this were the whole story, Einstein could say: quantum mechanics is incomplete but useful, like thermodynamics before atoms.
 ```
 
-### The Power of Two-Qubit Gates
-
-A two-qubit gate $U$ acts on the 4-dimensional space of both qubits together:
-
-$$
-U: \mathbb{C}^4 \to \mathbb{C}^4
-$$
-
-Such a gate can transform a product state into an entangled state — this is what makes quantum computing powerful.
-
-### What Makes a Gate "Entangling"?
-
-Not every two-qubit gate creates entanglement. For example:
-- $I \otimes I$ does nothing
-- $X \otimes Y$ applies X to qubit 1 and Y to qubit 2 — still just single-qubit operations in parallel
-
-```{admonition} Entangling Gates
+```{admonition} iClicker
 :class: tip
 
-A two-qubit gate $U$ is **entangling** if there exists some product state $|\psi\rangle \otimes |\phi\rangle$ such that $U(|\psi\rangle \otimes |\phi\rangle)$ is entangled.
+We just showed that a hidden variable model works perfectly for two measurement settings. Do you think it will still work if we add a third measurement axis?
 
-A gate is **non-entangling** if it maps every product state to a product state. This happens exactly when $U = U_A \otimes U_B$ (tensor product of single-qubit gates).
+**(A)** Yes — just add more entries to the lookup table
+
+**(B)** No — something will go wrong
+
+**(C)** It depends on the angle of the third axis
 ```
-
-The gates we'll study (CNOT, CZ, SWAP, iSWAP) are all entangling — they can create entanglement from product states. This is what makes them useful for quantum computing.
 
 ---
 
-## The CNOT Gate
+## Part 2: The Third Axis
 
-The most important two-qubit gate is the **Controlled-NOT** (CNOT or CX).
+### A New Measurement Direction
 
-### Definition
+The hidden variable model worked because with two orthogonal axes ($Z$ and $X$ at $90°$), there is enough freedom to assign predetermined values consistently. Now we add a **third** measurement axis.
 
-CNOT has a **control** qubit and a **target** qubit:
-- If control = $|0\rangle$: do nothing to target
-- If control = $|1\rangle$: flip the target (apply X)
+Define $Q$ as the axis at **45°** between $Z$ and $X$ on the Bloch sphere. The corresponding operator is:
 
-In the computational basis:
+$$\sigma_Q = \frac{1}{\sqrt{2}}(\sigma_z + \sigma_x) = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}.$$
 
-$$
-\text{CNOT}|00\rangle = |00\rangle
-$$
-$$
-\text{CNOT}|01\rangle = |01\rangle
-$$
-$$
-\text{CNOT}|10\rangle = |11\rangle
-$$
-$$
-\text{CNOT}|11\rangle = |10\rangle
-$$
+Its eigenstates are:
 
-The control qubit (first) is unchanged. The target qubit (second) is flipped if and only if the control is $|1\rangle$.
+$$|Q_+\rangle = \cos\frac{\pi}{8}\,|0\rangle + \sin\frac{\pi}{8}\,|1\rangle, \qquad |Q_-\rangle = -\sin\frac{\pi}{8}\,|0\rangle + \cos\frac{\pi}{8}\,|1\rangle,$$
 
-### Matrix Representation
+where $\pi/8 = 22.5°$. We won't need the explicit eigenstates — what matters is the **angles** between the three axes.
 
-$$
-\text{CNOT} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{pmatrix}
-$$
+### The Correlation Function
 
-The rows/columns are ordered as $|00\rangle, |01\rangle, |10\rangle, |11\rangle$.
+For the singlet state, quantum mechanics predicts a simple correlation when Alice measures along axis $\hat{a}$ and Bob along axis $\hat{b}$:
 
-### Circuit Symbol
+$$E(\hat{a}, \hat{b}) = -\cos\theta,$$
 
-```{figure} ./03_04_lecture_files/cnot_symbol.svg
-:width: 200px
-:name: cnot-symbol
+where $\theta$ is the angle between the two measurement axes on the Bloch sphere.
 
-CNOT gate: solid dot on control, ⊕ on target.
+Why is this plausible? The singlet is rotationally invariant (total spin zero), so the correlation can only depend on the relative angle. When $\theta = 0°$ (same axis), perfect anti-correlation gives $E = -1$. When $\theta = 180°$ (opposite axes), $E = +1$. The cosine interpolates smoothly between these extremes.
+
+(The full derivation uses $\langle\Psi^-|(\hat{a}\cdot\vec{\sigma})\otimes(\hat{b}\cdot\vec{\sigma})|\Psi^-\rangle = -\hat{a}\cdot\hat{b}$; see homework.)
+
+### The Three Pairs of Measurements
+
+Our three axes and their pairwise angles:
+
+- $Z$ and $Q$: separated by $45°$
+- $X$ and $Q$: separated by $45°$
+- $X$ and $Z$: separated by $90°$
+
+Now compute the quantum predictions for each pair. For $\pm 1$ outcomes, the probability of getting opposite outcomes ("disagree") is
+
+$$P(\text{disagree}) = \frac{1 - E}{2}.$$
+
+**$Z$ and $Q$** ($\theta = 45°$):
+$$E(Z, Q) = -\cos 45° = -\frac{1}{\sqrt{2}} \approx -0.707,$$
+$$P(\text{disagree}) = \frac{1 + 1/\sqrt{2}}{2} \approx 85\%.$$
+
+**$X$ and $Q$** ($\theta = 45°$):
+$$E(X, Q) = -\frac{1}{\sqrt{2}} \approx -0.707,$$
+$$P(\text{disagree}) \approx 85\%.$$
+
+**$X$ and $Z$** ($\theta = 90°$):
+$$E(X, Z) = -\cos 90° = 0,$$
+$$P(\text{disagree}) = 50\%.$$
+
+Collect these:
+
+| Measurement pair | Angle | $E$ | $P(\text{disagree})$ |
+|---|---|---|---|
+| $Z$ and $Q$ | $45°$ | $-1/\sqrt{2}$ | $\approx 85\%$ |
+| $X$ and $Q$ | $45°$ | $-1/\sqrt{2}$ | $\approx 85\%$ |
+| $X$ and $Z$ | $90°$ | $0$ | $50\%$ |
+
+These are the predictions we will test against the hidden variable model.
+
+---
+
+## Part 3: The Venn Diagram Argument
+
+### The Lookup Table with Three Settings
+
+Now each particle pair must carry predetermined values for **three** axes instead of two:
+
+$$A_X(\lambda), \quad A_Z(\lambda), \quad A_Q(\lambda) \in \{+1, -1\}.$$
+
+For the singlet's perfect anti-correlation along a shared axis, we must have
+
+$$B_s(\lambda) = -A_s(\lambda), \qquad s \in \{X, Z, Q\}.$$
+
+There are $2^3 = 8$ possible lookup tables, determined by Alice's triple $(A_X, A_Z, A_Q)$. Some probability distribution over these 8 tables must reproduce the quantum predictions.
+
+### A crucial translation: "disagree" $\leftrightarrow$ equality of Alice's bits
+
+Suppose Alice measures setting $s$ and Bob measures setting $t$. In the lookup-table model:
+
+- Alice outputs $A_s$.
+- Bob outputs $B_t = -A_t$.
+
+They disagree (opposite outcomes) when
+
+$$A_s \neq B_t = A_s \neq -A_t,$$
+
+i.e.,
+
+$$A_s = A_t.$$
+
+**Wait — that's backwards from what you might expect.** Let's trace through a concrete example. Take lookup table 1, where $A_X = +1$ and $A_Q = +1$:
+
+- Alice measures X, gets $A_X = +1$.
+- Bob measures Q, gets $B_Q = -A_Q = -1$.
+- Alice got $+1$, Bob got $-1$ — they **disagree**.
+- And indeed $A_X = A_Q$ (both $+1$).
+
+The reason: Bob's output is the *negative* of his hidden value, so Alice and Bob disagree precisely when Alice's hidden values for the two settings are *equal*.
+
+So, for the singlet lookup-table model:
+
+$$P(\text{disagree when measuring } s \text{ and } t) = P(A_s = A_t).$$
+
+### What the Quantum Predictions Require
+
+The three quantum disagreement rates become constraints on Alice's predetermined triple:
+
+- From the $(X, Q)$ measurement pair:
+  $$P(A_X = A_Q) \approx 85\%.$$
+
+- From the $(Z, Q)$ measurement pair:
+  $$P(A_Z = A_Q) \approx 85\%.$$
+
+- From the $(X, Z)$ measurement pair:
+  $$P(A_X = A_Z) = 50\%.$$
+
+Now we ask:
+
+**Is there any probability distribution over $(A_X, A_Z, A_Q) \in \{+1, -1\}^3$ that satisfies all three constraints?**
+
+### The Set Theory Argument
+
+Define two sets over the space of hidden variables:
+
+- $\mathcal{A}$ = set of lookup tables where $A_X = A_Q$
+- $\mathcal{B}$ = set of lookup tables where $A_Z = A_Q$
+
+Quantum mechanics requires:
+
+$$|\mathcal{A}| = P(A_X = A_Q) \approx 0.85, \qquad |\mathcal{B}| = P(A_Z = A_Q) \approx 0.85.$$
+
+How large is the overlap $\mathcal{A} \cap \mathcal{B}$? By inclusion–exclusion:
+
+$$|\mathcal{A} \cap \mathcal{B}| \geq |\mathcal{A}| + |\mathcal{B}| - 1 = 0.85 + 0.85 - 1 = 0.70.$$
+
+So at least 70% of the lookup tables have **both** $A_X = A_Q$ **and** $A_Z = A_Q$.
+
+But for any specific lookup table in $\mathcal{A} \cap \mathcal{B}$:
+
+- $A_X = A_Q$
+- $A_Z = A_Q$
+
+Therefore $A_X = A_Z$. So:
+
+$$P(A_X = A_Z) \geq 70\% \qquad \Longrightarrow \qquad P(A_X = A_Z) \geq 0.70.$$
+
+But quantum mechanics predicts:
+
+$$P(A_X = A_Z) = 0.50.$$
+
+So we arrive at:
+
+$$\boxed{0.50 \geq 0.70 \quad \text{— Contradiction.}}$$
+
+### What Just Happened
+
+This was nothing more than basic logic about three $\pm 1$ values:
+
+- $X$ and $Q$ are opposite (between Alice and Bob) about 85% of the time.
+- $Z$ and $Q$ are opposite about 85% of the time.
+- In a singlet lookup-table model, "Alice and Bob are opposite on $(s, t)$" means Alice's hidden bits satisfy $A_s = A_t$.
+- If $A_X = A_Q$ and $A_Z = A_Q$, then $A_X = A_Z$.
+- Therefore $A_X$ and $A_Z$ must match at least 70% of the time.
+- But quantum mechanics says they match only 50% of the time.
+
+**No distribution over predetermined triples can satisfy all three constraints simultaneously.** The lookup table model fails.
+
+```{admonition} Why Two Settings Weren't Enough
+:class: note
+
+With only two axes (X and Z), we built a working hidden variable model — four lookup tables, equal weights, done. There was no third axis to create an inconsistency.
+
+The contradiction requires three axes because the hidden variable must simultaneously satisfy constraints between multiple *pairs* of settings, and the quantum correlations between those pairs are mutually incompatible.
 ```
 
-### Creating a Bell State
+---
 
-CNOT is the key ingredient for creating entanglement:
+## Part 4: The Core of Bell's Theorem
 
-$$
-|00\rangle \xrightarrow{H \otimes I} \frac{|0\rangle + |1\rangle}{\sqrt{2}} \otimes |0\rangle = \frac{|00\rangle + |10\rangle}{\sqrt{2}}
-$$
+### The Problem Is Consistency Across Multiple Angles
 
-$$
-\xrightarrow{\text{CNOT}} \frac{|00\rangle + |11\rangle}{\sqrt{2}} = |\Phi^+\rangle
-$$
+The root cause is the shape of the quantum correlation function:
 
-The Hadamard creates a superposition; the CNOT "copies" the control state to the target, creating entanglement.
+$$E = -\cos\theta.$$
 
-```{figure} ./03_04_lecture_files/bell_state_circuit.svg
-:width: 300px
-:name: bell-circuit
+This function says:
 
-Circuit to create $|\Phi^+\rangle$: H on qubit 0, then CNOT.
-```
+- Axes $45°$ apart are still highly anti-correlated: $E \approx -0.707$ (disagree $\approx 85\%$).
+- Axes $90°$ apart are completely uncorrelated: $E = 0$ (disagree $50\%$).
 
-### CNOT is Universal
+A local hidden-variable model tries to explain everything using pre-existing $\pm 1$ answers for $X$, $Z$, and $Q$. But once you demand all three pairwise relations at once, simple logic forces a constraint.
 
-A remarkable theorem:
+One compact way to state the Venn argument is the inequality:
 
-```{admonition} Universality
+$$P(A_X = A_Z) \geq P(A_X = A_Q) + P(A_Z = A_Q) - 1.$$
+
+Quantum requires the right-hand side to be $0.85 + 0.85 - 1 = 0.70$, but also requires $P(A_X = A_Z) = 0.50$. Those cannot both be true.
+
+```{admonition} Bell's Theorem
 :class: important
 
-**Any** quantum computation can be built from:
-- Single-qubit gates
-- CNOT gates
+No theory that satisfies **locality** and **realism** (predetermined measurement outcomes) can reproduce all the predictions of quantum mechanics.
 
-This is called a **universal gate set**. CNOT + arbitrary single-qubit rotations can approximate any unitary transformation to arbitrary precision.
+This is not a philosophical disagreement — it is **quantitative**. In a local hidden-variable model the $45°$–$45°$ predictions force $P(A_X = A_Z) \geq 70\%$, while quantum mechanics predicts $50\%$.
 ```
 
 ---
 
-## The CZ Gate
+## Part 5: What Do We Give Up?
 
-The **Controlled-Z** (CZ) gate is another fundamental two-qubit gate.
+Last lecture we identified three assumptions that cannot all be true:
 
-### Definition
+1. **Locality** — no instant action at a distance
+2. **Realism** — properties exist before measurement (predetermined outcomes)
+3. **Completeness of QM** — the quantum state is the full description
 
-CZ applies a Z gate to the target if the control is $|1\rangle$:
+EPR showed the logical tension. Bell made it **experimental**: locality + realism implies quantitative constraints that differ from QM.
 
-$$
-\text{CZ}|00\rangle = |00\rangle
-$$
-$$
-\text{CZ}|01\rangle = |01\rangle
-$$
-$$
-\text{CZ}|10\rangle = |10\rangle
-$$
-$$
-\text{CZ}|11\rangle = -|11\rangle
-$$
+So which assumption fails?
 
-Only the $|11\rangle$ state picks up a minus sign.
+**If we give up completeness** (EPR's choice): hidden variables exist, and Bell-type inequalities must hold. The experiment decides.
 
-### Matrix Representation
+**If we give up realism** (Copenhagen-ish): there are no predetermined values. The lookup table doesn't exist — not because we can't find the right distribution, but because the table *itself* is not meaningful. Properties come into existence when measured, and the question "what would Bob have gotten if Alice had measured differently?" has no physical answer.
 
-$$
-\text{CZ} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & -1 \end{pmatrix}
-$$
+**If we give up locality** (e.g., Bohmian mechanics): predetermined values exist, but Alice's measurement influences Bob's system nonlocally. The no-signaling theorem ensures this cannot be used to communicate.
 
-### CZ is Symmetric!
-
-Unlike CNOT, CZ is **symmetric** in the two qubits:
-
-$$
-\text{CZ}_{12} = \text{CZ}_{21}
-$$
-
-It doesn't matter which qubit you call "control" and which "target" — the gate is the same either way.
-
-This makes CZ natural for certain hardware implementations where the physical interaction is symmetric.
-
-### Circuit Symbol
-
-```{figure} ./03_04_lecture_files/cz_symbol.svg
-:width: 200px
-:name: cz-symbol
-
-CZ gate: solid dots on both qubits (reflecting symmetry).
-```
-
-### Relation to CNOT
-
-CNOT and CZ are related by Hadamard gates:
-
-$$
-\text{CNOT}_{12} = (I \otimes H) \cdot \text{CZ}_{12} \cdot (I \otimes H)
-$$
-
-So if your hardware natively implements CZ, you can build CNOT by sandwiching it with Hadamards on the target qubit.
+Bell turned this from a philosophical menu into an experimental question: **does the inequality hold, or is it violated?**
 
 ---
 
-## The SWAP Gate
+## Part 6: The Experiments
 
-The **SWAP** gate exchanges the states of two qubits.
+The experiments that tested Bell's theorem used **polarization-entangled photons** rather than electron spins — but the physics is identical. Any two-level quantum system (photon polarization, electron spin, superconducting qubit) obeys the same mathematics, and Bell's theorem applies to all of them.
 
-### Definition
+### Freedman and Clauser (1972)
 
-$$
-\text{SWAP}|ab\rangle = |ba\rangle
-$$
+Stuart Freedman and John Clauser at UC Berkeley performed the first experimental test of a Bell inequality. They used pairs of entangled photons from a calcium atomic cascade — when a calcium atom de-excites through two successive transitions, it emits two photons whose polarizations are entangled.
 
-Explicitly:
-$$
-\text{SWAP}|00\rangle = |00\rangle
-$$
-$$
-\text{SWAP}|01\rangle = |10\rangle
-$$
-$$
-\text{SWAP}|10\rangle = |01\rangle
-$$
-$$
-\text{SWAP}|11\rangle = |11\rangle
-$$
+Alice and Bob each measured the polarization of their photon along chosen axes. The results clearly violated the Bell inequality and agreed with the quantum prediction.
 
-### Matrix Representation
+This was the first direct evidence that no local hidden variable model could explain the data. But the experiment had significant limitations — the measurement settings were fixed in advance, not changed during the flight of the photons.
 
-$$
-\text{SWAP} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \end{pmatrix}
-$$
+### Aspect (1982)
 
-### SWAP from CNOTs
+Alain Aspect and collaborators in Paris performed a dramatically improved version. The crucial advance: they switched the measurement settings **while the photons were in flight**, using fast acousto-optic modulators that redirected each photon to one of two detectors with different polarization settings.
 
-SWAP can be built from three CNOTs:
+This addressed the **locality loophole** — the worry that the particles could somehow coordinate their answers based on advance knowledge of the settings. By choosing the settings after the photons were emitted and ensuring the choice events were space-like separated (no light signal could travel from one to the other in time), Aspect showed that the particles couldn't have known which measurement was coming.
 
-$$
-\text{SWAP} = \text{CNOT}_{12} \cdot \text{CNOT}_{21} \cdot \text{CNOT}_{12}
-$$
+The results again violated the Bell inequality, decisively.
 
-```{figure} ./03_04_lecture_files/swap_from_cnot.svg
-:width: 350px
-:name: swap-cnot
+### The Loophole-Free Experiments (2015)
 
-SWAP = three CNOTs with alternating control/target.
-```
+Despite Aspect's work, two stubborn loopholes remained:
 
-### The $\sqrt{\text{SWAP}}$ Gate
+**The detection loophole:** Not all photons are detected (typical efficiency ~20%). If the missed photons would have obeyed the inequality, the detected subset could violate it by selection bias. Closing this requires detecting a sufficiently high fraction of all pairs.
 
-The square root of SWAP is also useful:
+**The locality loophole:** Aspect's switching was fast but not perfect — there were small time windows where communication was theoretically possible.
 
-$$
-\sqrt{\text{SWAP}} \cdot \sqrt{\text{SWAP}} = \text{SWAP}
-$$
+In 2015, three independent groups closed both loopholes simultaneously:
 
-This gate creates partial entanglement and is native to some hardware platforms.
+- **Delft** (Hensen et al.): used entangled electron spins in nitrogen-vacancy centers in diamond, 1.3 km apart. Detection efficiency was high enough to close the detection loophole, and the distance ensured space-like separation.
+
+- **Vienna** (Giustina et al.): used entangled photons with superconducting detectors achieving >75% efficiency.
+
+- **NIST Boulder** (Shalm et al.): similar approach to Vienna with independent methodology.
+
+All three found clear Bell inequality violations with no loopholes. The result was definitive.
+
+### The Nobel Prize (2022)
+
+The 2022 Nobel Prize in Physics was awarded to **John Clauser**, **Alain Aspect**, and **Anton Zeilinger** "for experiments with entangled photons, establishing the violation of Bell inequalities and pioneering quantum information science."
+
+The citation recognized not just the foundational tests, but the broader point: the experimental confirmation of Bell inequality violations established entanglement as a **physical resource**, not just a philosophical curiosity. This launched the field of quantum information — quantum computing, quantum cryptography, and quantum teleportation all depend on entanglement being real and exploitable.
 
 ---
 
-## The iSWAP Gate
+## Part 7: What Bell Does and Does Not Say
 
-The **iSWAP** gate swaps the $|01\rangle$ and $|10\rangle$ components while adding a phase of $i$:
+Let's be precise about the conclusion.
 
-$$
-\text{iSWAP}|00\rangle = |00\rangle
-$$
-$$
-\text{iSWAP}|01\rangle = i|10\rangle
-$$
-$$
-\text{iSWAP}|10\rangle = i|01\rangle
-$$
-$$
-\text{iSWAP}|11\rangle = |11\rangle
-$$
+**Bell's theorem says:** No theory that is both **local** and **realistic** (in the sense of predetermined measurement outcomes) can reproduce all the predictions of quantum mechanics. This is a mathematical theorem. The experiments confirm that nature agrees with quantum mechanics, not with local realism.
 
-### Matrix Representation
+**Bell's theorem does NOT say:**
 
-$$
-\text{iSWAP} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 0 & i & 0 \\ 0 & i & 0 & 0 \\ 0 & 0 & 0 & 1 \end{pmatrix}
-$$
+- *Faster-than-light signaling is possible.* It isn't. Bob's local statistics are always those of a maximally mixed state, $\rho_B = I/2$, regardless of what Alice does. The correlations appear only when results are compared using ordinary classical communication.
 
-### Why iSWAP Matters
+- *Which assumption to give up.* Bell rules out locality + realism together; interpretations differ on which to abandon.
 
-The iSWAP gate arises naturally from the **XY coupling** Hamiltonian:
+- *That quantum mechanics is the final theory.* Any deeper theory must still reproduce Bell violations (i.e., it cannot restore local realism). But QM could still be incomplete in ways that don't restore local realism.
 
-$$
-H_{XY} = \frac{J}{2}(\sigma_x \otimes \sigma_x + \sigma_y \otimes \sigma_y)
-$$
-
-When you evolve under this Hamiltonian for time $t = \pi/(2J)$:
-
-$$
-e^{-iH_{XY}t} = \text{iSWAP}
-$$
-
-This is exactly what happens in many superconducting qubit architectures when two transmons are tuned into resonance!
-
-### iSWAP Creates Entanglement
-
-Let's verify that iSWAP is entangling. Apply it to $|01\rangle$:
-
-$$
-\text{iSWAP}|01\rangle = i|10\rangle
-$$
-
-That's still a product state. But apply it to $|+0\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |10\rangle)$:
-
-$$
-\text{iSWAP}|+0\rangle = \frac{1}{\sqrt{2}}(|00\rangle + i|01\rangle)
-$$
-
-This is entangled! (You can verify with the determinant test.)
-
-### The $\sqrt{\text{iSWAP}}$ Gate
-
-Google's Sycamore processor uses a gate closely related to $\sqrt{\text{iSWAP}}$:
-
-$$
-\sqrt{\text{iSWAP}} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & \frac{1}{\sqrt{2}} & \frac{i}{\sqrt{2}} & 0 \\ 0 & \frac{i}{\sqrt{2}} & \frac{1}{\sqrt{2}} & 0 \\ 0 & 0 & 0 & 1 \end{pmatrix}
-$$
-
-Two applications give iSWAP: $\sqrt{\text{iSWAP}} \cdot \sqrt{\text{iSWAP}} = \text{iSWAP}$.
-
-This "partial swap" is often the natural gate duration for a given coupling strength, making it efficient to implement.
-
----
-
-## Controlled-U Gates
-
-More generally, we can control any single-qubit gate $U$:
-
-$$
-\text{C-}U = |0\rangle\langle 0| \otimes I + |1\rangle\langle 1| \otimes U
-$$
-
-This means:
-- If control = $|0\rangle$: apply $I$ to target (do nothing)
-- If control = $|1\rangle$: apply $U$ to target
-
-### Examples
-
-- **CNOT** = C-X (controlled-X)
-- **CZ** = C-Z (controlled-Z)
-- **CY** = C-Y (controlled-Y)
-- **C-Phase($\phi$)**: apply phase $e^{i\phi}$ to target if control is $|1\rangle$
-
-### Controlled-Phase Gate
-
-The controlled-phase gate C-P($\phi$) is particularly important:
-
-$$
-\text{C-P}(\phi) = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & e^{i\phi} \end{pmatrix}
-$$
-
-When $\phi = \pi$, this is CZ.
-
----
-
-## Two-Qubit Gate Decomposition
-
-Any two-qubit gate can be decomposed into at most **three CNOT gates** plus single-qubit gates.
-
-This is the **KAK decomposition** (Cartan decomposition):
-
-$$
-U = (A_1 \otimes B_1) \cdot e^{i(c_1 X \otimes X + c_2 Y \otimes Y + c_3 Z \otimes Z)} \cdot (A_2 \otimes B_2)
-$$
-
-where $A_1, A_2, B_1, B_2$ are single-qubit gates.
-
-The middle part (the "interaction" part) requires at most 3 CNOTs to implement.
-
-```{admonition} Gate Compilation
-:class: note
-
-When you write a quantum circuit with arbitrary two-qubit gates, the compiler decomposes them into the native gates of your hardware. Understanding native gates helps you write more efficient circuits.
-```
-
----
-
-## Physical Implementation: How Do We Make Two-Qubit Gates?
-
-Now for the exciting part: how do real quantum computers implement these gates?
-
-The key insight: **two-qubit gates require physical interaction between qubits**.
-
-Different platforms use different interactions:
-
-| Platform | Qubit Type | Native 2Q Gate | Interaction |
-|----------|------------|----------------|-------------|
-| Superconducting | Transmon | CZ or iSWAP | Capacitive coupling |
-| Trapped ions | Ion spin | Mølmer-Sørensen | Collective motion |
-| Neutral atoms | Atomic states | CZ | Rydberg blockade |
-| Photons | Polarization | CZ | Nonlinear optics |
-| Spin qubits | Electron spin | $\sqrt{\text{SWAP}}$ | Exchange interaction |
-
-### Native Gate Sets by Platform
-
-When you write a quantum circuit, it gets **compiled** to the native gates of your hardware. Knowing the native gates helps you write efficient circuits.
-
-| Platform | Company | Native 2Q Gate | Building CNOT |
-|----------|---------|----------------|---------------|
-| Superconducting | IBM | ECR (echoed cross-resonance) | 1 ECR + single-qubit |
-| Superconducting | Google | $\sqrt{\text{iSWAP}}$ + CZ | ~2 native gates |
-| Superconducting | Rigetti | CZ | CNOT = H-CZ-H |
-| Trapped ions | IonQ | XX (Mølmer-Sørensen) | 1 XX + single-qubit |
-| Trapped ions | Quantinuum | ZZ | 1 ZZ + single-qubit |
-| Neutral atoms | QuEra, Pasqal | CZ (Rydberg) | CNOT = H-CZ-H |
-
-```{admonition} Why Native Gates Matter
-:class: note
-
-A circuit using "textbook" gates (CNOT, Toffoli, etc.) must be recompiled to native gates. This can increase the gate count:
-
-- CNOT on IBM hardware: 1 ECR + 2 single-qubit gates
-- Toffoli (CCX) on any hardware: 6+ two-qubit gates
-- SWAP: 3 CNOTs = potentially 6+ native gates
-
-Writing circuits with native gates in mind can significantly improve performance.
-```
-
-Let's explore the three major platforms in detail.
-
----
-
-## Superconducting Qubits
-
-### The Qubit
-
-Superconducting qubits use circuits made of superconducting materials (often aluminum) cooled to ~15 millikelvin.
-
-The **transmon** qubit is the most common type:
-- A Josephson junction acts as a nonlinear inductor
-- Combined with a capacitor, it forms an anharmonic oscillator
-- The lowest two energy levels form the qubit: $|0\rangle$ and $|1\rangle$
-
-```{figure} ./03_04_lecture_files/transmon_schematic.svg
-:width: 300px
-:name: transmon
-
-Transmon qubit: Josephson junction (X) with capacitor (||).
-```
-
-### Single-Qubit Gates
-
-Single-qubit gates are implemented with microwave pulses:
-- Frequency matches the qubit transition (~5 GHz)
-- Pulse duration and amplitude control the rotation angle
-- Pulse phase controls the rotation axis (X vs Y)
-
-Gates take ~20-50 nanoseconds.
-
-### Two-Qubit Gates: Capacitive Coupling
-
-Two transmons are coupled by placing them near each other or connecting them with a capacitor or resonator.
-
-The coupling Hamiltonian includes terms like:
-
-$$
-H_{\text{int}} \propto \sigma_x^{(1)} \sigma_x^{(2)} + \sigma_y^{(1)} \sigma_y^{(2)}
-$$
-
-This is an **XY coupling** (also called transverse coupling).
-
-### Implementing CZ
-
-One common approach for CZ:
-
-1. **Tune one qubit's frequency** temporarily
-2. When the frequencies become resonant, the qubits interact
-3. The $|11\rangle$ state acquires a phase
-4. Tune the qubit back
-
-This takes ~30-100 nanoseconds.
-
-### Implementing iSWAP
-
-The XY coupling naturally implements iSWAP when qubits are on resonance for the right duration:
-
-$$
-e^{-i H_{\text{XY}} t} \propto \text{iSWAP} \quad \text{at } t = \pi/4J
-$$
-
-Some systems (like Google's Sycamore) use iSWAP-like gates as the native operation.
-
-### The Cross-Resonance Gate (IBM)
-
-IBM uses a different approach called **cross-resonance**:
-
-1. Drive qubit A at the frequency of qubit B
-2. The drive "leaks" through the coupling to affect qubit B
-3. The effect on B depends on the state of A — this creates entanglement
-
-The cross-resonance gate doesn't require tuning qubit frequencies, which simplifies control. It naturally produces a gate related to CNOT.
-
-```{admonition} Key Takeaway: Superconducting Qubits
-:class: tip
-
-**Strengths:** Fast gates (~50 ns), scalable fabrication, high qubit counts
-
-**Weaknesses:** Short coherence (~100 μs), requires 15 mK cooling, frequency crowding
-
-**Native gates:** CZ, iSWAP, or cross-resonance depending on architecture
-
-**Best for:** Circuits with many gates but moderate depth, NISQ algorithms
-```
-
-### Pros and Cons
-
-**Advantages:**
-- Fast gates (10-100 ns)
-- High connectivity possible
-- Lithographic fabrication (scalable manufacturing)
-
-**Disadvantages:**
-- Requires extreme cooling (~15 mK)
-- Short coherence times (~100 μs)
-- Frequency crowding with many qubits
-
----
-
-## Trapped Ion Qubits
-
-### The Qubit
-
-Individual ions (e.g., $^{171}$Yb$^+$, $^{43}$Ca$^+$) are trapped by electromagnetic fields in a vacuum.
-
-The qubit is encoded in:
-- **Hyperfine states** (ground state sublevels), or
-- **Optical states** (ground + metastable excited state)
-
-Ions are held ~5-10 μm apart, arranged in a line.
-
-### Single-Qubit Gates
-
-Implemented with laser pulses or microwaves:
-- Resonant with the qubit transition
-- High fidelity (>99.9%)
-- Gate time: ~1-10 μs
-
-### Two-Qubit Gates: Shared Motion
-
-Ions in a trap repel each other electrostatically. This couples their motion — they oscillate together like masses connected by springs.
-
-The collective motion has quantum mechanical modes (phonons).
-
-### The Mølmer-Sørensen Gate
-
-The most common two-qubit gate:
-
-1. Apply laser beams that couple the qubit state to the motional state
-2. The coupling is designed so that the motion returns to its original state
-3. But the qubit states accumulate a phase that depends on both qubits
-
-The result is an entangling gate equivalent to:
-
-$$
-\text{MS} = e^{-i \frac{\pi}{4} \sigma_x^{(1)} \sigma_x^{(2)}}
-$$
-
-This can be converted to CNOT with single-qubit rotations.
-
-Gate time: ~50-200 μs.
-
-```{admonition} Key Takeaway: Trapped Ion Qubits
-:class: tip
-
-**Strengths:** Highest fidelity (~99.9%), longest coherence (seconds), all-to-all connectivity
-
-**Weaknesses:** Slow gates (~100 μs), scaling challenges, complex vacuum/laser systems
-
-**Native gates:** XX (Mølmer-Sørensen) or ZZ gates
-
-**Best for:** High-precision algorithms, error correction research, small-scale quantum advantage
-```
-
-### Pros and Cons
-
-**Advantages:**
-- Long coherence times (seconds to minutes)
-- High gate fidelity (>99.9%)
-- All-to-all connectivity (any ion can interact with any other)
-
-**Disadvantages:**
-- Slow gates (~100 μs)
-- Scaling is challenging (long chains are hard to control)
-- Requires ultra-high vacuum
-
----
-
-## Neutral Atom Qubits
-
-### The Qubit
-
-Individual neutral atoms (e.g., rubidium, cesium) are trapped by focused laser beams called **optical tweezers**.
-
-The qubit is encoded in hyperfine ground states (similar to trapped ions).
-
-Atoms can be arranged in 1D, 2D, or 3D arrays with ~5 μm spacing.
-
-### Single-Qubit Gates
-
-Implemented with:
-- Global microwave pulses (same rotation on all qubits)
-- Individual laser beams (addressing specific atoms)
-
-Gate time: ~1 μs.
-
-### Two-Qubit Gates: Rydberg Blockade
-
-Here's the clever trick:
-
-1. **Rydberg states** are highly excited atomic states (principal quantum number n ~ 50-100)
-2. Rydberg atoms have huge electric dipole moments
-3. Two nearby Rydberg atoms repel each other strongly
-
-```{figure} ./03_04_lecture_files/rydberg_blockade.svg
-:width: 400px
-:name: rydberg-blockade
-
-Rydberg blockade: If one atom is excited to Rydberg state, nearby atoms cannot be excited.
-```
-
-### The Rydberg CZ Gate
-
-1. Try to excite both atoms to a Rydberg state simultaneously
-2. If both atoms are in $|1\rangle$: blockade prevents double excitation → pick up a phase
-3. If one or both atoms are in $|0\rangle$: no blockade → no extra phase
-
-The result is a CZ gate:
-
-$$
-|11\rangle \to -|11\rangle
-$$
-
-while other basis states are unchanged.
-
-Gate time: ~100 ns - 1 μs.
-
-```{admonition} Key Takeaway: Neutral Atom Qubits
-:class: tip
-
-**Strengths:** Identical qubits, flexible 2D/3D geometry, long coherence, fast Rydberg gates
-
-**Weaknesses:** Atom loss, finite Rydberg lifetime, laser complexity
-
-**Native gates:** CZ via Rydberg blockade
-
-**Best for:** Quantum simulation, optimization problems, scaling to many qubits
-```
-
-### Pros and Cons
-
-**Advantages:**
-- Identical qubits (atoms are all the same)
-- Flexible array geometries (2D, 3D)
-- Long coherence times (~1 s)
-- Fast Rydberg gates
-
-**Disadvantages:**
-- Atom loss (atoms occasionally escape)
-- Rydberg state decay
-- Laser stabilization requirements
-
----
-
-## Comparing Platforms
-
-| Property | Superconducting | Trapped Ions | Neutral Atoms |
-|----------|-----------------|--------------|---------------|
-| Qubit count (2024) | ~1000 | ~50 | ~1000 |
-| T1 (relaxation) | ~100 μs | ~seconds | ~seconds |
-| T2 (coherence) | ~100 μs | ~seconds | ~1 s |
-| 1Q gate time | ~20 ns | ~1 μs | ~1 μs |
-| 2Q gate time | ~50 ns | ~100 μs | ~500 ns |
-| 2Q gate fidelity | ~99.5% | ~99.9% | ~99.5% |
-| Connectivity | Nearest-neighbor | All-to-all | Programmable |
-
-Each platform has trade-offs. The "best" choice depends on the application.
-
----
-
-## Entanglement in Practice: Circuit Depth and Fidelity
-
-In real hardware, gates aren't perfect and qubits decohere. Understanding these limitations is essential.
-
-### Gate Count vs Circuit Depth
-
-Two important metrics for quantum circuits:
-
-**Gate count:** Total number of gates in the circuit.
-
-**Circuit depth:** Number of time steps (layers), where gates in each layer execute in parallel.
-
-```{admonition} Example: Depth vs Count
-:class: note
-
-A circuit applying H to each of 100 qubits:
-- **Gate count:** 100
-- **Circuit depth:** 1 (all gates in parallel)
-
-A circuit applying H, then T, then S to one qubit:
-- **Gate count:** 3
-- **Circuit depth:** 3 (sequential)
-```
-
-For decoherence, **depth matters more than count**. Parallel gates don't add to the total time, so they don't give decoherence more opportunity to corrupt the state.
-
-### Connectivity and SWAP Overhead
-
-Real quantum computers have **limited connectivity** — not every qubit can directly interact with every other qubit.
-
-| Platform | Typical Connectivity |
-|----------|---------------------|
-| IBM superconducting | Heavy-hex lattice (degree 2-3) |
-| Google superconducting | 2D grid (degree 4) |
-| Rigetti superconducting | Octagonal lattice |
-| Trapped ions | All-to-all |
-| Neutral atoms | Programmable (can rearrange) |
-
-**The problem:** If your circuit needs a CNOT between qubits 1 and 5, but they're not connected, you must insert SWAP gates to move the qubit states until they're adjacent.
-
-**The cost:** Each SWAP = 3 CNOTs. A circuit with 10 "logical" CNOTs might need 30+ "physical" CNOTs after routing!
-
-```{figure} ./03_04_lecture_files/swap_insertion.svg
-:width: 400px
-:name: swap-insertion
-
-SWAP insertion: To apply CNOT between non-adjacent qubits, we must route through intermediate qubits.
-```
-
-This is why all-to-all connectivity (trapped ions) or programmable connectivity (neutral atoms) can be advantageous despite slower gates.
-
-### Gate Fidelity
-
-The **fidelity** of a gate measures how close the actual operation is to the ideal:
-
-$$
-F = |\langle \psi_{\text{ideal}} | \psi_{\text{actual}} \rangle|^2
-$$
-
-- $F = 1$: perfect gate
-- $F = 0.99$: 1% error per gate
-- $F = 0.999$: 0.1% error per gate
-
-### Error Accumulation: A Worked Example
-
-In a circuit with $n$ two-qubit gates, errors compound:
-
-$$
-F_{\text{total}} \approx F^n
-$$
-
-**Example:** You want to run a 50-CNOT circuit.
-
-With $F = 0.99$ (99% fidelity):
-$$
-F_{\text{total}} = 0.99^{50} \approx 0.60
-$$
-About 40% of runs have at least one error!
-
-With $F = 0.995$ (99.5% fidelity):
-$$
-F_{\text{total}} = 0.995^{50} \approx 0.78
-$$
-Better, but still significant errors.
-
-With $F = 0.999$ (99.9% fidelity):
-$$
-F_{\text{total}} = 0.999^{50} \approx 0.95
-$$
-Now we're talking! This is why the push from 99% to 99.9% is so important.
-
-```{admonition} The Error Correction Threshold
-:class: important
-
-For fault-tolerant quantum computing with error correction, we need gate fidelities above a **threshold** — typically around 99% for surface codes.
-
-Current hardware is at or just above this threshold. The next challenge is maintaining high fidelity as we scale to more qubits.
-```
-
-### State of the Art (2024)
-
-- Superconducting: ~99.5% two-qubit fidelity
-- Trapped ions: ~99.9% two-qubit fidelity
-- Neutral atoms: ~99.5% two-qubit fidelity
-
-The threshold for fault-tolerant quantum computing is roughly ~99%, so we're just reaching the necessary regime.
-
----
-
-## Lab: Two-Qubit Gates in Qiskit
-
-Let's explore two-qubit gates in simulation.
-
-### Setup
-
-```{code-block} python
-import numpy as np
-from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector, Operator
-from qiskit_aer import AerSimulator
-import matplotlib.pyplot as plt
-
-simulator = AerSimulator()
-```
-
-### CNOT Gate Action
-
-```{code-block} python
-def show_cnot_action():
-    """Demonstrate CNOT on all basis states"""
-    print("CNOT Gate Action:")
-    print("="*40)
-    
-    basis_states = ['00', '01', '10', '11']
-    
-    for bs in basis_states:
-        # Create basis state
-        qc = QuantumCircuit(2)
-        if bs[0] == '1':
-            qc.x(1)  # First qubit (control)
-        if bs[1] == '1':
-            qc.x(0)  # Second qubit (target)
-        
-        # Apply CNOT
-        qc.cx(1, 0)  # Control=1, Target=0
-        
-        # Get output state
-        sv = Statevector(qc)
-        
-        # Find which basis state it is
-        for i, amp in enumerate(sv):
-            if abs(amp) > 0.9:
-                out = format(i, '02b')[::-1]  # Reverse for our convention
-                print(f"  |{bs}⟩ → |{out}⟩")
-
-show_cnot_action()
-```
-
-### Creating All Four Bell States
-
-```{code-block} python
-def create_bell_states():
-    """Create all four Bell states"""
-    bell_states = {}
-    
-    # |Φ+⟩ = (|00⟩ + |11⟩)/√2
-    qc = QuantumCircuit(2)
-    qc.h(0)
-    qc.cx(0, 1)
-    bell_states['Φ+'] = Statevector(qc)
-    
-    # |Φ-⟩ = (|00⟩ - |11⟩)/√2
-    qc = QuantumCircuit(2)
-    qc.h(0)
-    qc.cx(0, 1)
-    qc.z(0)
-    bell_states['Φ-'] = Statevector(qc)
-    
-    # |Ψ+⟩ = (|01⟩ + |10⟩)/√2
-    qc = QuantumCircuit(2)
-    qc.h(0)
-    qc.cx(0, 1)
-    qc.x(1)
-    bell_states['Ψ+'] = Statevector(qc)
-    
-    # |Ψ-⟩ = (|01⟩ - |10⟩)/√2
-    qc = QuantumCircuit(2)
-    qc.h(0)
-    qc.cx(0, 1)
-    qc.x(1)
-    qc.z(0)
-    bell_states['Ψ-'] = Statevector(qc)
-    
-    print("Bell States:")
-    print("="*40)
-    for name, sv in bell_states.items():
-        print(f"\n|{name}⟩:")
-        for i, amp in enumerate(sv):
-            if abs(amp) > 1e-10:
-                label = format(i, '02b')
-                print(f"  |{label}⟩: {amp:.4f}")
-    
-    return bell_states
-
-bell_states = create_bell_states()
-```
-
-### CNOT vs CZ Comparison
-
-```{code-block} python
-def compare_cnot_cz():
-    """Show the relationship between CNOT and CZ"""
-    print("\nCNOT vs CZ Comparison:")
-    print("="*40)
-    
-    # CNOT matrix
-    qc_cnot = QuantumCircuit(2)
-    qc_cnot.cx(0, 1)
-    cnot = Operator(qc_cnot).data
-    
-    # CZ matrix
-    qc_cz = QuantumCircuit(2)
-    qc_cz.cz(0, 1)
-    cz = Operator(qc_cz).data
-    
-    print("\nCNOT matrix:")
-    print(np.round(cnot.real, 2))
-    
-    print("\nCZ matrix:")
-    print(np.round(cz.real, 2))
-    
-    # Verify: CNOT = (I⊗H) CZ (I⊗H)
-    qc_cnot_from_cz = QuantumCircuit(2)
-    qc_cnot_from_cz.h(1)
-    qc_cnot_from_cz.cz(0, 1)
-    qc_cnot_from_cz.h(1)
-    cnot_from_cz = Operator(qc_cnot_from_cz).data
-    
-    print("\nCNOT from CZ (H-CZ-H on target):")
-    print(np.round(cnot_from_cz.real, 2))
-    
-    print("\nAre they equal?", np.allclose(cnot, cnot_from_cz))
-
-compare_cnot_cz()
-```
-
-### SWAP from Three CNOTs
-
-```{code-block} python
-def verify_swap():
-    """Verify SWAP = CNOT · CNOT · CNOT"""
-    print("\nSWAP Decomposition:")
-    print("="*40)
-    
-    # Direct SWAP
-    qc_swap = QuantumCircuit(2)
-    qc_swap.swap(0, 1)
-    swap_direct = Operator(qc_swap).data
-    
-    # SWAP from CNOTs
-    qc_cnot_swap = QuantumCircuit(2)
-    qc_cnot_swap.cx(0, 1)
-    qc_cnot_swap.cx(1, 0)
-    qc_cnot_swap.cx(0, 1)
-    swap_from_cnot = Operator(qc_cnot_swap).data
-    
-    print("SWAP matrix (direct):")
-    print(np.round(swap_direct.real, 2))
-    
-    print("\nSWAP from 3 CNOTs:")
-    print(np.round(swap_from_cnot.real, 2))
-    
-    print("\nAre they equal?", np.allclose(swap_direct, swap_from_cnot))
-
-verify_swap()
-```
-
-### Entanglement Verification
-
-```{code-block} python
-def verify_entanglement():
-    """Verify that CNOT creates entanglement but single-qubit gates don't"""
-    print("\nEntanglement Creation:")
-    print("="*40)
-    
-    def is_entangled(sv):
-        """Check if a 2-qubit state is entangled using the determinant test"""
-        amps = np.array(sv)
-        C = np.array([[amps[0], amps[1]], [amps[2], amps[3]]])
-        det = np.abs(np.linalg.det(C))
-        return det > 1e-10
-    
-    # Start with |00⟩
-    qc_base = QuantumCircuit(2)
-    sv_base = Statevector(qc_base)
-    print(f"|00⟩ entangled? {is_entangled(sv_base)}")
-    
-    # Apply only single-qubit gates
-    qc_single = QuantumCircuit(2)
-    qc_single.h(0)
-    qc_single.t(0)
-    qc_single.rx(0.5, 1)
-    qc_single.ry(0.3, 0)
-    sv_single = Statevector(qc_single)
-    print(f"After single-qubit gates? {is_entangled(sv_single)}")
-    
-    # Apply CNOT
-    qc_cnot = QuantumCircuit(2)
-    qc_cnot.h(0)
-    qc_cnot.cx(0, 1)
-    sv_cnot = Statevector(qc_cnot)
-    print(f"After H + CNOT? {is_entangled(sv_cnot)}")
-
-verify_entanglement()
-```
-
-### Gate Count for Different Circuits
-
-```{code-block} python
-def count_cnots():
-    """Show CNOT counts for various operations"""
-    print("\nCNOT Counts for Common Operations:")
-    print("="*40)
-    
-    operations = [
-        ("CNOT", 1),
-        ("CZ (via CNOT)", 1),  # CZ = H-CNOT-H
-        ("SWAP", 3),
-        ("Toffoli (CCX)", 6),
-        ("Fredkin (CSWAP)", 8),
-    ]
-    
-    for name, count in operations:
-        print(f"  {name}: {count} CNOT(s)")
-    
-    print("\nNote: Minimizing CNOT count is crucial because")
-    print("two-qubit gates have lower fidelity than single-qubit gates.")
-
-count_cnots()
-```
+**The practical legacy:** Before Bell, entanglement was a philosophical puzzle. After Bell (and especially after the experiments), entanglement became a **resource** — something you can produce, distribute, and use. Quantum key distribution, quantum teleportation, and quantum computing all rely on the fact that entangled correlations are stronger than anything achievable with shared classical information. Bell's theorem is the reason we know this.
 
 ---
 
 ## Summary
 
-Today we learned how to create and control entanglement:
+1. **Two measurement settings** (X and Z): a simple lookup table with four entries and equal weights reproduces all quantum predictions perfectly. Einstein's hidden variable program works.
 
-1. **Two-qubit gates** are necessary for creating entanglement
-   - Single-qubit gates preserve product states
-   - An entangling gate can transform product states into entangled states
+2. **Three measurement settings** (X, Z, Q at 45°): the quantum predictions become mutually incompatible with any local hidden-variable lookup-table model.
 
-2. **CNOT** (controlled-NOT) is the canonical entangling gate
-   - Flips target if control is $|1\rangle$
-   - CNOT + single-qubit gates = universal gate set
+3. **The Venn diagram argument** is pure set theory: if $A_X = A_Q$ and $A_Z = A_Q$ are each true most of the time, then $A_X = A_Z$ must be true most of the time. Quantum correlations violate this.
 
-3. **CZ** (controlled-Z) is symmetric and often hardware-native
-   - Adds a minus sign to $|11\rangle$
-   - Related to CNOT by Hadamards
+4. **Bell's theorem (1964):** no local hidden-variable model can reproduce all quantum predictions. This is quantitative and testable.
 
-4. **SWAP** exchanges qubit states (3 CNOTs)
+5. **Experiments** confirm the violation: Freedman & Clauser (1972), Aspect (1982, fast switching), loophole-free tests (2015, Delft/Vienna/NIST). The 2022 Nobel Prize recognized this as foundational to quantum information science.
 
-5. **iSWAP** arises from XY coupling and is native to some architectures
-   - Google's Sycamore uses $\sqrt{\text{iSWAP}}$
-
-6. **Native gate sets** vary by platform:
-   - IBM: cross-resonance / ECR
-   - Google: $\sqrt{\text{iSWAP}}$ + CZ
-   - IonQ: XX (Mølmer-Sørensen)
-   - Neutral atoms: CZ (Rydberg)
-
-7. **Physical implementations:**
-   - **Superconducting:** capacitive coupling, fast but short-lived
-   - **Trapped ions:** shared motion, slow but high-fidelity
-   - **Neutral atoms:** Rydberg blockade, scalable arrays
-
-8. **Practical considerations:**
-   - **Circuit depth** (not just gate count) determines decoherence impact
-   - **Connectivity** limits which qubits can interact; SWAP overhead can be significant
-   - **Gate fidelity** compounds: $F_{\text{total}} \approx F^n$
+6. **What we give up:** locality + realism cannot both hold.
 
 ---
 
 ## Homework
 
-### Problem 1: CNOT Action
+### Problem 1: The Two-Setting Hidden Variable Model
 
-**(a)** Compute $\text{CNOT}|+0\rangle$ where $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$.
+Alice and Bob share the singlet state and each choose to measure $Z$ or $X$.
 
-**(b)** Is the result a product state or entangled? Verify using the determinant test.
+**(a)** Write out all four possible lookup tables $(a_Z, a_X, b_Z, b_X)$, using the constraint $b_s = -a_s$.
 
-**(c)** Compute $\text{CNOT}|{+}{+}\rangle$. Is this entangled?
+**(b)** Verify that equal weights $p = 1/4$ give $E(Z,Z) = -1$, $E(X,X) = -1$, and $E(Z,X) = 0$.
 
-**(d)** Find a two-qubit product state that remains a product state after CNOT.
-
----
-
-### Problem 2: Creating Bell States
-
-Starting from $|00\rangle$, give circuits to create:
-
-**(a)** $|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$
-
-**(b)** $|\Phi^-\rangle = \frac{1}{\sqrt{2}}(|00\rangle - |11\rangle)$
-
-**(c)** $|\Psi^+\rangle = \frac{1}{\sqrt{2}}(|01\rangle + |10\rangle)$
-
-**(d)** $|\Psi^-\rangle = \frac{1}{\sqrt{2}}(|01\rangle - |10\rangle)$
-
-Use only H, X, Z, and CNOT gates.
+**(c)** Is the equal-weight distribution the *only* one that works? Find the most general distribution $(p_1, p_2, p_3, p_4)$ consistent with all three correlations.
 
 ---
 
-### Problem 3: CZ Symmetry
+### Problem 2: The Third Axis
 
-**(a)** Write out the CZ matrix in the computational basis.
+The operator is $\sigma_Q = \frac{1}{\sqrt{2}}(\sigma_z + \sigma_x)$.
 
-**(b)** Show that $\text{CZ}_{12} = \text{CZ}_{21}$ by computing both matrices explicitly.
+**(a)** Verify that $\sigma_Q^2 = I$.
 
-**(c)** For CNOT, is $\text{CNOT}_{12} = \text{CNOT}_{21}$? Prove or give a counterexample.
+**(b)** Find the eigenstates of $\sigma_Q$.
 
-**(d)** Verify that $\text{CNOT} = (I \otimes H) \cdot \text{CZ} \cdot (I \otimes H)$ by matrix multiplication.
-
----
-
-### Problem 4: SWAP Decomposition
-
-**(a)** Verify by matrix multiplication that $\text{SWAP} = \text{CNOT}_{01} \cdot \text{CNOT}_{10} \cdot \text{CNOT}_{01}$.
-
-**(b)** Can you build SWAP from just two CNOTs? Try some combinations and explain why three seems to be the minimum.
-
-**(c)** Show that SWAP preserves entanglement: if $|\psi\rangle$ is entangled, so is $\text{SWAP}|\psi\rangle$.
+**(c)** Write $|0\rangle$ in the $\sigma_Q$ eigenbasis. Compute $P(\text{get } +1 \text{ measuring } Q)$.
 
 ---
 
-### Problem 5: Controlled-U Decomposition
+### Problem 3: The Correlation Function
 
-A general controlled-U gate can be written as:
+For the singlet state $|\Psi^-\rangle$ and measurement axes $\hat{a}$, $\hat{b}$, the correlation is
 
-$$
-\text{C-}U = |0\rangle\langle 0| \otimes I + |1\rangle\langle 1| \otimes U
-$$
+$$E(\hat{a}, \hat{b}) = -\hat{a}\cdot\hat{b} = -\cos\theta.$$
 
-**(a)** Verify this gives the CNOT matrix when $U = X$.
+Verify this for:
 
-**(b)** Write the matrix for C-Y (controlled-Y).
+**(a)** $\hat{a} = \hat{b} = \hat{z}$, by computing $\langle\Psi^-|(\sigma_z \otimes \sigma_z)|\Psi^-\rangle$.
 
-**(c)** Show that any controlled-U can be built from CNOT and single-qubit gates using:
-$$\text{C-}U = (I \otimes A) \cdot \text{CNOT} \cdot (I \otimes B) \cdot \text{CNOT} \cdot (I \otimes C)$$
-where $ABC = I$ and $e^{i\phi}AXBXC = U$ for some phase $\phi$.
+**(b)** $\hat{a} = \hat{z}$, $\hat{b} = \hat{x}$, by computing $\langle\Psi^-|(\sigma_z \otimes \sigma_x)|\Psi^-\rangle$.
 
-*Hint for (c):* Start by noting that when the control is $|0\rangle$, the target sees $ABC = I$. When the control is $|1\rangle$, the CNOTs apply X gates, so the target sees $AXBXC$. For a rotation $U = e^{-i\theta \hat{n} \cdot \vec{\sigma}/2}$, try $A = R_z(\alpha)R_y(\beta/2)$, $B = R_y(-\beta/2)R_z(-(\alpha+\gamma)/2)$, $C = R_z((\gamma-\alpha)/2)$ where $\alpha, \beta, \gamma$ are Euler angles for $U$.
+**(c)** $\hat{a} = \hat{z}$, $\hat{b} = \hat{q} = \frac{1}{\sqrt{2}}(\hat{z} + \hat{x})$, by computing $\langle\Psi^-|(\sigma_z \otimes \sigma_Q)|\Psi^-\rangle$.
 
 ---
 
-### Problem 6: Gate Fidelity
+### Problem 4: The Venn Diagram in Detail
 
-Suppose a two-qubit gate has fidelity $F = 0.995$ (i.e., 0.5% error per gate).
+There are 8 possible lookup tables for three axes, corresponding to Alice's triple $(A_X, A_Z, A_Q)$.
 
-**(a)** If a circuit uses 10 two-qubit gates, what is the expected overall fidelity?
+**(a)** List all 8 triples. For each one, determine whether $A_X = A_Z$, whether $A_X = A_Q$, and whether $A_Z = A_Q$.
 
-**(b)** How many two-qubit gates can you use before the fidelity drops below 50%?
+**(b)** Try to find probabilities on the 8 triples satisfying:
 
-**(c)** If you improve to $F = 0.999$, how does the answer to (b) change?
+- $P(A_X = A_Q) = 85\%$
+- $P(A_Z = A_Q) = 85\%$
+- $P(A_X = A_Z) = 50\%$
 
-**(d)** Why is this analysis important for quantum error correction?
-
----
-
-### Problem 7: Hardware Comparison
-
-**(a)** A superconducting qubit has T2 = 100 μs and two-qubit gate time = 50 ns. How many two-qubit gates can be performed before decoherence significantly affects the state?
-
-**(b)** A trapped ion qubit has T2 = 1 s and two-qubit gate time = 100 μs. Same question.
-
-**(c)** Which system can do more gates before decoherence? Which has faster absolute runtime for 100 gates?
-
-**(d)** What other factors besides gate count and speed matter for choosing a platform?
+Show this is impossible.
 
 ---
 
-### Problem 8: Rydberg Blockade
+### Problem 5: Why Three Settings?
 
-In neutral atom qubits, the Rydberg blockade occurs when two nearby atoms cannot both be excited to the Rydberg state due to strong dipole-dipole interactions.
+**(a)** Show that with only two measurement settings (X and Z), you can always construct a hidden variable model for the singlet.
 
-**(a)** If the interaction energy is $V = C_6/r^6$ where $r$ is the distance between atoms, and $C_6$ is a constant, how does the blockade radius $r_b$ (where $V = \hbar\Omega$, with $\Omega$ the laser Rabi frequency) scale with $\Omega$?
+**(b)** Explain in your own words why adding a third setting (Q) creates a contradiction. What role does Q play?
 
-**(b)** Typical values: $C_6 \approx 2\pi \times 100$ GHz·μm$^6$, $\Omega \approx 2\pi \times 1$ MHz. Estimate the blockade radius.
-
-**(c)** If atoms are spaced 5 μm apart, is this within the blockade radius? What does this mean for implementing gates?
+**(c)** Suppose $Q$ were at $90°$ from both $X$ and $Z$ (i.e., $Q = Y$). Compute the predicted correlations. Does the Venn diagram argument still produce a contradiction? What is special about the $45°$ choice?
 
 ---
 
-### Problem 9: Circuit Compilation
+### Problem 6: A Useful Inequality (Triangle/Overlap Form)
 
-You want to implement the gate $U = e^{-i\frac{\pi}{8} Z \otimes Z}$ on hardware that only has CNOT and single-qubit rotations.
+For any three $\pm 1$ random variables $A_X, A_Z, A_Q$, prove:
 
-**(a)** Show that $Z \otimes Z = \text{CNOT} \cdot (I \otimes Z) \cdot \text{CNOT}$.
+$$P(A_X = A_Z) \geq P(A_X = A_Q) + P(A_Z = A_Q) - 1.$$
 
-**(b)** Using the identity $e^{-i\theta Z} = R_z(2\theta)$, find a circuit for $U$.
+**(a)** Give a one-line set-theory proof using $\mathcal{A} = \{A_X = A_Q\}$ and $\mathcal{B} = \{A_Z = A_Q\}$.
 
-**(c)** Your circuit should use 2 CNOTs. Can you do it with fewer?
+**(b)** Substitute the quantum values $0.85$, $0.85$, $0.50$ and show the inequality is violated.
+
+**(c)** Rewrite the inequality in terms of correlators $E(X,Z)$, $E(X,Q)$, $E(Z,Q)$.
 
 ---
 
-### Problem 10: Connectivity Constraints
+### Problem 7: Closing the Loopholes
 
-Consider a 5-qubit linear chain where qubit $i$ can only interact with qubit $i \pm 1$:
+**(a)** **Locality loophole.** Explain why it's important that the measurement settings are chosen after emission and are space-like separated.
 
-```
-Q0 — Q1 — Q2 — Q3 — Q4
-```
+**(b)** **Detection loophole.** Sketch how a hidden variable could correlate outcomes with whether a detector clicks, producing an apparent violation on a biased subset.
 
-**(a)** You want to apply CNOT with control=Q0 and target=Q4. How many SWAP gates are needed to bring them adjacent?
-
-**(b)** Each SWAP costs 3 CNOTs. What is the total CNOT cost for the operation in (a), including the final CNOT?
-
-**(c)** After the operation, the qubit states have been permuted. Write down where each logical qubit ends up.
-
-**(d)** On a device with all-to-all connectivity (like trapped ions), how many CNOTs would the same operation require? What's the speedup factor?
+**(c)** Why was it important to close both loopholes simultaneously?
 
 ---
 
 ## Looking Ahead
 
-We now have all the tools to build quantum circuits: single-qubit gates, two-qubit gates, and the knowledge of how they're physically implemented.
+Bell's theorem, as we've presented it, used three settings and an ideal singlet. Real experiments aren't perfect: noise reduces correlations.
 
-Next lecture, we'll use these tools for **quantum protocols**: superdense coding, teleportation, and entanglement swapping. These are the "hello world" programs of quantum information — beautiful demonstrations of what entanglement can do.
+The standard tool is the **CHSH inequality** (Clauser, Horne, Shimony, Holt, 1969): a single number $S$ computed from four correlations, with $|S| \leq 2$ for any local hidden variable model and $|S| = 2\sqrt{2} \approx 2.83$ for the optimal quantum state. Next lecture, we'll derive CHSH and see why $2\sqrt{2}$ is the quantum limit.
