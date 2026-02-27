@@ -758,7 +758,7 @@ where $\Delta = \omega_0 - \omega_L$ is the **detuning**.
 
 --- -->
 
-### Problem: Simulating Dephasing
+<!-- ### Problem: Simulating Dephasing
 
 This problem explores how random phase noise destroys coherent oscillations — the essence of $T_2$ decoherence.
 
@@ -895,4 +895,4 @@ Explain in your own words:
 1. Why do individual realizations (part b) show oscillations that drift out of phase with each other?
 2. Why does averaging over many realizations (part c) cause the oscillation amplitude to decay?
 3. Why is this called "dephasing" — what is being lost?
-4. In a real atomic clock or qubit, what physical processes play the role of the random phase kicks?
+4. In a real atomic clock or qubit, what physical processes play the role of the random phase kicks? -->
