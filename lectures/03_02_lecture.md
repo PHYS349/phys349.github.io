@@ -386,11 +386,11 @@ Next lecture, we'll extend the measurement formalism to **two qubits** — measu
 
 5. **The uncertainty principle** for spin-$\frac{1}{2}$: an eigenstate of $S_x$, $S_y$, or $S_z$ is definite along one axis and maximally uncertain along the other two (50/50 outcomes). This follows from $[S_x, S_y] = i\hbar S_z$ and the generalized uncertainty relation $\Delta A \cdot \Delta B \geq \frac{1}{2}|\langle[A,B]\rangle|$.
 
-<!-- ---
+---
 
 ## Homework
 
-### Problem 1: Tensor Product Practice
+<!-- ### Problem 1: Tensor Product Practice
 
 Compute the following and write the result as a sum of computational basis states.
 
@@ -400,9 +400,9 @@ Compute the following and write the result as a sum of computational basis state
 
 **(c)** $(|0\rangle + i|1\rangle) \otimes (|0\rangle - i|1\rangle)$
 
-For each, write the amplitude table $C$ and verify $\det(C) = 0$.
+For each, write the amplitude table $C$ and verify $\det(C) = 0$. -->
 
----
+<!-- ---
 
 ### Problem 2: The Determinant Test
 
@@ -418,11 +418,11 @@ For each two-qubit state, compute $\det(C)$ and determine whether the state is e
 
 **(e)** $|01\rangle + |10\rangle$
 
-**(f)** $|00\rangle + i|11\rangle$
+**(f)** $|00\rangle + i|11\rangle$ -->
 
----
+<!-- --- -->
 
-### Problem 3: Bell State Verification
+### Problem 1: Bell State Verification
 
 **(a)** Write the amplitude table for each of the four Bell states and verify that $|\det(C)| = 1/2$ for all of them.
 
@@ -432,7 +432,7 @@ For each two-qubit state, compute $\det(C)$ and determine whether the state is e
 
 ---
 
-### Problem 4: Projective Measurement
+### Problem 2: Projective Measurement
 
 A qubit is in state $|\Psi\rangle = \frac{1}{\sqrt{3}}|0\rangle + \sqrt{\frac{2}{3}}|1\rangle$.
 
@@ -444,7 +444,7 @@ A qubit is in state $|\Psi\rangle = \frac{1}{\sqrt{3}}|0\rangle + \sqrt{\frac{2}
 
 ---
 
-### Problem 5: Measurement Basis Matters
+<!-- ### Problem 5: Measurement Basis Matters
 
 A qubit is prepared in state $|0\rangle$.
 
@@ -456,9 +456,9 @@ A qubit is prepared in state $|0\rangle$.
 
 **(d)** A general principle: in how many measurement bases does $|0\rangle$ give a definite (probability 1) outcome?
 
----
-
-### Problem 6: Projectors as Matrices
+--- -->
+<!-- 
+### Problem 3: Projectors as Matrices
 
 **(a)** Write $|0\rangle\langle 0|$, $|1\rangle\langle 1|$, $|+\rangle\langle+|$, and $|-\rangle\langle-|$ as $2 \times 2$ matrices.
 
@@ -466,11 +466,11 @@ A qubit is prepared in state $|0\rangle$.
 
 **(c)** Verify that complementary projectors sum to the identity: $|0\rangle\langle 0| + |1\rangle\langle 1| = I$ and $|+\rangle\langle+| + |-\rangle\langle-| = I$.
 
-**(d)** Compute $|0\rangle\langle 0| \cdot |+\rangle\langle+|$. Is the result a projector? What does this say about sequential measurements in different bases?
+**(d)** Compute $|0\rangle\langle 0| \cdot |+\rangle\langle+|$. Is the result a projector? What does this say about sequential measurements in different bases? -->
 
 ---
 
-### Problem 7: The Uncertainty Principle for Spin
+### Problem 3: The Uncertainty Principle for Spin
 
 **(a)** Verify the commutation relation $[\sigma_x, \sigma_y] = 2i\sigma_z$ by explicit matrix multiplication, where:
 
@@ -490,4 +490,4 @@ $$\sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad \sigma_y = \beg
 
 ## Looking Ahead
 
-We now have all the ingredients: entangled Bell states, the determinant test, and the projective measurement formalism. Next lecture, we put them together. What happens when Alice measures *one qubit* of a Bell pair? How does her measurement basis affect what Bob sees? The answers lead directly to EPR, Bell's theorem, and the deepest question in quantum foundations: **are quantum correlations "just" classical correlations in disguise?** -->
+We now have all the ingredients: entangled Bell states, the determinant test, and the projective measurement formalism. Next lecture, we put them together. What happens when Alice measures *one qubit* of a Bell pair? How does her measurement basis affect what Bob sees? The answers lead directly to EPR, Bell's theorem, and the deepest question in quantum foundations: **are quantum correlations "just" classical correlations in disguise?**
