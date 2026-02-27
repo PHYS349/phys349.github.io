@@ -236,11 +236,10 @@ For $N$ qubits, the state vector has $2^N$ components. A classical computer simu
 
 4. **A general two-qubit state** has **6 real DOF** = 2 (Bloch sphere A) + 2 (Bloch sphere B) + 2 (correlations). The extra DOFs encode correlations — and when the amplitudes don't factor, we call the state **entangled**.
 
-<!-- ---
 
 ## Homework
 
-### Problem 1: Joint Probability Distributions
+<!-- ### Problem 1: Joint Probability Distributions
 
 Two classical bits are drawn from a joint distribution.
 
@@ -250,11 +249,11 @@ Two classical bits are drawn from a joint distribution.
 
 **(c)** Design a joint distribution over $(i,j) \in \{0,1\}^2$ that has marginals $P_A(0) = P_A(1) = 1/2$ and $P_B(0) = P_B(1) = 1/2$ but is **not** independent.
 
-**(d)** Design one that has the same marginals and **is** independent.
+**(d)** Design one that has the same marginals and **is** independent. -->
 
----
+<!-- --- -->
 
-### Problem 2: Tensor Product Practice
+### Problem 1: Tensor Product Practice
 
 Compute the following tensor products and write the result as a 4-component column vector.
 
@@ -266,14 +265,14 @@ Compute the following tensor products and write the result as a 4-component colu
 
 **(d)** $|+\rangle \otimes |+\rangle$
 
----
+<!-- --- -->
 
-### Problem 3: The Amplitude Table
+<!-- ### Problem 3: The Amplitude Table
 
-For each tensor product in Problem 2, write the result as a $2 \times 2$ amplitude table $C$ (rows = qubit A, columns = qubit B). Verify that each table is an outer product $C = \vec{u}\,\vec{v}^T$ — i.e., that $C_{ij} = u_i v_j$.
+For each tensor product in Problem 2, write the result as a $2 \times 2$ amplitude table $C$ (rows = qubit A, columns = qubit B). Verify that each table is an outer product $C = \vec{u}\,\vec{v}^T$ — i.e., that $C_{ij} = u_i v_j$. -->
 
----
-
+<!-- --- -->
+<!-- 
 ### Problem 4: Degrees of Freedom
 
 **(a)** How many real degrees of freedom does a general $N$-qubit state have? (Remember to subtract normalization and global phase.)
@@ -282,10 +281,10 @@ For each tensor product in Problem 2, write the result as a $2 \times 2$ amplitu
 
 **(c)** For $N = 3$: how many DOF does a general 3-qubit state have? How many for three independent Bloch spheres? How many "correlation DOFs" are there?
 
-**(d)** As $N$ grows, which grows faster — the total DOFs or the independent-qubit DOFs? What does this say about the importance of correlations in large quantum systems?
+**(d)** As $N$ grows, which grows faster — the total DOFs or the independent-qubit DOFs? What does this say about the importance of correlations in large quantum systems? -->
 
----
-
+<!-- --- -->
+<!-- 
 ### Problem 5: Product or Not?
 
 For each two-qubit state, try to write it as $|\psi\rangle_A \otimes |\phi\rangle_B$. If you can, give the factors. If you can't, explain why.
@@ -298,9 +297,9 @@ For each two-qubit state, try to write it as $|\psi\rangle_A \otimes |\phi\rangl
 
 **(d)** $|\Psi\rangle = \frac{1}{2}(|00\rangle + |01\rangle + |10\rangle - |11\rangle)$
 
----
+--- -->
 
-### Problem 6: Three Qubits
+### Problem 2: Three Qubits
 
 **(a)** How many computational basis states are there for three qubits? List them all.
 
