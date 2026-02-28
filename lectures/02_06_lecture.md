@@ -612,7 +612,7 @@ $$H = \frac{1}{\sqrt{2}}(\sigma_x + \sigma_z)$$
 
 Verify one of these by explicit matrix multiplication.
 
-<!-- **(g)** Why do you think the Hadamard gate is preferred over, say, $R_y(\pi/2)$ for creating superpositions? (Hint: look at the matrix elements of each.) -->
+**(g)** Why do you think the Hadamard gate is preferred over, say, $R_y(\pi/2)$ for creating superpositions? (Hint: look at the matrix elements of each.)
 
 <!-- ---
 
@@ -648,7 +648,7 @@ def bloch_coords(statevector):
  -->
 
 
-<!-- ---
+---
 
 ### Problem: Unitarity Implies Hermitian Generator
 
@@ -669,7 +669,7 @@ $$e^{-iG^\dagger}e^{iG} = I$$
 
 **(f)** The Pauli matrices $\sigma_x$, $\sigma_y$, $\sigma_z$ are Hermitian. Verify that $\sigma_x^\dagger = \sigma_x$ by writing out the matrix and its conjugate transpose.
 
-**(g)** Using your result from (d), explain why $R_z(\theta) = e^{-i\sigma_z\theta/2}$ is guaranteed to be unitary without doing any explicit calculation. -->
+**(g)** Using your result from (d), explain why $R_z(\theta) = e^{-i\sigma_z\theta/2}$ is guaranteed to be unitary without doing any explicit calculation.
 
 ---
 
@@ -690,12 +690,12 @@ $$T(a)\psi(x) = \psi(x - a)$$
 
 **(d)** Verify that $T(a)$ is unitary using the result from the previous problem.
 
-The pattern is now complete:
+<!-- The pattern is now complete:
 
 | Physical quantity | Operator (generator) | Transformation |
 |-------------------|---------------------|----------------|
 | Energy | $H$ | Time translation: $\psi(t) \to \psi(t + \Delta t)$ |
 | Momentum | $\hat{p}$ | Space translation: $\psi(x) \to \psi(x + \Delta x)$ |
-| Angular momentum | $\sigma_z$ (for spin) | Rotation: $|\psi\rangle \to R_z(\theta)|\psi\rangle$ |
+| Angular momentum | $\sigma_z$ (for spin) | Rotation: $|\psi\rangle \to R_z(\theta)|\psi\rangle$ | -->
 
 <!-- In your own words, explain the pattern: what is the relationship between a conserved quantity and the transformation it generates? -->
