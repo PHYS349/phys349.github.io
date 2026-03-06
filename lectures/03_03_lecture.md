@@ -24,7 +24,8 @@ $$(\sigma_z \otimes \sigma_x)\big(|0\rangle \otimes |+\rangle\big) = \sigma_z|0\
 
 The key special case is when we want to act on **one qubit and leave the other alone**. We use the identity operator $I$ on the qubit we're not touching:
 
-$$A \otimes I \quad \text{acts on qubit A, leaves B alone}$$ $$I \otimes B \quad \text{acts on qubit B, leaves A alone}$$
+$$A \otimes I \quad \text{acts on qubit A, leaves B alone}$$
+$$I \otimes B \quad \text{acts on qubit B, leaves A alone}$$
 
 ------------------------------------------------------------------------
 
@@ -100,7 +101,7 @@ $$p(+1) = \frac{1}{2}, \qquad p(-1) = \frac{1}{2}$$
 
 Just 50/50. Now suppose Alice had measured X instead of Z. A similar calculation (see the homework) shows Bob's statistics are *still* 50/50 in any basis he chooses. And if Alice does nothing at all — same thing: 50/50.
 
-\`\`\`{admonition} No-Signaling Theorem :class: important
+```{admonition} No-Signaling Theorem :class: important
 
 Bob's local measurement statistics are identical regardless of: - whether Alice measures or not - which basis Alice measures in - what outcome Alice gets
 
@@ -211,7 +212,7 @@ Einstein looked at $|\Phi^+\rangle$ and proposed the same explanation. This is e
 
 The EPR argument rests on three assumptions. Let's state them clearly, because the whole debate — from 1935 to today — is about which one to give up.
 
-\`\`\`{admonition} The Three Assumptions :class: important
+```{admonition} The Three Assumptions :class: important
 
 1.  **Locality.** Alice's measurement cannot instantly affect Bob's qubit. If they are far apart, nothing Alice does can change what Bob has.
 

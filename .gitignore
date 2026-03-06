@@ -3,3 +3,4 @@ _build
 *.css
 *.woff
 *.js
+.claude/worktrees/silly-babbage/
