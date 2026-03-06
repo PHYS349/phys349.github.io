@@ -34,6 +34,8 @@ project:
         - file: lectures/02_07_lecture.md
         - file: lectures/03_01_lecture.md
         - file: lectures/03_02_lecture.md
+        - file: lectures/03_03_lecture.md
+        - file: lectures/03_04_lecture.md
 
     - title: Homework
       children:

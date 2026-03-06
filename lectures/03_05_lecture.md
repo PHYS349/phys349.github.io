@@ -1,759 +1,524 @@
-# Lecture 3.3: Bell's Theorem and the CHSH Inequality
+# Lecture 3.5 — The Circuit Model
 
-## From Philosophy to Physics
+## From Physics to Computation
 
-Last lecture, we saw that quantum correlations are different from classical correlations: they persist across multiple measurement bases. We previewed Bell's insight that this difference can be quantified.
+We've spent four lectures on what quantum mechanics *says*: entanglement, Bell states, correlations, the EPR argument, Bell's theorem. We've worked entirely in the language of states, operators, and tensor products.
 
-Today we make it precise. We'll derive the **CHSH inequality** — a mathematical bound that any local hidden variable theory must satisfy — and prove that quantum mechanics **violates** it.
+Now we shift gears. The question is no longer "what does quantum mechanics predict?" but **"how do we build and manipulate quantum states?"**
 
-This is not philosophy. It's a theorem with experimental consequences. Bell tests have been performed thousands of times, with increasing precision, and the verdict is unambiguous: **quantum mechanics wins**.
+The answer is the **circuit model** — a way to describe quantum computation as a sequence of operations (called **gates**) acting on quantum bits (called **wires**). The circuit model is to quantum computing what Boolean logic circuits are to classical computing: a universal framework for expressing any computation.
 
----
+### Conventions
 
-## The Setup: A Correlation Experiment
+A quantum circuit is read **left to right**:
 
-### The Scenario
-
-Alice and Bob share many copies of a two-qubit entangled state. They're far apart and can't communicate during the experiment.
-
-For each copy:
-1. Alice randomly chooses one of two measurement settings: $A$ or $A'$
-2. Bob randomly chooses one of two measurement settings: $B$ or $B'$
-3. Each measures their qubit and records the outcome: $+1$ or $-1$
-4. They repeat many times and compute correlations
-
-```{figure} ./03_03_lecture_files/bell_test_setup.svg
-:width: 450px
-:name: bell-test-setup
-
-Bell test setup: Alice chooses $A$ or $A'$, Bob chooses $B$ or $B'$, each gets $\pm 1$.
+```
+q0: ──────────────────
+q1: ──────────────────
 ```
 
-### The Correlation
-
-For a given pair of settings (say $A$ and $B$), the **correlation** is the average product of outcomes:
-
-$$
-E(A, B) = \langle a \cdot b \rangle
-$$
-
-where $a, b \in \{+1, -1\}$ are Alice's and Bob's outcomes.
-
-- $E = +1$: perfect correlation (always same)
-- $E = -1$: perfect anti-correlation (always opposite)
-- $E = 0$: no correlation (random)
-
-### The Four Correlations
-
-With two settings each, there are four correlations to measure:
-- $E(A, B)$: Alice uses $A$, Bob uses $B$
-- $E(A, B')$: Alice uses $A$, Bob uses $B'$
-- $E(A', B)$: Alice uses $A'$, Bob uses $B$
-- $E(A', B')$: Alice uses $A'$, Bob uses $B'$
-
-The CHSH inequality puts a constraint on these four numbers.
+Each horizontal line is a **wire** representing one qubit. Every qubit starts in the state $|0\rangle$ unless otherwise specified. Gates appear as labeled boxes or symbols on the wires, and time flows from left to right.
 
 ---
 
-## The Local Hidden Variable Assumption
+## Part 1: Single-Qubit Gates
 
-Before deriving the inequality, let's be precise about what we're assuming.
+You've already seen the Pauli matrices and the Hadamard as operators acting on qubit states. Now we draw them as **circuit elements** — boxes on wires.
 
-### Hidden Variables
+### The $X$ Gate (NOT / Bit Flip)
 
-A **hidden variable** $\lambda$ is some additional information that:
-- Is determined when the entangled pair is created
-- Travels with each particle
-- Determines measurement outcomes
+$$X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$$
 
-Think of $\lambda$ as an "instruction set" that tells each particle what to do for any measurement.
+Action: $X|0\rangle = |1\rangle$, $X|1\rangle = |0\rangle$. It flips a qubit, just like a classical NOT gate.
 
-### Locality
-
-**Locality** means:
-- Alice's outcome depends only on her setting ($A$ or $A'$) and the hidden variable $\lambda$
-- Alice's outcome does NOT depend on Bob's setting or outcome
-- And vice versa for Bob
-
-```{admonition} The Local Hidden Variable Assumption
-:class: important
-
-There exists a hidden variable $\lambda$ (with some probability distribution $\rho(\lambda)$) such that:
-
-$$
-a = A(\lambda) \in \{+1, -1\} \quad \text{(Alice's outcome for setting } A \text{)}
-$$
-$$
-b = B(\lambda) \in \{+1, -1\} \quad \text{(Bob's outcome for setting } B \text{)}
-$$
-
-The functions $A(\lambda)$, $A'(\lambda)$, $B(\lambda)$, $B'(\lambda)$ give predetermined outcomes for each setting.
-
-**Crucially:** $A(\lambda)$ doesn't depend on Bob's choice, and $B(\lambda)$ doesn't depend on Alice's choice.
+```
+     ┌───┐
+q0: ─┤ X ├─
+     └───┘
 ```
 
-This captures Einstein's vision: outcomes are determined by information from the shared past ($\lambda$), and distant measurements don't influence each other.
+### The $Z$ Gate (Phase Flip)
+
+$$Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$$
+
+Action: $Z|0\rangle = |0\rangle$, $Z|1\rangle = -|1\rangle$. It leaves $|0\rangle$ alone and multiplies $|1\rangle$ by $-1$. This has no classical analog — it changes the **phase** of the state without changing the measurement probabilities in the Z-basis.
+
+```
+     ┌───┐
+q0: ─┤ Z ├─
+     └───┘
+```
+
+### The Hadamard Gate $H$
+
+$$H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$$
+
+Action:
+$$H|0\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) = |+\rangle, \qquad H|1\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) = |-\rangle.$$
+
+One gate creates superposition. The Hadamard is the workhorse of quantum computing — nearly every quantum algorithm starts with Hadamard gates.
+
+```
+     ┌───┐
+q0: ─┤ H ├─
+     └───┘
+```
+
+Notice that $H$ is its own inverse: $H^2 = I$. Applying Hadamard twice returns you to the original state.
+
+### The $R_y(\theta)$ Gate (Rotation)
+
+$$R_y(\theta) = \begin{pmatrix} \cos(\theta/2) & -\sin(\theta/2) \\ \sin(\theta/2) & \cos(\theta/2) \end{pmatrix}$$
+
+This rotates the qubit state by angle $\theta$ about the $y$-axis on the Bloch sphere. It generalizes the relationship between measurement bases: $R_y(\pi/2)$ maps $|0\rangle \to |+\rangle$ (like $H$ up to a phase), while $R_y(\theta)$ for arbitrary $\theta$ lets us reach any axis in the $xz$-plane.
+
+We'll need $R_y$ for Bell tests with measurement axes that aren't exactly along $X$ or $Z$.
+
+### Summary: Gate $\leftrightarrow$ Matrix $\leftrightarrow$ Circuit Symbol
+
+| Gate | Matrix | Action on $|0\rangle$ | Action on $|1\rangle$ |
+|---|---|---|---|
+| $X$ | $\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$ | $|1\rangle$ | $|0\rangle$ |
+| $Z$ | $\begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$ | $|0\rangle$ | $-|1\rangle$ |
+| $H$ | $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$ | $|+\rangle$ | $|-\rangle$ |
+
+Each of these is a $2 \times 2$ unitary matrix. In the circuit model, any single-qubit gate is a $2 \times 2$ unitary drawn as a box on one wire.
 
 ---
 
-## Deriving the CHSH Inequality
+## Part 2: The CNOT Gate
 
-Now we prove that any local hidden variable theory satisfies a constraint.
+### The First Two-Qubit Gate
 
-### The CHSH Quantity
+Everything so far has been single-qubit operations — manipulating one qubit at a time. But the whole point of quantum computing is **entanglement**, and for that we need gates that act on two qubits simultaneously.
 
-Define the combination:
-$$
-S = E(A, B) + E(A, B') + E(A', B) - E(A', B')
-$$
+The most important two-qubit gate is the **CNOT** (controlled-NOT):
 
-This particular combination was chosen by Clauser, Horne, Shimony, and Holt (1969) because it has nice properties.
+```
+q0: ──■──
+      │
+q1: ──⊕──
+```
 
-### Step 1: Write Correlations in Terms of Hidden Variables
+The filled dot ($\bullet$) marks the **control** qubit, and the circled plus ($\oplus$) marks the **target** qubit.
 
-In a local hidden variable theory:
-$$
-E(A, B) = \int A(\lambda) B(\lambda) \, \rho(\lambda) \, d\lambda
-$$
+### Truth Table
 
-This is just the average of the product, weighted by the probability distribution of $\lambda$.
+CNOT flips the target if and only if the control is $|1\rangle$:
 
-### Step 2: Consider a Single $\lambda$
+| Input | Output |
+|---|---|
+| $|00\rangle$ | $|00\rangle$ |
+| $|01\rangle$ | $|01\rangle$ |
+| $|10\rangle$ | $|11\rangle$ |
+| $|11\rangle$ | $|10\rangle$ |
 
-For a fixed $\lambda$, define:
-$$
-S(\lambda) = A(\lambda) B(\lambda) + A(\lambda) B'(\lambda) + A'(\lambda) B(\lambda) - A'(\lambda) B'(\lambda)
-$$
+In words: the control qubit is never changed, and the target qubit is XOR'd with the control.
 
-We can rewrite this by factoring:
-$$
-S(\lambda) = A(\lambda) \big[ B(\lambda) + B'(\lambda) \big] + A'(\lambda) \big[ B(\lambda) - B'(\lambda) \big]
-$$
+### Matrix Representation
 
-### Step 3: The Key Observation
+In the computational basis $\{|00\rangle, |01\rangle, |10\rangle, |11\rangle\}$:
 
-Since $B(\lambda), B'(\lambda) \in \{+1, -1\}$, there are only four possibilities for the pair $(B(\lambda), B'(\lambda))$:
+$$\text{CNOT} = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{pmatrix}.$$
 
-| $B(\lambda)$ | $B'(\lambda)$ | $B + B'$ | $B - B'$ |
-|--------------|---------------|----------|----------|
-| +1 | +1 | +2 | 0 |
-| +1 | -1 | 0 | +2 |
-| -1 | +1 | 0 | -2 |
-| -1 | -1 | -2 | 0 |
+This is a $4 \times 4$ unitary matrix acting on the two-qubit Hilbert space $\mathbb{C}^2 \otimes \mathbb{C}^2$.
 
-In every case, **one of the brackets is $\pm 2$ and the other is $0$**.
+### CNOT Is Classical on Basis States
 
-### Step 4: Bound on $S(\lambda)$
+When both inputs are computational basis states, CNOT is just a reversible classical logic gate (a controlled-NOT, familiar from classical computing). There is nothing quantum about it in this regime.
 
-Since $A(\lambda), A'(\lambda) \in \{+1, -1\}$:
+**The magic happens when the control is in superposition.** We'll see this in the next section.
 
-$$
-S(\lambda) = A(\lambda) \cdot (\pm 2 \text{ or } 0) + A'(\lambda) \cdot (0 \text{ or } \pm 2)
-$$
+---
 
-Only one term is nonzero, and it equals $(\pm 1) \cdot (\pm 2) = \pm 2$.
+## Part 3: Building Bell States
+
+### The H + CNOT Circuit
+
+Here is the most important two-gate circuit in all of quantum computing:
+
+```
+     ┌───┐
+q0: ─┤ H ├──■──
+     └───┘  │
+q1: ────────⊕──
+```
+
+Hadamard on qubit 0, then CNOT with qubit 0 as control and qubit 1 as target. Let's trace the state step by step.
+
+**Initial state:**
+
+$$|00\rangle$$
+
+**After $H$ on qubit 0:**
+
+$$|00\rangle \xrightarrow{H \otimes I} \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) \otimes |0\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |10\rangle).$$
+
+At this point, qubit 0 is in superposition but the two qubits are still in a **product state** — no entanglement yet. You can check: $\alpha\delta - \beta\gamma = \frac{1}{\sqrt{2}} \cdot 0 - 0 \cdot \frac{1}{\sqrt{2}} = 0$, so the determinant test (from Lecture 3.2) says this is separable.
+
+**After CNOT:**
+
+CNOT acts on each branch of the superposition:
+
+$$\text{CNOT}|00\rangle = |00\rangle, \qquad \text{CNOT}|10\rangle = |11\rangle.$$
 
 Therefore:
-$$
-S(\lambda) \in \{-2, +2\}
-$$
 
-for every possible $\lambda$.
+$$\frac{1}{\sqrt{2}}(|00\rangle + |10\rangle) \xrightarrow{\text{CNOT}} \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle) = |\Phi^+\rangle.$$
 
-### Step 5: Average Over $\lambda$
+This is a **Bell state**. The qubits are now entangled. Check the determinant: $\alpha = \delta = 1/\sqrt{2}$, $\beta = \gamma = 0$, so $\alpha\delta - \beta\gamma = 1/2 \neq 0$. Entangled. ✓
 
-The measured $S$ is the average:
-$$
-S = \int S(\lambda) \, \rho(\lambda) \, d\lambda
-$$
-
-Since $S(\lambda) \in \{-2, +2\}$ for each $\lambda$, and we're averaging with positive weights that sum to 1:
-
-$$
-|S| \leq 2
-$$
-
-```{admonition} The CHSH Inequality
-:class: warning
-
-**Any local hidden variable theory must satisfy:**
-
-$$
-|S| = |E(A,B) + E(A,B') + E(A',B) - E(A',B')| \leq 2
-$$
-
-This is a mathematical theorem, not an approximation.
-```
-
----
-
-## Quantum Mechanics Violates CHSH
-
-Now let's compute what quantum mechanics predicts for an entangled state.
-
-### The Setup
-
-Use the singlet state:
-$$
-|\Psi^-\rangle = \frac{|01\rangle - |10\rangle}{\sqrt{2}}
-$$
-
-Recall the correlation function (from last lecture):
-$$
-E(\hat{a}, \hat{b}) = -\hat{a} \cdot \hat{b} = -\cos\theta_{ab}
-$$
-
-where $\theta_{ab}$ is the angle between measurement axes $\hat{a}$ and $\hat{b}$.
-
-### Choosing Optimal Angles
-
-We want to maximize $|S|$. Let's work in a plane (2D suffices).
-
-Define angles from some reference direction:
-- Alice's setting $A$: angle $0°$
-- Alice's setting $A'$: angle $90°$
-- Bob's setting $B$: angle $45°$
-- Bob's setting $B'$: angle $-45°$
-
-```{figure} ./03_03_lecture_files/chsh_angles.svg
-:width: 350px
-:name: chsh-angles
-
-Optimal measurement angles for CHSH violation: $A=0°$, $A'=90°$, $B=45°$, $B'=-45°$.
-```
-
-### Computing the Correlations
-
-The angle differences are:
-- $\theta_{AB} = |0° - 45°| = 45°$
-- $\theta_{AB'} = |0° - (-45°)| = 45°$
-- $\theta_{A'B} = |90° - 45°| = 45°$
-- $\theta_{A'B'} = |90° - (-45°)| = 135°$
-
-Now compute the correlations (for singlet, $E = -\cos\theta$):
-$$
-E(A, B) = -\cos(45°) = -\frac{1}{\sqrt{2}}
-$$
-$$
-E(A, B') = -\cos(45°) = -\frac{1}{\sqrt{2}}
-$$
-$$
-E(A', B) = -\cos(45°) = -\frac{1}{\sqrt{2}}
-$$
-$$
-E(A', B') = -\cos(135°) = +\frac{1}{\sqrt{2}}
-$$
-
-### The CHSH Quantity
-
-$$
-S = E(A,B) + E(A,B') + E(A',B) - E(A',B')
-$$
-$$
-= -\frac{1}{\sqrt{2}} - \frac{1}{\sqrt{2}} - \frac{1}{\sqrt{2}} - \frac{1}{\sqrt{2}}
-$$
-$$
-= -\frac{4}{\sqrt{2}} = -2\sqrt{2}
-$$
-
-Therefore:
-$$
-|S| = 2\sqrt{2} \approx 2.83
-$$
-
-```{admonition} Quantum Violation
+```{admonition} Superposition + CNOT = Entanglement
 :class: important
 
-Quantum mechanics predicts $|S| = 2\sqrt{2} \approx 2.83$.
+When the control qubit is in a definite state ($|0\rangle$ or $|1\rangle$), CNOT acts classically — it either flips or doesn't flip. No entanglement is created.
 
-The CHSH bound is $|S| \leq 2$.
+When the control qubit is in **superposition**, CNOT correlates the two qubits: the $|0\rangle$ branch leaves the target alone, while the $|1\rangle$ branch flips it. The result is a state where the two qubits cannot be described independently.
 
-**Quantum mechanics exceeds the classical bound by about 41%!**
+This is the fundamental mechanism by which quantum circuits create entanglement.
 ```
 
+### All Four Bell States
+
+By choosing different inputs or adding single-qubit gates, we can build all four Bell states from the same H + CNOT structure:
+
+| Initial state | Circuit | Output |
+|---|---|---|
+| $|00\rangle$ | $H$, CNOT | $|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$ |
+| $|10\rangle$ | $H$, CNOT | $|\Phi^-\rangle = \frac{1}{\sqrt{2}}(|00\rangle - |11\rangle)$ |
+| $|01\rangle$ | $H$, CNOT | $|\Psi^+\rangle = \frac{1}{\sqrt{2}}(|01\rangle + |10\rangle)$ |
+| $|11\rangle$ | $H$, CNOT | $|\Psi^-\rangle = \frac{1}{\sqrt{2}}(|01\rangle - |10\rangle)$ |
+
+To start in $|10\rangle$ instead of $|00\rangle$, apply $X$ on qubit 0 before the Hadamard. To start in $|01\rangle$, apply $X$ on qubit 1. To start in $|11\rangle$, apply $X$ on both.
+
+The **singlet state** $|\Psi^-\rangle$ — the state we've been using for Bell's theorem — is just:
+
+```
+     ┌───┐┌───┐
+q0: ─┤ X ├┤ H ├──■──
+     └───┘└───┘  │
+q1: ─┤ X ├───────⊕──
+     └───┘
+```
+
+Or equivalently, we can build it as $H$, CNOT, then $Z$ on qubit 0 and $X$ on qubit 1:
+
+```
+     ┌───┐     ┌───┐
+q0: ─┤ H ├──■──┤ Z ├─
+     └───┘  │  └───┘
+q1: ────────⊕──┤ X ├─
+               └───┘
+```
+
+Both give $|\Psi^-\rangle$. (Verify this in the homework.)
+
+We just **built** the state we've been studying for four lectures.
+
 ---
 
-## The Tsirelson Bound
+## Part 4: Measurement in Circuits
 
-Is $2\sqrt{2}$ the maximum quantum violation, or can we do better?
+### The Measurement Symbol
 
-Boris Tsirelson proved in 1980 that:
+Measurement is drawn as a meter icon on a wire:
 
-$$
-|S|_{\text{quantum}} \leq 2\sqrt{2}
-$$
+```
+     ┌─┐
+q0: ─┤M├─
+     └─┘
+```
 
-This is called the **Tsirelson bound**. No quantum state and no measurements can exceed it.
+A measurement collapses the qubit to $|0\rangle$ or $|1\rangle$ and records the classical outcome (0 or 1) in a classical bit register.
 
-So we have three regimes:
+In the circuit model (and on real quantum hardware), measurement is always in the **computational basis** (the Z-basis). This might seem restrictive — after all, Bell tests require measurements in X, or along axes at $45°$. But it's not a limitation at all.
 
-| Theory | Maximum $|S|$ |
-|--------|---------------|
-| Local hidden variables | 2 |
-| Quantum mechanics | $2\sqrt{2} \approx 2.83$ |
-| "Super-quantum" (no-signaling but nonlocal) | 4 |
+### Measuring in Other Bases: The Pre-Rotation Trick
 
-The gap between 2 and $2\sqrt{2}$ is the "quantum advantage" in correlations. It's not unlimited — quantum mechanics is nonlocal but not maximally so.
+To measure along an axis $\hat{n}$ other than Z, we apply a **rotation** that maps $\hat{n}$ to $\hat{z}$, and then measure in Z.
+
+Why does this work? Measuring the observable $\sigma_n$ and getting eigenvalue $\pm 1$ is mathematically identical to first rotating so that $\hat{n}$ aligns with $\hat{z}$, and then measuring $\sigma_z$. The rotation doesn't change the physics — it just changes which basis the Z-measurement projects onto.
+
+**X-basis measurement:**
+
+Apply $H$ before measuring. Since $H|+\rangle = |0\rangle$ and $H|-\rangle = |1\rangle$, a Z-measurement after $H$ distinguishes $|+\rangle$ from $|-\rangle$ — exactly what an X-measurement does.
+
+```
+     ┌───┐┌─┐
+q0: ─┤ H ├┤M├─    ← This measures in the X-basis
+     └───┘└─┘
+```
+
+**Measurement along $Q$ (at $45°$ between Z and X):**
+
+Apply $R_y(-\pi/4)$ before measuring. This rotates the $Q$-axis to align with Z.
+
+```
+     ┌──────────┐┌─┐
+q0: ─┤ Ry(-π/4) ├┤M├─    ← This measures in the Q-basis
+     └──────────┘└─┘
+```
+
+### The General Rule
+
+| Desired measurement basis | Gate before measurement |
+|---|---|
+| Z | None |
+| X | $H$ |
+| $Q_+$ (at $+45°$ from Z) | $R_y(-\pi/4)$ |
+| $Q_-$ (at $-45°$ from Z) | $R_y(+\pi/4)$ |
+| General axis at angle $\theta$ from Z | $R_y(-\theta)$ |
+
+The minus sign in $R_y(-\theta)$ is because we're **undoing** the tilt: rotating the measurement axis back to Z.
+
+### Connection to the Correlation Table
+
+In Lecture 3.3, we computed the correlation table for the singlet state with measurements in various bases. Now we can see how each entry corresponds to a specific circuit:
+
+- **$E(Z,Z) = -1$:** Prepare singlet, measure both qubits. No pre-rotation needed.
+
+- **$E(X,X) = -1$:** Prepare singlet, apply $H$ to both qubits, then measure.
+
+- **$E(Z,X) = 0$:** Prepare singlet, apply $H$ to Bob's qubit only, then measure.
+
+The correlation table from Lecture 3.3 is a table of circuits.
 
 ---
 
-## Experimental Tests
+## Part 5: Putting It Together — A Bell Test Circuit
 
-### The Challenge
+### The Experiment as a Circuit
 
-To test Bell inequalities rigorously, experiments must close various "loopholes" — ways that a clever hidden variable theory might still explain the results.
+We now have everything we need to implement a Bell test as a quantum circuit. The procedure is:
 
-**Locality loophole:** What if Alice's measurement somehow influences Bob's outcome (or vice versa)? 
+1. **Prepare** the singlet state (H + CNOT + Z + X).
+2. **Rotate** each qubit into the desired measurement basis.
+3. **Measure** both qubits in Z.
+4. **Compute** the correlation $E$ from the measurement statistics.
 
-*Solution:* Make sure Alice and Bob are far enough apart that no signal (even at light speed) could travel between them during the measurement. Alain Aspect's 1982 experiment used fast-switching polarizers to close this.
+Here's what the circuit looks like when Alice measures Z and Bob measures in the $Q_+$ basis ($45°$ from Z):
 
-**Detection loophole:** What if the detectors don't catch all the particles, and the detected ones are a biased sample?
+```
+     ┌───┐     ┌───┐                ┌─┐
+q0: ─┤ H ├──■──┤ Z ├────────────────┤M├──  Alice: Z-basis (no rotation)
+     └───┘  │  └───┘                └─┘
+q1: ────────⊕──┤ X ├──┤ Ry(-π/4) ├──┤M├──  Bob: Q₊-basis
+               └───┘  └──────────┘  └─┘
+```
 
-*Solution:* Use high-efficiency detectors. Modern experiments achieve >95% efficiency.
+### From Bitstrings to Correlations
 
-**Freedom-of-choice loophole:** What if the random choices of measurement settings aren't really random?
+Each run of the circuit produces a two-bit outcome: `00`, `01`, `10`, or `11`. We convert bits to $\pm 1$ eigenvalues:
 
-*Solution:* Use cosmic sources (light from distant quasars) to determine settings — randomness from billions of years ago!
+$$0 \to +1, \qquad 1 \to -1.$$
 
-### The Results
+The correlation function is:
 
-Every rigorous Bell test has confirmed quantum mechanics:
-- Aspect (1982): first strong violation with spacelike separation
-- Zeilinger et al. (2015): "loophole-free" Bell test
-- Many others with increasing precision
+$$E = \langle A \cdot B \rangle = P(\texttt{00}) + P(\texttt{11}) - P(\texttt{01}) - P(\texttt{10}).$$
 
-The measured values of $|S|$ consistently match the quantum prediction, not the classical bound.
+The logic: outcomes `00` and `11` have the product $a \cdot b = +1$ (both same sign), while `01` and `10` have $a \cdot b = -1$.
 
-```{admonition} The 2022 Nobel Prize
+### Example: ZZ Measurement of the Singlet
+
+The singlet $|\Psi^-\rangle = \frac{1}{\sqrt{2}}(|01\rangle - |10\rangle)$ has amplitudes only on $|01\rangle$ and $|10\rangle$. So the measurement outcomes are `01` and `10` with equal probability, and never `00` or `11`:
+
+$$E(Z,Z) = 0 + 0 - 0.5 - 0.5 = -1.$$
+
+Perfect anti-correlation. ✓
+
+### Example: XX Measurement of the Singlet
+
+Apply $H \otimes H$ before measuring. From Lecture 3.3, we know the singlet is anti-correlated in every basis, so we expect only outcomes corresponding to opposite X-eigenvalues. The circuit gives `01` and `10` (in the rotated frame) with equal probability:
+
+$$E(X,X) = -1.$$
+
+✓
+
+### The Full Bell Test
+
+For the CHSH version of Bell's test (which we'll analyze next lecture), we need four circuits with these measurement settings:
+
+| Circuit | Alice | Bob | Angle between axes |
+|---|---|---|---|
+| 1 | Z ($0°$) | $Q_+$ ($+45°$) | $45°$ |
+| 2 | Z ($0°$) | $Q_-$ ($-45°$) | $45°$ |
+| 3 | X ($90°$) | $Q_+$ ($+45°$) | $45°$ |
+| 4 | X ($90°$) | $Q_-$ ($-45°$) | $135°$ |
+
+Using $E(\hat{a}, \hat{b}) = -\cos\theta$:
+
+| Circuit | $\theta$ | $E = -\cos\theta$ |
+|---|---|---|
+| 1 | $45°$ | $-1/\sqrt{2} \approx -0.707$ |
+| 2 | $45°$ | $-1/\sqrt{2} \approx -0.707$ |
+| 3 | $45°$ | $-1/\sqrt{2} \approx -0.707$ |
+| 4 | $135°$ | $+1/\sqrt{2} \approx +0.707$ |
+
+The CHSH combination $S = E_1 + E_2 + E_3 - E_4 = -2\sqrt{2} \approx -2.83$ violates the classical bound $|S| \leq 2$. We'll prove this bound next lecture. In the homework, you'll build these four circuits in Qiskit and verify the violation numerically.
+
+```{admonition} Aspect's Experiment, as a Circuit
 :class: note
 
-John Clauser, Alain Aspect, and Anton Zeilinger received the 2022 Nobel Prize in Physics "for experiments with entangled photons, establishing the violation of Bell inequalities and pioneering quantum information science."
-
-This recognized both the fundamental importance of Bell tests and the birth of quantum information as a field.
+Aspect's 1982 Bell test did exactly this — with photons instead of qubits, polarizers instead of $R_y$ gates, and coincidence counters instead of classical bit registers. The circuit model is a direct map of the physical experiment.
 ```
 
 ---
 
-## What Bell's Theorem Means
+## Part 6: The Circuit Model in General
 
-Let's be precise about what Bell's theorem does and doesn't say.
+### What We've Established
 
-### What It DOES Say
+The circuit model provides a systematic recipe for quantum computation:
 
-**No local hidden variable theory can reproduce all predictions of quantum mechanics.**
+1. **Initialize** qubits in $|0\rangle$.
+2. **Apply gates** (unitary operations) — single-qubit gates like $H$, $X$, $Z$, $R_y(\theta)$ and two-qubit gates like CNOT.
+3. **Measure** in the computational basis, possibly after pre-rotations.
 
-At least one of these assumptions must be false:
-1. **Realism:** Measurement outcomes are determined by pre-existing values
-2. **Locality:** Distant measurements don't influence each other
+Any quantum computation can be expressed in this framework. The circuit model is **universal**: any unitary operation on $n$ qubits can be decomposed into a sequence of single-qubit gates and CNOTs.
 
-### What It Does NOT Say
+### Gates We'll Use Going Forward
 
-**Bell's theorem does NOT prove faster-than-light communication is possible.**
+As we move into quantum algorithms, we'll encounter more gates. Here's a preview of the most important ones:
 
-The no-signaling theorem remains intact: Alice cannot send a message to Bob using entanglement alone. The correlations only become apparent when Alice and Bob compare their results later.
+**Single-qubit gates we've seen:**
 
-**Bell's theorem does NOT tell us which assumption to give up.**
+| Gate | Matrix | Key property |
+|---|---|---|
+| $X$ | $\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$ | Bit flip |
+| $Z$ | $\begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$ | Phase flip |
+| $H$ | $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$ | Creates superposition |
+| $R_y(\theta)$ | $\begin{pmatrix} \cos\theta/2 & -\sin\theta/2 \\ \sin\theta/2 & \cos\theta/2 \end{pmatrix}$ | Rotation about Y-axis |
 
-You could reject realism (measurement creates outcomes, not reveals them). Or you could accept nonlocality but of a subtle kind that doesn't allow signaling. Different interpretations of quantum mechanics make different choices.
+**Two-qubit gates:**
 
-### The Options
+| Gate | Circuit symbol | Key property |
+|---|---|---|
+| CNOT | $\bullet$—$\oplus$ | Entangling gate, flips target if control is $|1\rangle$ |
 
-**Option 1: Give up realism (Copenhagen, QBism)**
-Measurement outcomes are not predetermined. The quantum state is the complete description. There's nothing "underneath" to discover.
+**Gates we'll introduce later** (when we need them for algorithms):
 
-**Option 2: Accept nonlocality (Bohmian mechanics)**
-Hidden variables exist, but they're nonlocal — Alice's measurement really does influence Bob's particle, instantaneously, but in a way that can't be used for communication.
+| Gate | What it does |
+|---|---|
+| $S$ | Phase gate: $|1\rangle \to i|1\rangle$ (quarter turn) |
+| $T$ | $\pi/8$ gate: $|1\rangle \to e^{i\pi/4}|1\rangle$ |
+| Toffoli (CCNOT) | Three-qubit gate: flips target if both controls are $|1\rangle$ |
 
-**Option 3: Many worlds**
-There's no measurement problem because all outcomes happen — in different branches of the wavefunction. No hidden variables, no collapse, no nonlocality (in a sense).
-
-**Option 4: Superdeterminism**
-Reject the assumption that Alice and Bob can freely choose their settings. If everything (including their choices) is predetermined by the initial conditions of the universe, the loophole opens. Most physicists find this unsatisfying.
-
-None of these options is ruled out by Bell's theorem. What IS ruled out is the comfortable classical picture where particles have definite properties and measurements just reveal them.
-
----
-
-## Bell Inequality and Quantum Computing
-
-Why does this matter for quantum computing?
-
-### The Computational Connection
-
-Bell inequality violation proves that quantum correlations cannot be efficiently simulated by classical probability distributions.
-
-More precisely:
-
-```{admonition} Classical Simulation Bound
-:class: important
-
-If a physical system's correlations satisfy Bell inequalities, then a classical computer can efficiently simulate the system.
-
-If they violate Bell inequalities, classical simulation is (provably, in some sense) hard.
-```
-
-This connects entanglement to computational complexity. Quantum computers get their power from manipulating states that violate Bell inequalities.
-
-### Entanglement as a Resource
-
-In quantum computing:
-- **Separable states** can be simulated classically — they have no "quantum advantage"
-- **Entangled states** that violate Bell inequalities are genuinely quantum
-- Algorithms like Shor's and Grover's create and manipulate entanglement
-
-Bell's theorem is the theoretical foundation for believing quantum computers are fundamentally more powerful than classical ones.
-
----
-
-## Lab: Testing CHSH in Qiskit
-
-Let's measure the CHSH quantity using a simulated quantum computer.
-
-### Setup
-
-```{code-block} python
-import numpy as np
-from qiskit import QuantumCircuit
-from qiskit_aer import AerSimulator
-import matplotlib.pyplot as plt
-
-simulator = AerSimulator()
-```
-
-### Creating the Singlet State
-
-```{code-block} python
-def create_singlet():
-    """Create |Ψ-⟩ = (|01⟩ - |10⟩)/√2"""
-    qc = QuantumCircuit(2)
-    qc.h(0)
-    qc.cx(0, 1)
-    qc.z(0)
-    qc.x(1)
-    return qc
-```
-
-### Measuring Correlation for Given Angles
-
-```{code-block} python
-def measure_correlation(theta_a, theta_b, shots=10000):
-    """
-    Measure correlation E(a,b) for singlet state
-    with Alice measuring at angle theta_a and Bob at theta_b.
-    
-    Angles are measured from Z axis in the XZ plane.
-    """
-    qc = create_singlet()
-    
-    # Rotate Alice's qubit to measure at angle theta_a
-    # Ry(-theta) rotates the measurement basis
-    qc.ry(-theta_a, 0)
-    
-    # Rotate Bob's qubit to measure at angle theta_b
-    qc.ry(-theta_b, 1)
-    
-    # Measure
-    qc.measure_all()
-    
-    # Run
-    result = simulator.run(qc, shots=shots).result()
-    counts = result.get_counts()
-    
-    # Calculate correlation
-    # Same outcomes: +1, Different outcomes: -1
-    same = counts.get('00', 0) + counts.get('11', 0)
-    diff = counts.get('01', 0) + counts.get('10', 0)
-    
-    E = (same - diff) / shots
-    return E
-```
-
-### Computing the CHSH Quantity
-
-```{code-block} python
-def compute_CHSH(angle_A, angle_A_prime, angle_B, angle_B_prime, shots=10000):
-    """
-    Compute S = E(A,B) + E(A,B') + E(A',B) - E(A',B')
-    """
-    E_AB = measure_correlation(angle_A, angle_B, shots)
-    E_AB_prime = measure_correlation(angle_A, angle_B_prime, shots)
-    E_A_prime_B = measure_correlation(angle_A_prime, angle_B, shots)
-    E_A_prime_B_prime = measure_correlation(angle_A_prime, angle_B_prime, shots)
-    
-    S = E_AB + E_AB_prime + E_A_prime_B - E_A_prime_B_prime
-    
-    return S, E_AB, E_AB_prime, E_A_prime_B, E_A_prime_B_prime
-
-# Optimal angles (in radians)
-A = 0
-A_prime = np.pi/2
-B = np.pi/4
-B_prime = -np.pi/4  # or equivalently 3*np.pi/4
-
-print("CHSH TEST WITH OPTIMAL ANGLES")
-print("="*50)
-print(f"Alice: A = 0°, A' = 90°")
-print(f"Bob:   B = 45°, B' = -45°")
-print()
-
-S, E_AB, E_ABp, E_ApB, E_ApBp = compute_CHSH(A, A_prime, B, B_prime, shots=50000)
-
-print("Individual correlations:")
-print(f"  E(A, B)   = {E_AB:+.4f}  (theory: {-np.cos(np.pi/4):+.4f})")
-print(f"  E(A, B')  = {E_ABp:+.4f}  (theory: {-np.cos(np.pi/4):+.4f})")
-print(f"  E(A', B)  = {E_ApB:+.4f}  (theory: {-np.cos(np.pi/4):+.4f})")
-print(f"  E(A', B') = {E_ApBp:+.4f}  (theory: {-np.cos(3*np.pi/4):+.4f})")
-print()
-print(f"CHSH quantity S = {S:.4f}")
-print(f"Classical bound: |S| ≤ 2")
-print(f"Quantum prediction: |S| = 2√2 ≈ {2*np.sqrt(2):.4f}")
-print()
-
-if abs(S) > 2:
-    print("★ BELL INEQUALITY VIOLATED! ★")
-    print(f"  Violation: |S| - 2 = {abs(S) - 2:.4f}")
-else:
-    print("No violation (check your code!)")
-```
-
-### Scanning Angles to Find Maximum Violation
-
-```{code-block} python
-def scan_bob_angle(angle_B_prime_range, shots=5000):
-    """
-    Fix A=0, A'=90°, B=45°, and scan B' to see how S varies.
-    """
-    A = 0
-    A_prime = np.pi/2
-    B = np.pi/4
-    
-    S_values = []
-    for B_prime in angle_B_prime_range:
-        S, _, _, _, _ = compute_CHSH(A, A_prime, B, B_prime, shots)
-        S_values.append(S)
-    
-    return S_values
-
-# Scan B' from -90° to +90°
-B_prime_range = np.linspace(-np.pi/2, np.pi/2, 21)
-S_values = scan_bob_angle(B_prime_range, shots=10000)
-
-# Plot
-plt.figure(figsize=(10, 6))
-plt.plot(B_prime_range * 180/np.pi, S_values, 'bo-', markersize=8, label='Measured S')
-plt.axhline(y=2, color='r', linestyle='--', linewidth=2, label='Classical bound (+2)')
-plt.axhline(y=-2, color='r', linestyle='--', linewidth=2, label='Classical bound (-2)')
-plt.axhline(y=2*np.sqrt(2), color='g', linestyle=':', linewidth=2, label=f'Tsirelson bound (+2√2)')
-plt.axhline(y=-2*np.sqrt(2), color='g', linestyle=':', linewidth=2, label=f'Tsirelson bound (-2√2)')
-plt.axvline(x=-45, color='purple', linestyle=':', alpha=0.5)
-plt.xlabel("Bob's setting B' (degrees)", fontsize=12)
-plt.ylabel('CHSH quantity S', fontsize=12)
-plt.title("CHSH Violation vs Bob's Measurement Angle", fontsize=14)
-plt.legend(loc='upper right')
-plt.grid(True, alpha=0.3)
-plt.xlim(-90, 90)
-plt.ylim(-3.5, 3.5)
-plt.show()
-
-# Find maximum violation
-max_idx = np.argmax(np.abs(S_values))
-print(f"\nMaximum |S| = {abs(S_values[max_idx]):.3f} at B' = {B_prime_range[max_idx]*180/np.pi:.1f}°")
-```
-
-### Comparing Entangled vs Product States
-
-```{code-block} python
-def create_product_state():
-    """Create a product state |+⟩|+⟩ for comparison"""
-    qc = QuantumCircuit(2)
-    qc.h(0)
-    qc.h(1)
-    return qc
-
-def measure_correlation_product(theta_a, theta_b, shots=10000):
-    """Measure correlation for product state"""
-    qc = create_product_state()
-    qc.ry(-theta_a, 0)
-    qc.ry(-theta_b, 1)
-    qc.measure_all()
-    
-    result = simulator.run(qc, shots=shots).result()
-    counts = result.get_counts()
-    
-    same = counts.get('00', 0) + counts.get('11', 0)
-    diff = counts.get('01', 0) + counts.get('10', 0)
-    
-    return (same - diff) / shots
-
-print("\nCOMPARISON: ENTANGLED vs PRODUCT STATE")
-print("="*50)
-
-# Compute CHSH for product state
-E_AB = measure_correlation_product(0, np.pi/4)
-E_ABp = measure_correlation_product(0, -np.pi/4)
-E_ApB = measure_correlation_product(np.pi/2, np.pi/4)
-E_ApBp = measure_correlation_product(np.pi/2, -np.pi/4)
-S_product = E_AB + E_ABp + E_ApB - E_ApBp
-
-print(f"Product state |+⟩|+⟩:")
-print(f"  S = {S_product:.4f}")
-print(f"  |S| = {abs(S_product):.4f} ≤ 2  ✓ (satisfies classical bound)")
-print()
-print(f"Entangled singlet state:")
-print(f"  S = {S:.4f}")
-print(f"  |S| = {abs(S):.4f} > 2  ✗ (violates classical bound)")
-```
+We'll introduce $S$, $T$, and Toffoli when we encounter algorithms that use them.
 
 ---
 
 ## Summary
 
-Today we proved one of the most profound results in physics:
+1. **The circuit model** represents quantum computation as gates on wires, read left to right. Every qubit starts in $|0\rangle$.
 
-1. **The CHSH inequality** constrains correlations in any local hidden variable theory:
-$$
-|S| = |E(A,B) + E(A,B') + E(A',B) - E(A',B')| \leq 2
-$$
+2. **Single-qubit gates** are $2 \times 2$ unitary matrices drawn as boxes on one wire: $X$ (bit flip), $Z$ (phase flip), $H$ (superposition), $R_y(\theta)$ (rotation).
 
-2. **Quantum mechanics violates CHSH**: For the singlet state with optimal angles,
-$$
-|S| = 2\sqrt{2} \approx 2.83 > 2
-$$
+3. **CNOT** is the fundamental two-qubit gate. It acts classically on basis states. The quantum magic is that CNOT on a superposed control creates **entanglement**.
 
-3. **The Tsirelson bound** limits quantum violation to $2\sqrt{2}$ — quantum mechanics is nonlocal but not maximally so.
+4. **Bell states** are built by $H$ + CNOT, the simplest entangling circuit. Different inputs or follow-up gates give all four Bell states. Four gates build the singlet.
 
-4. **Experiments confirm quantum mechanics**: All rigorous Bell tests show violation consistent with quantum predictions.
+5. **Measurement** in the circuit model is always in Z. To measure in another basis, apply a rotation gate first: $H$ for X-basis, $R_y(-\theta)$ for an axis at angle $\theta$ from Z.
 
-5. **Bell's theorem** forces us to abandon either realism (predetermined outcomes) or locality (no distant influences). We can't have both.
-
-6. **Computational significance**: Bell violations prove quantum correlations can't be efficiently simulated classically — the foundation for quantum computational advantage.
+6. **A Bell test is a circuit:** prepare singlet → rotate into measurement bases → measure → compute correlations from bitstring statistics.
 
 ---
 
 ## Homework
 
-### Problem 1: CHSH Derivation
+### Problem 1: Single-Qubit Gate Identities
 
-Reproduce the derivation of the CHSH inequality.
+**(a)** Verify that $H^2 = I$ by matrix multiplication.
 
-**(a)** For fixed $\lambda$, show that if $B(\lambda), B'(\lambda) \in \{+1, -1\}$, then exactly one of $B+B'$ and $B-B'$ equals $\pm 2$ and the other equals $0$.
+**(b)** Show that $HXH = Z$ and $HZH = X$. What does this mean? *(Hint: conjugating by H swaps the X and Z bases.)*
 
-**(b)** Using part (a), show that $S(\lambda) = A(B+B') + A'(B-B') \in \{-2, +2\}$.
-
-**(c)** Explain why averaging over $\lambda$ gives $|S| \leq 2$.
+**(c)** Show that $R_y(\pi/2)$ maps $|0\rangle \to \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$. Compare this to $H|0\rangle$. Are they the same state?
 
 ---
 
-### Problem 2: Quantum Prediction
+### Problem 2: CNOT on Various Inputs
 
-For the singlet state $|\Psi^-\rangle$ with correlation $E(\theta) = -\cos\theta$:
+**(a)** Verify the CNOT truth table by applying the $4 \times 4$ matrix to each basis state $|00\rangle$, $|01\rangle$, $|10\rangle$, $|11\rangle$.
 
-**(a)** Compute $E(A,B)$, $E(A,B')$, $E(A',B)$, $E(A',B')$ for:
-- $A$ at $0°$, $A'$ at $90°$, $B$ at $45°$, $B'$ at $-45°$
+**(b)** Compute CNOT$(|+\rangle \otimes |0\rangle)$ by expanding $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$ and applying CNOT to each term. Verify you get $|\Phi^+\rangle$.
 
-**(b)** Compute $S$ and verify $|S| = 2\sqrt{2}$.
+**(c)** Compute CNOT$(|{-}\rangle \otimes |0\rangle)$. What state do you get?
 
-**(c)** What if $B'$ were at $+45°$ instead of $-45°$? Compute $S$ for this case.
-
-**(d)** What angles give $S = 0$ (no violation at all)?
+**(d)** Compute CNOT$(|0\rangle \otimes |+\rangle)$. Is the result entangled? *(Hint: try the determinant test.)*
 
 ---
 
-### Problem 3: Optimizing the Violation
+### Problem 3: Building All Four Bell States
 
-Suppose Alice measures at angles $0$ and $\alpha$, while Bob measures at angles $\beta$ and $\gamma$. For the singlet state, $E(\theta) = -\cos\theta$.
+**(a)** Starting from $|00\rangle$, trace through the circuit $H$ (qubit 0) → CNOT to verify you get $|\Phi^+\rangle$.
 
-**(a)** Write $S$ in terms of $\alpha, \beta, \gamma$.
+**(b)** Starting from $|10\rangle$ (i.e., apply $X$ on qubit 0, then $H$ on qubit 0, then CNOT), trace through to get $|\Phi^-\rangle$.
 
-**(b)** By symmetry, assume the angles are evenly spaced: $\alpha = 2\phi$, $\beta = \phi$, $\gamma = 3\phi$. Show that:
-$$
-S = -3\cos\phi + \cos(3\phi)
-$$
+**(c)** Repeat for $|01\rangle \to |\Psi^+\rangle$ and $|11\rangle \to |\Psi^-\rangle$.
 
-**(c)** Find the value of $\phi$ that maximizes $|S|$. (You can use calculus or numerical methods.)
-
-**(d)** Verify that the maximum is $2\sqrt{2}$ at $\phi = \pi/4$.
+**(d)** Verify that the alternative singlet circuit ($H$, CNOT, $Z$ on qubit 0, $X$ on qubit 1) also gives $|\Psi^-\rangle$ starting from $|00\rangle$.
 
 ---
 
-### Problem 4: The Product State
+### Problem 4: Measurement Basis Rotations
 
-Consider the product state $|+\rangle \otimes |+\rangle$ where $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$.
+**(a)** Show that measuring $H|0\rangle$ in the Z-basis gives outcomes 0 and 1 with equal probability. Then show that applying $H$ first (i.e., $H \cdot H|0\rangle = |0\rangle$) and measuring in Z gives outcome 0 with certainty. This confirms that $H$-then-measure is an X-basis measurement.
 
-**(a)** For this state, what is the correlation $E(\theta)$ when Alice measures at angle $0$ and Bob at angle $\theta$?
+**(b)** The state $|0\rangle$ has $\langle \sigma_x \rangle = 0$, meaning X-basis measurement gives 50/50 outcomes. Verify this by computing the probabilities of getting $|+\rangle$ and $|-\rangle$ directly (expand $|0\rangle$ in the X-eigenbasis). Then verify the same result using the circuit: apply $H$, measure in Z, and check you get 50/50.
 
-*Hint: Product states have no correlation — each qubit is independent.*
-
-**(b)** Compute the CHSH quantity $S$ for the product state with any choice of angles.
-
-**(c)** Does the product state violate the CHSH inequality? Explain why this makes sense.
+**(c)** What gate before measurement implements a Y-basis measurement? *(Hint: you need a rotation that maps $|+i\rangle$ and $|-i\rangle$ to $|0\rangle$ and $|1\rangle$.)*
 
 ---
 
-### Problem 5: Tsirelson Bound
+### Problem 5: Bell Test Circuits in Qiskit
 
-The Tsirelson bound states that $|S| \leq 2\sqrt{2}$ for any quantum state and measurements.
+This problem uses Qiskit. Install the packages listed below if you haven't already.
 
-**(a)** Suppose a theory allowed $|S| = 4$. What would the correlations look like? (What values of $E$ would be needed?)
+```python
+# pip install qiskit qiskit-aer numpy pylatexenc
+```
 
-**(b)** Such a theory would violate "no-signaling" — Alice could send information to Bob. Give an intuitive argument for why correlations that are "too strong" would allow communication.
+**(a)** Write a Qiskit circuit that prepares the singlet state $|\Psi^-\rangle$. Use `Statevector.from_instruction(qc)` (from `qiskit.quantum_info`) to verify that the state vector is $[0, \; 1/\sqrt{2}, \; -1/\sqrt{2}, \; 0]$. Draw the circuit using `qc.draw("mpl")`.
 
-**(c)** Quantum mechanics achieves $|S| = 2\sqrt{2}$, which is between the classical bound (2) and the "super-quantum" bound (4). What does this suggest about quantum mechanics?
+**(b)** Add Z-basis measurements on both qubits. Run 10,000 shots with `StatevectorSampler` (from `qiskit.primitives`) and verify that only outcomes `01` and `10` appear (perfect anti-correlation). Compute $E(Z,Z)$ from the counts.
 
----
+**(c)** Modify the circuit to measure in the X-basis (apply H to both qubits before measurement). Run 10,000 shots and verify $E(X,X) = -1$.
 
-### Problem 6: Bell State vs Singlet
+**(d)** Measure Alice in Z and Bob in X. Verify $E(Z,X) \approx 0$.
 
-The Bell state $|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$ has correlation $E(\theta) = +\cos\theta$ (correlation, not anti-correlation).
+```{admonition} Qiskit Bit Ordering
+:class: warning
 
-**(a)** Compute the CHSH quantity for $|\Phi^+\rangle$ with the same angles as the singlet case.
-
-**(b)** Does $|\Phi^+\rangle$ also violate CHSH? By how much?
-
-**(c)** Is the violation the same, or different? Explain.
-
----
-
-### Problem 7: Experimental Considerations
-
-In a real Bell test experiment:
-
-**(a)** Why must Alice and Bob be "spacelike separated" (far enough apart that light can't travel between them during the measurement)?
-
-**(b)** What is the "detection loophole" and how do experimenters close it?
-
-**(c)** The 2015 "loophole-free" Bell tests were considered definitive. What did they achieve that previous experiments hadn't?
-
-**(d)** Despite closing all loopholes, some physicists still explore "superdeterminism." What is this loophole and why do most physicists find it unsatisfying?
+Qiskit uses **little-endian** ordering: in a bitstring like `"01"`, the rightmost character is qubit 0 and the leftmost is qubit 1. So `bitstring[0]` is qubit 1 (Bob) and `bitstring[1]` is qubit 0 (Alice). Getting this backwards will flip the sign of your correlations.
+```
 
 ---
 
-### Problem 8: CHSH in Qiskit
+### Problem 6: CHSH Violation in Qiskit
 
-**(a)** Implement the CHSH test in Qiskit using $|\Phi^+\rangle$ instead of $|\Psi^-\rangle$. Verify violation.
+**(a)** Write a function `compute_E(counts, shots)` that takes a dictionary of bitstring counts and returns the correlation $E = P(\texttt{00}) + P(\texttt{11}) - P(\texttt{01}) - P(\texttt{10})$.
 
-**(b)** Create a "classical" state by measuring the singlet immediately after creation, then running the CHSH protocol. Does this "decohered" state violate CHSH?
+**(b)** Build four circuits for the CHSH measurement configurations: Alice $\in \{Z, X\}$, Bob $\in \{Q_+, Q_-\}$, where $Q_{\pm}$ are the axes at $\pm 45°$ from Z (use $R_y(\mp\pi/4)$ as the pre-rotation). Run each with 10,000 shots and report the four $E$ values.
 
-**(c)** Scan Alice's angle $A'$ from $0°$ to $180°$ (keeping $A=0°$, $B=45°$, $B'=-45°$). Plot $S$ vs $A'$. At what angle is the violation maximized?
+**(c)** Compute $S = E(Z, Q_+) + E(Z, Q_-) + E(X, Q_+) - E(X, Q_-)$. Verify that $|S| \approx 2\sqrt{2} \approx 2.83$, violating the classical bound $|S| \leq 2$.
 
-**(d)** What happens if you introduce noise (apply depolarizing noise to the singlet)? At what noise level does the violation disappear?
+**(d)** Sweep Bob's measurement angle $\alpha$ from $0$ to $2\pi$. For each $\alpha$, measure $E(Z, \alpha)$ and plot it against $\alpha$. Overlay the theoretical curve $E = -\cos\alpha$. Do they match?
 
 ---
 
-### Problem 9: Conceptual Questions
+### Problem 7: Shot Noise (Optional)
 
-**(a)** Bell's theorem rules out "local hidden variables." Does it rule out all hidden variable theories? If not, what kind does it allow?
+**(a)** Run the CHSH test from Problem 6 with $N = 100$, $1{,}000$, and $10{,}000$ shots. For each, report $|S|$. How does the statistical uncertainty scale with $N$?
 
-**(b)** Explain in your own words why CHSH violation doesn't allow faster-than-light communication, even though it implies "nonlocality."
+**(b)** Repeat the $N = 100$ experiment 100 times. Plot a histogram of the measured $|S|$ values. What fraction of trials give $|S| > 2$?
 
-**(c)** A skeptic says: "Bell tests just show we don't understand quantum mechanics well enough. Eventually someone will find the hidden variables." How would you respond?
-
-**(d)** Why is Bell's theorem important for quantum computing, not just for philosophy of physics?
+**(c)** Experimentalists report the number of standard deviations by which $|S|$ exceeds 2. Estimate this for $N = 10{,}000$.
 
 ---
 
 ## Looking Ahead
 
-We've now established the theoretical foundation: entanglement is real, it's non-classical, and it's a resource.
+We now have all the tools to do quantum computing: states, gates, circuits, and measurement. The circuit model is the language we'll use for the rest of the course.
 
-Next lecture, we'll learn how to **create and control** entanglement using quantum gates. We'll study CNOT, CZ, and other two-qubit gates in detail — and connect them to the physical interactions that implement them in real quantum computers.
+Next lecture: we **prove** the CHSH inequality $|S| \leq 2$ for local hidden variables, derive the quantum maximum $|S| = 2\sqrt{2}$ (the Tsirelson bound), and understand why $2\sqrt{2}$ and not $4$ — even quantum mechanics has limits on how strong correlations can be.
+
+After that, we move to **quantum algorithms**: Deutsch's algorithm, then Grover's search, then the quantum Fourier transform and Shor's factoring. All of them are circuits built from the gates we learned today.

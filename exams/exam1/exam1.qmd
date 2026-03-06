@@ -1,0 +1,99 @@
+---
+title: "PHYS 349 — Introduction to Quantum Computing"
+subtitle: "Exam 1"
+#author: "Dr. Jonathan Hood"
+#date: today
+format:
+  pdf:
+    documentclass: article
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+    header-includes: |
+      \usepackage{enumitem}
+      \usepackage{needspace}
+      \newcommand{\ket}[1]{|#1\rangle}
+      \newcommand{\bra}[1]{\langle#1|}
+      \newcommand{\braket}[2]{\langle#1|#2\rangle}
+      \newcommand{\ketbra}[2]{|#1\rangle\langle#2|}
+---
+
+\vspace{0.5cm}
+
+**Name:** \hrulefill \hspace{2cm} **Date:** \hrulefill
+
+\vspace{0.3cm}
+
+**Instructions:** Select the best answer for each question. Circle your answer.
+
+\vspace{0.5cm}
+
+------------------------------------------------------------------------
+
+\newpage
+
+**1.** What is the result of applying the Pauli-$X$ gate to $\ket{0}$?
+
+\begin{enumerate}[label=\Alph*)]
+\item $\ket{0}$
+\item $\ket{1}$
+\item $\ket{+}$
+\item $\ket{-}$
+\item $i\ket{0}$
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\needspace{4cm}
+
+**2.** Which of the following is a valid (normalized) single-qubit state?
+
+\begin{enumerate}[label=\Alph*)]
+\item $\frac{1}{2}\ket{0} + \frac{1}{2}\ket{1}$
+\item $\ket{0} + \ket{1}$
+\item $\frac{1}{\sqrt{2}}\ket{0} + \frac{1}{\sqrt{2}}\ket{1}$
+\item $2\ket{0} - \ket{1}$
+\item $\frac{1}{\sqrt{3}}\ket{0} + \frac{1}{\sqrt{3}}\ket{1}$
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\needspace{4cm}
+
+**3.** The eigenvalues of the Pauli-$Z$ operator are:
+
+\begin{enumerate}[label=\Alph*)]
+\item $0$ and $1$
+\item $+1$ and $-1$
+\item $+i$ and $-i$
+\item $+\frac{1}{2}$ and $-\frac{1}{2}$
+\item $0$ and $-1$
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\needspace{4cm}
+
+**4.** What is the probability of measuring $\ket{0}$ for the state $\ket{+} = \frac{1}{\sqrt{2}}(\ket{0} + \ket{1})$?
+
+\begin{enumerate}[label=\Alph*)]
+\item $0$
+\item $\frac{1}{4}$
+\item $\frac{1}{\sqrt{2}}$
+\item $\frac{1}{2}$
+\item $1$
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\needspace{5cm}
+
+**5.** Which matrix represents the Hadamard gate?
+
+\begin{enumerate}[label=\Alph*)]
+\item $\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$
+\item $\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$
+\item $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$
+\item $\begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$
+\item $\frac{1}{\sqrt{2}}\begin{pmatrix} 1 & -1 \\ 1 & 1 \end{pmatrix}$
+\end{enumerate}

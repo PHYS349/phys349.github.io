@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>lecture</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="03_04_lecture_files/libs/clipboard/clipboard.min.js"></script>
+<script src="03_04_lecture_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="03_04_lecture_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="03_04_lecture_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="03_04_lecture_files/libs/quarto-html/popper.min.js"></script>
+<script src="03_04_lecture_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="03_04_lecture_files/libs/quarto-html/anchor.min.js"></script>
+<link href="03_04_lecture_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="03_04_lecture_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="03_04_lecture_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="03_04_lecture_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="03_04_lecture_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="lecture-3.4-bells-theorem" class="level1">
+<h1>Lecture 3.4 — Bell’s Theorem</h1>
+<section id="where-we-left-off" class="level2">
+<h2 class="anchored" data-anchor-id="where-we-left-off">Where We Left Off</h2>
+<p>Last lecture we showed that three assumptions — <strong>locality</strong>, <strong>realism</strong>, and <strong>completeness of QM</strong> — are mutually inconsistent. The EPR argument (1935) assumed locality and realism and concluded that quantum mechanics is incomplete: there must be hidden variables carrying predetermined measurement outcomes.</p>
+<p>We made this precise with the lookup table picture. If realism is true, each particle pair carries a table of predetermined <span class="math inline">\(\pm 1\)</span> answers. If locality is true, Alice’s choice of measurement setting can’t change Bob’s table entries.</p>
+<p>The question we left open:</p>
+<p><strong>Can any distribution over lookup tables reproduce the quantum predictions?</strong></p>
+<p>Today we answer that question. The answer is no.</p>
+<hr>
+</section>
+<section id="part-1-two-settings-the-hidden-variable-model-works" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-two-settings-the-hidden-variable-model-works">Part 1: Two Settings — The Hidden Variable Model Works</h2>
+<section id="the-setup" class="level3">
+<h3 class="anchored" data-anchor-id="the-setup">The Setup</h3>
+<p>Alice and Bob share the singlet state</p>
+<p><span class="math display">\[
+|\Psi^-\rangle = \frac{1}{\sqrt{2}}(|01\rangle - |10\rangle).
+\]</span></p>
+<p>Each can choose to measure along either <span class="math inline">\(Z\)</span> or <span class="math inline">\(X\)</span>. The quantum predictions are:</p>
+<p><strong>Same axis: perfect anti-correlation</strong></p>
+<p><span class="math display">\[
+E(Z,Z) = -1, \qquad E(X,X) = -1.
+\]</span></p>
+<p>Whenever they measure the same observable, they always get opposite outcomes.</p>
+<p><strong>Different axes: no correlation</strong></p>
+<p><span class="math display">\[
+E(Z,X) = E(X,Z) = 0.
+\]</span></p>
+<p>When they measure different observables, all four outcome pairs occur with probability <span class="math inline">\(1/4\)</span>.</p>
+</section>
+<section id="building-the-lookup-table" class="level3">
+<h3 class="anchored" data-anchor-id="building-the-lookup-table">Building the Lookup Table</h3>
+<p>Let each pair carry a hidden variable <span class="math inline">\(\lambda\)</span> encoding predetermined outcomes:</p>
+<p><span class="math display">\[
+a_Z,\ a_X \in \{+1,-1\} \qquad \text{(Alice’s predetermined outcomes).}
+\]</span></p>
+<p>For the singlet, outcomes are perfectly anti-correlated along the same axis, so Bob’s values must satisfy</p>
+<p><span class="math display">\[
+b_Z = -a_Z, \qquad b_X = -a_X.
+\]</span></p>
+<p>That leaves two free bits: <span class="math inline">\(a_Z\)</span> and <span class="math inline">\(a_X\)</span>. There are <span class="math inline">\(2^2=4\)</span> possible lookup tables:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Table <span class="math inline">\(\lambda\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(a_Z\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(a_X\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(b_Z\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(b_X\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Assign each table equal probability: <span class="math inline">\(p_1=p_2=p_3=p_4=1/4\)</span>.</p>
+</section>
+<section id="checking-the-predictions" class="level3">
+<h3 class="anchored" data-anchor-id="checking-the-predictions">Checking the Predictions</h3>
+<p><strong>ZZ correlation.</strong> Every table has <span class="math inline">\(b_Z=-a_Z\)</span>, so <span class="math inline">\(a_Z b_Z=-1\)</span> always. Therefore <span class="math inline">\(E(Z,Z)=-1\)</span>. ✓</p>
+<p><strong>XX correlation.</strong> Every table has <span class="math inline">\(b_X=-a_X\)</span>, so <span class="math inline">\(a_X b_X=-1\)</span> always. Therefore <span class="math inline">\(E(X,X)=-1\)</span>. ✓</p>
+<p><strong>ZX correlation (Alice measures</strong> <span class="math inline">\(Z\)</span>, Bob measures <span class="math inline">\(X\)</span>). Compute <span class="math inline">\(a_Z b_X\)</span>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Table</th>
+<th style="text-align: center;"><span class="math inline">\(a_Z\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(b_X\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(a_Z b_X\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(+1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-1\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Average:</p>
+<p><span class="math display">\[
+E(Z,X) = \frac{1}{4}(-1+1+1-1)=0.
+\]</span></p>
+<p>✓</p>
+<p>So with two settings, a local hidden-variable lookup-table model reproduces the singlet predictions exactly.</p>
+<blockquote class="blockquote">
+<p><strong>Einstein Wins (So Far).</strong><br>
+With two measurement settings, a simple lookup table model reproduces all quantum predictions for the singlet state. The correlations are no different from classical correlations predetermined at the source.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="part-2-the-third-axis" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-the-third-axis">Part 2: The Third Axis</h2>
+<section id="a-new-measurement-direction" class="level3">
+<h3 class="anchored" data-anchor-id="a-new-measurement-direction">A New Measurement Direction</h3>
+<p>The hidden-variable model worked because with two orthogonal axes (<span class="math inline">\(Z\)</span> and <span class="math inline">\(X\)</span> at <span class="math inline">\(90^\circ\)</span>), there is enough freedom to assign predetermined values consistently. Now add a third axis.</p>
+<p>Define <span class="math inline">\(Q\)</span> as the axis at <span class="math inline">\(45^\circ\)</span> between <span class="math inline">\(Z\)</span> and <span class="math inline">\(X\)</span> on the Bloch sphere. The corresponding operator is</p>
+<p><span class="math display">\[
+\sigma_Q = \frac{1}{\sqrt{2}}(\sigma_z+\sigma_x)
+        = \frac{1}{\sqrt{2}}
+          \begin{pmatrix}
+          1 &amp; 1 \\
+          1 &amp; -1
+          \end{pmatrix}.
+\]</span></p>
+<p>Its eigenstates are</p>
+<p><span class="math display">\[
+|Q_+\rangle = \cos\frac{\pi}{8}\,|0\rangle + \sin\frac{\pi}{8}\,|1\rangle,
+\qquad
+|Q_-\rangle = -\sin\frac{\pi}{8}\,|0\rangle + \cos\frac{\pi}{8}\,|1\rangle,
+\]</span></p>
+<p>where <span class="math inline">\(\pi/8 = 22.5^\circ\)</span>. We won’t need the explicit eigenstates — what matters are the angles between measurement axes.</p>
+</section>
+<section id="the-correlation-function-for-the-singlet" class="level3">
+<h3 class="anchored" data-anchor-id="the-correlation-function-for-the-singlet">The Correlation Function for the Singlet</h3>
+<p>For the singlet state, quantum mechanics predicts the correlator</p>
+<p><span class="math display">\[
+E(\hat a,\hat b) = -\cos\theta,
+\]</span></p>
+<p>where <span class="math inline">\(\theta\)</span> is the angle between the measurement axes on the Bloch sphere.</p>
+<p>This is plausible because the singlet is rotationally invariant: the correlation can depend only on the relative angle. When <span class="math inline">\(\theta=0^\circ\)</span> (same axis), perfect anti-correlation gives <span class="math inline">\(E=-1\)</span>. When <span class="math inline">\(\theta=180^\circ\)</span> (opposite axes), <span class="math inline">\(E=+1\)</span>. The cosine interpolates smoothly.</p>
+<p>(One derivation uses <span class="math inline">\(\langle\Psi^-|(\hat a\cdot\vec\sigma)\otimes(\hat b\cdot\vec\sigma)|\Psi^-\rangle = -\hat a\cdot\hat b\)</span>; see homework.)</p>
+</section>
+<section id="the-three-pairs-of-measurements" class="level3">
+<h3 class="anchored" data-anchor-id="the-three-pairs-of-measurements">The Three Pairs of Measurements</h3>
+<p>Our three axes and their pairwise angles:</p>
+<ul>
+<li><span class="math inline">\(Z\)</span> and <span class="math inline">\(Q\)</span>: separated by <span class="math inline">\(45^\circ\)</span></li>
+<li><span class="math inline">\(X\)</span> and <span class="math inline">\(Q\)</span>: separated by <span class="math inline">\(45^\circ\)</span></li>
+<li><span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span>: separated by <span class="math inline">\(90^\circ\)</span></li>
+</ul>
+<p>For <span class="math inline">\(\pm 1\)</span> outcomes, the probability of getting opposite outcomes (“disagree”) is</p>
+<p><span class="math display">\[
+P(\text{disagree}) = \frac{1 - E}{2}.
+\]</span></p>
+<p>Compute:</p>
+<p><span class="math inline">\(Z\)</span> and <span class="math inline">\(Q\)</span> (<span class="math inline">\(\theta=45^\circ\)</span>):</p>
+<p><span class="math display">\[
+E(Z,Q) = -\cos 45^\circ = -\frac{1}{\sqrt{2}} \approx -0.707,
+\]</span></p>
+<p><span class="math display">\[
+P(\text{disagree}) = \frac{1 + 1/\sqrt{2}}{2} \approx 0.8536.
+\]</span></p>
+<p><span class="math inline">\(X\)</span> and <span class="math inline">\(Q\)</span> (<span class="math inline">\(\theta=45^\circ\)</span>):</p>
+<p><span class="math display">\[
+E(X,Q) = -\frac{1}{\sqrt{2}} \approx -0.707,
+\qquad
+P(\text{disagree}) \approx 0.8536.
+\]</span></p>
+<p><span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> (<span class="math inline">\(\theta=90^\circ\)</span>):</p>
+<p><span class="math display">\[
+E(X,Z) = -\cos 90^\circ = 0,
+\qquad
+P(\text{disagree}) = \frac{1}{2}.
+\]</span></p>
+<p>Summary:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Measurement pair</th>
+<th style="text-align: right;">Angle</th>
+<th style="text-align: right;"><span class="math inline">\(E\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(P(\text{disagree})\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(Z\)</span> and <span class="math inline">\(Q\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(45^\circ\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(-1/\sqrt{2}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\approx 0.8536\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Q\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(45^\circ\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(-1/\sqrt{2}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\approx 0.8536\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(90^\circ\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0.5\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>These are the predictions we will test against local hidden-variable lookup tables.</p>
+<hr>
+</section>
+</section>
+<section id="part-3-the-venn-diagram-argument" class="level2">
+<h2 class="anchored" data-anchor-id="part-3-the-venn-diagram-argument">Part 3: The Venn Diagram Argument</h2>
+<section id="the-lookup-table-with-three-settings" class="level3">
+<h3 class="anchored" data-anchor-id="the-lookup-table-with-three-settings">The Lookup Table with Three Settings</h3>
+<p>Now each pair must carry predetermined values for three axes:</p>
+<p><span class="math display">\[
+A_X(\lambda),\ A_Z(\lambda),\ A_Q(\lambda) \in \{+1,-1\}.
+\]</span></p>
+<p>Perfect anti-correlation along the same axis forces</p>
+<p><span class="math display">\[
+B_s(\lambda) = -A_s(\lambda),
+\qquad s\in\{X,Z,Q\}.
+\]</span></p>
+<p>There are <span class="math inline">\(2^3=8\)</span> possible lookup tables, determined by Alice’s triple <span class="math inline">\((A_X,A_Z,A_Q)\)</span>.</p>
+</section>
+<section id="key-translation-disagree-longleftrightarrow-equality-of-alices-bits" class="level3">
+<h3 class="anchored" data-anchor-id="key-translation-disagree-longleftrightarrow-equality-of-alices-bits">Key Translation: “Disagree” <span class="math inline">\(\Longleftrightarrow\)</span> Equality of Alice’s Bits</h3>
+<p>Suppose Alice measures setting <span class="math inline">\(s\)</span> and Bob measures setting <span class="math inline">\(t\)</span>. In the lookup-table model:</p>
+<ul>
+<li>Alice outputs <span class="math inline">\(A_s\)</span>.</li>
+<li>Bob outputs <span class="math inline">\(B_t=-A_t\)</span>.</li>
+</ul>
+<p>They <strong>disagree</strong> (opposite outcomes) when</p>
+<p><span class="math display">\[
+A_s \neq B_t
+\iff
+A_s \neq (-A_t)
+\iff
+A_s = A_t.
+\]</span></p>
+<p>So, in the singlet lookup-table model,</p>
+<p><span class="math display">\[
+P(\text{disagree when measuring } s \text{ and } t) = P(A_s = A_t).
+\]</span></p>
+</section>
+<section id="what-the-quantum-predictions-require" class="level3">
+<h3 class="anchored" data-anchor-id="what-the-quantum-predictions-require">What the Quantum Predictions Require</h3>
+<p>Translate the three disagreement rates into constraints on Alice’s predetermined triple:</p>
+<p>From the <span class="math inline">\((X,Q)\)</span> measurement pair:</p>
+<p><span class="math display">\[
+P(A_X = A_Q) \approx 0.8536.
+\]</span></p>
+<p>From the <span class="math inline">\((Z,Q)\)</span> measurement pair:</p>
+<p><span class="math display">\[
+P(A_Z = A_Q) \approx 0.8536.
+\]</span></p>
+<p>From the <span class="math inline">\((X,Z)\)</span> measurement pair:</p>
+<p><span class="math display">\[
+P(A_X = A_Z) = 0.5.
+\]</span></p>
+<p>Now ask:</p>
+<p><strong>Is there any probability distribution over</strong> <span class="math inline">\((A_X,A_Z,A_Q)\in\{+1,-1\}^3\)</span> that satisfies all three constraints?</p>
+</section>
+<section id="the-set-theory-venn-diagram-argument" class="level3">
+<h3 class="anchored" data-anchor-id="the-set-theory-venn-diagram-argument">The Set-Theory (Venn Diagram) Argument</h3>
+<p>Define two events over hidden variables:</p>
+<ul>
+<li><span class="math inline">\(\mathcal A = \{A_X = A_Q\}\)</span></li>
+<li><span class="math inline">\(\mathcal B = \{A_Z = A_Q\}\)</span></li>
+</ul>
+<p>Quantum mechanics requires:</p>
+<p><span class="math display">\[
+P(\mathcal A) \approx 0.8536,
+\qquad
+P(\mathcal B) \approx 0.8536.
+\]</span></p>
+<p>By inclusion–exclusion,</p>
+<p><span class="math display">\[
+P(\mathcal A \cap \mathcal B)
+\ge P(\mathcal A) + P(\mathcal B) - 1
+\approx 0.8536 + 0.8536 - 1
+\approx 0.7072.
+\]</span></p>
+<p>So at least about <span class="math inline">\(70\%\)</span> of the time, both equalities hold: <span class="math inline">\(A_X=A_Q\)</span> and <span class="math inline">\(A_Z=A_Q\)</span>. But then, for any such <span class="math inline">\(\lambda\)</span>,</p>
+<p><span class="math display">\[
+A_X = A_Q \ \text{and}\ A_Z = A_Q
+\ \Longrightarrow\
+A_X = A_Z.
+\]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+P(A_X = A_Z) \ge P(\mathcal A\cap\mathcal B) \approx 0.7072.
+\]</span></p>
+<p>But quantum mechanics predicts</p>
+<p><span class="math display">\[
+P(A_X = A_Z) = 0.5.
+\]</span></p>
+<p>So we reach a contradiction:</p>
+<p><span class="math display">\[
+\boxed{0.5 \ \ge\ 0.7072 \quad \text{— contradiction.}}
+\]</span></p>
+</section>
+<section id="what-just-happened" class="level3">
+<h3 class="anchored" data-anchor-id="what-just-happened">What Just Happened?</h3>
+<p>This was nothing more than basic logic about three <span class="math inline">\(\pm 1\)</span> values:</p>
+<ul>
+<li><span class="math inline">\(X\)</span> and <span class="math inline">\(Q\)</span> are opposite (between Alice and Bob) about <span class="math inline">\(85\%\)</span> of the time.</li>
+<li><span class="math inline">\(Z\)</span> and <span class="math inline">\(Q\)</span> are opposite about <span class="math inline">\(85\%\)</span> of the time.</li>
+<li>In a singlet lookup-table model, “Alice and Bob are opposite on <span class="math inline">\((s,t)\)</span>” means <span class="math inline">\(A_s=A_t\)</span>.</li>
+<li>If <span class="math inline">\(A_X=A_Q\)</span> and <span class="math inline">\(A_Z=A_Q\)</span>, then <span class="math inline">\(A_X=A_Z\)</span>.</li>
+</ul>
+<p>So <span class="math inline">\(A_X\)</span> and <span class="math inline">\(A_Z\)</span> would have to match at least about <span class="math inline">\(70\%\)</span> of the time — but QM says only <span class="math inline">\(50\%\)</span>.</p>
+<p>No probability distribution over predetermined triples can satisfy all three constraints. The lookup-table model fails.</p>
+<blockquote class="blockquote">
+<p><strong>Why Two Settings Weren’t Enough.</strong><br>
+With only two axes (<span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span>), we built a working hidden-variable model — four lookup tables, equal weights, done.<br>
+The contradiction requires three axes because the hidden variable must satisfy multiple pairwise constraints simultaneously, and the quantum correlations for those pairs are mutually incompatible.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="part-4-the-core-of-bells-theorem" class="level2">
+<h2 class="anchored" data-anchor-id="part-4-the-core-of-bells-theorem">Part 4: The Core of Bell’s Theorem</h2>
+<section id="the-problem-is-consistency-across-multiple-angles" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem-is-consistency-across-multiple-angles">The Problem Is Consistency Across Multiple Angles</h3>
+<p>The root cause is the shape of the quantum correlation function</p>
+<p><span class="math display">\[
+E = -\cos\theta.
+\]</span></p>
+<p>This says:</p>
+<ul>
+<li>Axes <span class="math inline">\(45^\circ\)</span> apart are still highly anti-correlated: <span class="math inline">\(E\approx -0.707\)</span> (disagree <span class="math inline">\(\approx 0.854\)</span>).</li>
+<li>Axes <span class="math inline">\(90^\circ\)</span> apart are uncorrelated: <span class="math inline">\(E=0\)</span> (disagree <span class="math inline">\(0.5\)</span>).</li>
+</ul>
+<p>A local hidden-variable model tries to explain everything using pre-existing <span class="math inline">\(\pm 1\)</span> answers for <span class="math inline">\(X\)</span>, <span class="math inline">\(Z\)</span>, and <span class="math inline">\(Q\)</span>. But once you demand all three pairwise relations at once, logic forces a constraint.</p>
+<p>A compact way to state the Venn argument is the inequality:</p>
+<p><span class="math display">\[
+P(A_X = A_Z) \ge P(A_X = A_Q) + P(A_Z = A_Q) - 1.
+\]</span></p>
+<p>Quantum requires the right-hand side to be about <span class="math inline">\(0.7072\)</span>, but also requires <span class="math inline">\(P(A_X = A_Z)=0.5\)</span>. Those cannot both be true.</p>
+<blockquote class="blockquote">
+<p><strong>Bell’s Theorem (Core Message).</strong><br>
+No theory that satisfies <strong>locality</strong> and <strong>realism</strong> (predetermined outcomes) can reproduce all the predictions of quantum mechanics.<br>
+This is quantitative: local realism forces <span class="math inline">\(P(A_X=A_Z)\gtrsim 0.70\)</span>, while quantum mechanics predicts <span class="math inline">\(0.50\)</span> for these settings.</p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="part-5-what-do-we-give-up" class="level2">
+<h2 class="anchored" data-anchor-id="part-5-what-do-we-give-up">Part 5: What Do We Give Up?</h2>
+<p>We have three assumptions that cannot all be true:</p>
+<ul>
+<li><strong>Locality</strong> — no instantaneous influence at a distance<br>
+</li>
+<li><strong>Realism</strong> — outcomes are predetermined (properties exist before measurement)<br>
+</li>
+<li><strong>Completeness of QM</strong> — the quantum state is the full description</li>
+</ul>
+<p>EPR highlighted the logical tension. Bell made it experimentally testable: <strong>locality + realism</strong> imply quantitative constraints (Bell-type inequalities) that disagree with quantum predictions.</p>
+<p>So which assumption fails?</p>
+<ul>
+<li>If we keep <strong>locality</strong> and <strong>realism</strong>, then Bell-type inequalities must hold — and experiments decide.</li>
+<li>If we give up <strong>realism</strong> (Copenhagen-ish), there are no predetermined values. The lookup table does not exist as a physical object; counterfactual questions like “what would have happened if…” are not describing real properties.</li>
+<li>If we give up <strong>locality</strong> (e.g., Bohmian mechanics), predetermined values exist but Alice’s measurement can influence Bob’s system nonlocally. The <strong>no-signaling</strong> theorem still prevents faster-than-light communication.</li>
+</ul>
+<p>Bell turned this from a philosophical menu into an experimental question: <strong>does the inequality hold, or is it violated?</strong></p>
+<hr>
+</section>
+<section id="part-6-the-experiments-high-level-timeline" class="level2">
+<h2 class="anchored" data-anchor-id="part-6-the-experiments-high-level-timeline">Part 6: The Experiments (High-Level Timeline)</h2>
+<p>Bell tests are often done with polarization-entangled photons rather than spins, but the math is identical: any two-level system obeys the same structure.</p>
+<section id="freedman-and-clauser-1972" class="level3">
+<h3 class="anchored" data-anchor-id="freedman-and-clauser-1972">Freedman and Clauser (1972)</h3>
+<p>Freedman and Clauser performed the first experimental test of a Bell inequality using entangled photons from a calcium atomic cascade. The results violated Bell inequalities and agreed with quantum predictions, but measurement settings were fixed in advance.</p>
+</section>
+<section id="aspect-1982" class="level3">
+<h3 class="anchored" data-anchor-id="aspect-1982">Aspect (1982)</h3>
+<p>Aspect and collaborators improved the tests by switching measurement settings while photons were in flight (fast modulators). This addressed the <strong>locality loophole</strong>: the worry that particles could coordinate outcomes based on advance knowledge of settings. Results again violated Bell inequalities.</p>
+</section>
+<section id="loophole-free-experiments-2015" class="level3">
+<h3 class="anchored" data-anchor-id="loophole-free-experiments-2015">Loophole-Free Experiments (2015)</h3>
+<p>Two major loopholes remained for decades:</p>
+<ul>
+<li><strong>Detection loophole:</strong> not all pairs are detected; an unfair sample could fake violations.</li>
+<li><strong>Locality loophole:</strong> settings must be chosen and implemented so that relevant events are space-like separated.</li>
+</ul>
+<p>In 2015, multiple groups closed both loopholes simultaneously (e.g., Delft with NV centers; Vienna and NIST with high-efficiency photon detection). All found clear violations consistent with QM.</p>
+</section>
+<section id="nobel-prize-2022" class="level3">
+<h3 class="anchored" data-anchor-id="nobel-prize-2022">Nobel Prize (2022)</h3>
+<p>The 2022 Nobel Prize in Physics went to Clauser, Aspect, and Zeilinger for experiments establishing violations of Bell inequalities and pioneering quantum information science.</p>
+<hr>
+</section>
+</section>
+<section id="part-7-what-bell-does-and-does-not-say" class="level2">
+<h2 class="anchored" data-anchor-id="part-7-what-bell-does-and-does-not-say">Part 7: What Bell Does and Does Not Say</h2>
+<p><strong>Bell’s theorem says:</strong><br>
+No theory that is both <strong>local</strong> and <strong>realistic</strong> (predetermined outcomes) can reproduce all quantum predictions. Experiments agree with quantum mechanics, not local realism.</p>
+<p><strong>Bell’s theorem does not say:</strong></p>
+<ul>
+<li>Faster-than-light signaling is possible. It isn’t. Bob’s local outcomes are always random, consistent with a maximally mixed state <span class="math inline">\(\rho_B = I/2\)</span>; correlations appear only when results are compared via classical communication.</li>
+<li>Which assumption must be abandoned. Bell rules out locality + realism together; interpretations differ on which to give up.</li>
+<li>That QM is the final theory. A deeper theory could exist, but it must still reproduce Bell violations (so it cannot restore local realism).</li>
+</ul>
+<p><strong>Practical legacy:</strong> entanglement is a resource. Quantum key distribution, quantum teleportation, and quantum computing all rely on correlations stronger than anything achievable with shared classical information.</p>
+<hr>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<ul>
+<li>With <strong>two settings</strong> (<span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span>), a simple lookup table with four entries can reproduce all singlet predictions.</li>
+<li>With <strong>three settings</strong> (<span class="math inline">\(X\)</span>, <span class="math inline">\(Z\)</span>, <span class="math inline">\(Q\)</span> at <span class="math inline">\(45^\circ\)</span>), the quantum predictions become mutually incompatible with any local hidden-variable lookup-table model.</li>
+<li>The Venn diagram argument is set theory: two ~85% constraints force a <span class="math inline">\(\ge 70\%\)</span> constraint, but QM predicts <span class="math inline">\(50\%\)</span>.</li>
+<li><strong>Bell’s theorem (1964):</strong> no local hidden-variable model reproduces all quantum predictions; this is quantitative and testable.</li>
+<li>Experiments violate Bell inequalities, including loophole-free tests in 2015.</li>
+<li>Conclusion: <strong>locality + realism cannot both hold</strong>.</li>
+</ul>
+<!-- ------------------------------------------------------------------------
+
+## Homework
+
+### Problem 1: The Two-Setting Hidden Variable Model
+
+Alice and Bob share the singlet and each choose to measure $Z$ or $X$.
+
+(a) Write all four lookup tables $(a_Z,a_X,b_Z,b_X)$ using $b_s=-a_s$.
+
+(b) Verify that equal weights $p=1/4$ give $E(Z,Z)=-1$, $E(X,X)=-1$, and $E(Z,X)=0$.
+
+(c) Is the equal-weight distribution the only one that works? Find the most general distribution $(p_1,p_2,p_3,p_4)$ consistent with all three correlations.
+
+### Problem 2: The Third Axis
+
+The operator is $\sigma_Q = \frac{1}{\sqrt{2}}(\sigma_z+\sigma_x)$.
+
+(a) Verify that $\sigma_Q^2=I$.
+
+(b) Find the eigenstates of $\sigma_Q$.
+
+(c) Write $|0\rangle$ in the $\sigma_Q$ eigenbasis. Compute $P(\text{get }+1\text{ measuring }Q)$.
+
+### Problem 3: The Correlation Function
+
+For the singlet $|\Psi^-\rangle$ and measurement axes $\hat a,\hat b$,
+
+$$
+E(\hat a,\hat b) = -\hat a\cdot \hat b = -\cos\theta.
+$$
+
+Verify this for:
+
+(a) $\hat a=\hat b=\hat z$ by computing $\langle\Psi^-|(\sigma_z\otimes\sigma_z)|\Psi^-\rangle$.
+
+(b) $\hat a=\hat z$, $\hat b=\hat x$ by computing $\langle\Psi^-|(\sigma_z\otimes\sigma_x)|\Psi^-\rangle$.
+
+(c) $\hat a=\hat z$, $\hat b=\hat q=\frac{1}{\sqrt{2}}(\hat z+\hat x)$ by computing $\langle\Psi^-|(\sigma_z\otimes\sigma_Q)|\Psi^-\rangle$.
+
+### Problem 4: The Venn Diagram in Detail
+
+There are $8$ possible lookup tables for three axes, corresponding to Alice’s triple $(A_X,A_Z,A_Q)$.
+
+(a) List all $8$ triples. For each, determine whether $A_X=A_Z$, whether $A_X=A_Q$, and whether $A_Z=A_Q$.
+
+(b) Try to find probabilities on the $8$ triples satisfying:
+
+-   $P(A_X=A_Q)=85\%$
+-   $P(A_Z=A_Q)=85\%$
+-   $P(A_X=A_Z)=50\%$
+
+Show this is impossible.
+
+### Problem 5: Why Three Settings?
+
+(a) Show that with only two measurement settings ($X$ and $Z$), you can always construct a hidden-variable model for the singlet.
+
+(b) Explain in your own words why adding a third setting ($Q$) creates a contradiction. What role does $Q$ play?
+
+(c) Suppose $Q$ were at $90^\circ$ from both $X$ and $Z$ (i.e., $Q=Y$). Compute the predicted correlations. Does the Venn diagram argument still produce a contradiction? What is special about the $45^\circ$ choice?
+
+### Problem 6: A Useful Inequality (Triangle/Overlap Form)
+
+For any three $\pm 1$ random variables $A_X,A_Z,A_Q$, prove:
+
+$$
+P(A_X=A_Z) \ge P(A_X=A_Q) + P(A_Z=A_Q) - 1.
+$$
+
+(a) Give a one-line set-theory proof using $\mathcal A=\{A_X=A_Q\}$ and $\mathcal B=\{A_Z=A_Q\}$.
+
+(b) Substitute the quantum values $0.85$, $0.85$, $0.50$ and show the inequality is violated.
+
+(c) Rewrite the inequality in terms of correlators $E(X,Z)$, $E(X,Q)$, $E(Z,Q)$.
+
+### Problem 7: Closing the Loopholes
+
+(a) **Locality loophole:** Explain why it matters that settings are chosen after emission and events are space-like separated.
+
+(b) **Detection loophole:** Sketch how a hidden variable could correlate outcomes with whether a detector clicks, producing an apparent violation on a biased subset.
+
+(c) Why is it important to close both loopholes simultaneously?
+
+------------------------------------------------------------------------
+
+## Looking Ahead
+
+Bell’s theorem here used three settings and an ideal singlet. Real experiments are noisy: correlations are reduced.
+
+The standard tool is the CHSH inequality (Clauser, Horne, Shimony, Holt, 1969): a single number $S$ computed from four correlations, with
+
+$$
+|S| \le 2
+$$
+
+for any local hidden-variable model and
+
+$$
+|S| = 2\sqrt{2} \approx 2.83
+$$
+
+for the optimal quantum state. Next lecture we’ll derive CHSH and see why $2\sqrt{2}$ is the quantum limit. -->
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
