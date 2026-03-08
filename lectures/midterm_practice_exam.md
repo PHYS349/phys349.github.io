@@ -1,7 +1,6 @@
 # Midterm Practice Exam
 
-The practice exam will be released shortly. I'm finishing it sunday afternoon. I'm still adding problems. It will be largely based on homework problems — study those to prepare.
--3/8/2026
+The practice exam will be released shortly. I'm finishing it Sunday afternoon. It will be largely based on homework problems — study those to prepare.  NOTE NO HOMEWORK IS DUE THIS WEEK.   But practice the problems from 3.3 and 3.4.  We will go over the problem again on Tuesday that could be on the exam. 
 
 
 # Midterm Practice Exam
@@ -63,3 +62,9 @@ where $s_i = \pm 1$. Consider an antiferromagnet ($J < 0$) with an external fiel
 
 **12.** In classical computing, you can copy a bit and use majority voting to correct errors. Give two reasons why this same strategy fails for qubits.
 
+
+
+
+
+
+still going ...............

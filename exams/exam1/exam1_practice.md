@@ -1,8 +1,8 @@
 # Midterm Practice Exam
 
-The practice exam will be released shortly. I'm finishing it Sunday afternoon. It will be largely based on homework problems — study those to prepare.
+The practice exam will be released shortly. I'm finishing it Sunday afternoon. It will be largely based on homework problems — study those to prepare.  NOTE NO HOMEWORK IS DUE THIS WEEK.   But practice the problems from 3.3 and 3.4.  We will go over the problem again on Tuesday that could be on the exam. 
 
--3/8/2026
+
 
 ## Lecture 1.1 — Why Quantum? Why Now?
 
