@@ -525,7 +525,7 @@ $$
 $$
 
 ------------------------------------------------------------------------
-
+<!-- 
 ### Problem 4: The Key Inequality
 
 For any three $\pm 1$ random variables $A_X,A_Z,A_Q$, prove the inequality
@@ -545,27 +545,27 @@ $$
 
 **(c)** Substitute the quantum values from Problem 2 and show that the inequality is violated.
 
-**(d)** State clearly what this violation means for local hidden-variable theories.
+**(d)** State clearly what this violation means for local hidden-variable theories. -->
 
 ------------------------------------------------------------------------
 
-### Problem 5: Why Three Settings Matter
+### Problem 4: Why Three Settings Matter
 
 **(a)** Explain why no contradiction appears when only two settings ($X$ and $Z$) are used.
 
 **(b)** Explain in your own words why adding a third setting $Q$ creates a contradiction.
 
-**(c)** Suppose $Q$ were instead at $90^\circ$ from both $X$ and $Z$ (that is, $Q=Y$). Compute the predicted correlations. Does the same Venn-diagram argument still produce a contradiction?
+<!-- **(c)** Suppose $Q$ were instead at $90^\circ$ from both $X$ and $Z$ (that is, $Q=Y$). Compute the predicted correlations. Does the same Venn-diagram argument still produce a contradiction?
 
-**(d)** What is special about choosing $Q$ at $45^\circ$?
+**(d)** What is special about choosing $Q$ at $45^\circ$? -->
 
-------------------------------------------------------------------------
+<!-- ------------------------------------------------------------------------
 
 ### Problem 6: Bell’s Theorem and Experiment
 
 **(a)** State the core message of Bell’s theorem in your own words.
 
-**(b)** Bell tests must close both the locality loophole and the detection loophole. Explain what each loophole is.
+**(b)** Bell tests must close both the locality loophole and the detection loophole. Explain what each loophole is. 
 
 **(c)** Why is it important to close both loopholes simultaneously?
 
@@ -573,4 +573,4 @@ $$
 
 ------------------------------------------------------------------------
 
-
+ -->

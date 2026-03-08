@@ -408,23 +408,9 @@ Alice and Bob share $|\Psi^-\rangle$.
 
 **(d)** Why can't Bob tell, from local measurements alone, which basis Alice chose?
 
-------------------------------------------------------------------------
 
-### Problem 5: Bell-State Correlation Table
 
-For each Bell state, both Alice and Bob measure in the same basis.
-
-**(a)** Verify the ZZ correlation for $|\Psi^+\rangle = \frac{1}{\sqrt{2}}(|01\rangle + |10\rangle)$.
-
-**(b)** Verify the XX correlation for $|\Phi^+\rangle$.
-
-**(c)** Use the lecture's correlation table to explain why one basis alone cannot distinguish all four Bell states.
-
-**(d)** Show how ZZ together with XX can distinguish all four Bell states.
-
-------------------------------------------------------------------------
-
-### Problem 6: The EPR Argument
+### Problem 5: The EPR Argument
 
 Alice and Bob share the singlet state and are far apart.
 

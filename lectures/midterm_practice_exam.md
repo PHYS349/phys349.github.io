@@ -1,6 +1,6 @@
 # Midterm Practice Exam
 
-The practice exam will be released shortly. I'm finishing it Sunday afternoon. It will be largely based on homework problems — study those to prepare.  NOTE NO HOMEWORK IS DUE THIS WEEK.   But practice the problems from 3.3 and 3.4.  We will go over the problem again on Tuesday that could be on the exam. 
+The practice exam will be released shortly. I'm finishing it Sunday afternoon. It will be largely based on homework problems — study those to prepare.  NOTE NO HOMEWORK IS DUE THIS WEEK.  The practice problems from 3.3 and 3.4 are the same as the homeworks problems.  We will go over the problem again on Tuesday that could be on the exam. 
 
 
 
@@ -140,3 +140,234 @@ The available quantum gates are the Hadamard gate $H = \frac{1}{\sqrt{2}}\begin{
 
 **24.** What is the generator of rotations about the $z$-axis in SU(2)? Write the corresponding rotation matrix $R_z(\theta)$ in terms of this generator.
 
+## Lecture 2.6 — Time Evolution and Rabi Oscillations
+
+**25.** Consider the rotation $R_{\hat{n}}(\theta) = e^{-i\theta(\hat{n}\cdot\vec{\sigma})/2}$ with $\hat{n} = \frac{1}{\sqrt{2}}(\hat{x} + \hat{y})$ and $\theta = \pi/2$. Starting from $|0\rangle$, draw on the Bloch sphere the rotation axis and the resulting state after the rotation is applied.
+
+**26.** The Schrodinger equation is $H|\psi(t)\rangle = i\hbar \frac{\partial}{\partial t}|\psi(t)\rangle$.
+
+**(a)** Derive the time evolution operator $U(t)$ such that $|\psi(t)\rangle = U(t)|\psi(0)\rangle$. Show that $U(t) = e^{-iHt/\hbar}$.
+
+**(b)** Why must $U(t)$ be unitary? What physical principle does this enforce?
+
+**27.** A qubit has Hamiltonian $H = \frac{\hbar\omega}{2}\sigma_z$ and starts in the state $|\psi(0)\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$.
+
+**(a)** Find $|\psi(t)\rangle$.
+
+**(b)** Describe the motion on the Bloch sphere. What kind of motion is this?
+
+**(c)** Do the populations $P_0(t)$ and $P_1(t)$ change with time? Why or why not?
+
+**28.** A qubit has Hamiltonian $H = \frac{\hbar\Omega}{2}\sigma_x$ and starts in $|0\rangle$. The time evolution operator is $U(t) = e^{-i\Omega t\,\sigma_x/2} = R_x(\Omega t)$.
+
+**(a)** Find the state $|\psi(t)\rangle$ and draw the rotation axis on the Bloch sphere.
+
+**(b)** Draw the state on the Bloch sphere at $\Omega t = \pi/2$, $\pi$, and $2\pi$. Label each state.
+
+**(c)** What is the name for the pulse at $\Omega t = \pi$? What does it do physically?
+
+**(d)** What is the name for the pulse at $\Omega t = \pi/2$? What does it do physically?
+
+**29.** A qubit has Hamiltonian $H = \frac{\hbar\Omega}{2}\sigma_x$.
+
+**(a)** Find the energy eigenstates of this Hamiltonian and their eigenvalues. Draw them on the Bloch sphere.
+
+**(b)** If the qubit starts in one of these eigenstates, what happens under time evolution? Does the state move on the Bloch sphere?
+
+**(c)** Explain in one sentence the general rule: why are eigenstates of the Hamiltonian stationary?
+
+## Lecture 2.7 — Atomic Clocks and the Rotating Frame
+
+**30.** The full Hamiltonian for a two-level atom driven by a laser at frequency $\omega_L$ is
+
+$$H = \frac{\hbar\omega_0}{2}\sigma_z + \hbar\Omega\cos(\omega_L t)\sigma_x$$
+
+where $\omega_0$ is the atomic transition frequency and $\Omega$ is the Rabi frequency.
+
+**(a)** This Hamiltonian is time-dependent. In the rotating frame (rotating at $\omega_L$), the Hamiltonian becomes time-independent. Write the rotating frame Hamiltonian $H_R$ in terms of $\Delta = \omega_0 - \omega_L$ and $\Omega$.
+
+**(b)** What does each term in $H_R$ correspond to physically? What does $\Delta$ represent?
+
+**(c)** What does $H_R$ simplify to when the laser is exactly on resonance ($\Delta = 0$)?
+
+**31.** A Ramsey sequence consists of: a $\pi/2$-pulse, free evolution for time $T$, then a second $\pi/2$-pulse. The qubit starts in $|0\rangle$. The $\pi/2$-pulse is a rotation $R_x(\pi/2)$ around the $x$-axis on the Bloch sphere.
+
+**(a)** On resonance ($\Delta = 0$): Apply the first $\pi/2$-pulse to $|0\rangle$. What state is the qubit in? Draw it on the Bloch sphere.
+
+**(b)** Still on resonance: there is no precession during the wait time ($\Delta = 0$). Apply the second $\pi/2$-pulse. Where does the state end up? Draw the full sequence on the Bloch sphere.
+
+**(c)** Now suppose the laser is slightly detuned ($\Delta \neq 0$). After the first $\pi/2$-pulse, the laser is turned off and the qubit precesses around the $z$-axis at rate $\Delta$ during the free evolution time $T$. The accumulated phase is $\phi = \Delta T$. Draw the state on the Bloch sphere after the first $\pi/2$-pulse, after precessing by phase $\phi$, and after the second $\pi/2$-pulse.
+
+**(d)** For the on-resonance case (part b), the second $\pi/2$-pulse sent the qubit to $|1\rangle$. How long must you wait (what value of $T$ in terms of $\Delta$) so that the second $\pi/2$-pulse instead sends the qubit back to $|0\rangle$? Draw this case on the Bloch sphere and explain why the precession reverses the outcome.
+
+**32.** In a real experiment, the qubit is not perfectly isolated. During the free evolution time $T$ in a Ramsey sequence, $T_2$ dephasing causes random phase kicks that scramble the accumulated phase.
+
+**(a)** On the Bloch sphere, the qubit starts at a definite point on the equator after the first $\pi/2$-pulse. If you repeat the experiment many times, each run accumulates a slightly different random phase. Draw what the collection of Bloch vectors from many runs looks like after the free evolution — at short times ($T \ll T_2$) and at long times ($T \gg T_2$).
+
+**(b)** When you average over all the runs, the Bloch vector shrinks. What direction does it shrink toward? What does this mean for the contrast of the Ramsey fringes?
+
+**(c)** Explain why $T_2$ dephasing limits the precision of an atomic clock. What sets the maximum useful free evolution time $T$?
+
+## Lecture 3.1 — Two Qubits and the Tensor Product
+
+**33.** Compute the following tensor products and write the result as a 4-component column vector.
+
+**(a)** $|0\rangle \otimes |1\rangle$
+
+**(b)** $|1\rangle \otimes |+\rangle$ where $|+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$
+
+**(c)** $|+\rangle \otimes |-\rangle$ where $|-\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$
+
+**(d)** $|+\rangle \otimes |+\rangle$
+
+**34.** Three qubits.
+
+**(a)** How many computational basis states are there for three qubits? List them all.
+
+**(b)** Write $|+\rangle \otimes |0\rangle \otimes |1\rangle$ as a sum of computational basis states.
+
+**(c)** The GHZ state is $|GHZ\rangle = \frac{1}{\sqrt{2}}(|000\rangle + |111\rangle)$. Is it a product state? Try to factor it.
+
+**(d)** If you measure all three qubits of $|GHZ\rangle$ in the computational basis, what outcomes are possible?
+
+## Lecture 3.2 — Entanglement and the Bell States
+
+**35.** Bell state verification.
+
+**(a)** Write the amplitude table for each of the four Bell states and verify that $|\det(C)| = 1/2$ for all of them.
+
+**(b)** Verify orthogonality: compute $\langle\Phi^+|\Phi^-\rangle$, $\langle\Phi^+|\Psi^+\rangle$, and $\langle\Psi^+|\Psi^-\rangle$.
+
+**(c)** Show that $|\Phi^+\rangle$ can be written as: $|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|{+}{+}\rangle + |{-}{-}\rangle)$, where $|{+}{+}\rangle = |+\rangle \otimes |+\rangle$ and $|{-}{-}\rangle = |-\rangle \otimes |-\rangle$. What does this say about correlations in the X-basis?
+
+**36.** Projective measurement.
+
+A qubit is in state $|\Psi\rangle = \frac{1}{\sqrt{3}}|0\rangle + \sqrt{\frac{2}{3}}|1\rangle$.
+
+**(a)** Measure in the Z-basis. What are the probabilities for each outcome? What is the state after each outcome?
+
+**(b)** Measure in the X-basis. Construct the projectors $|+\rangle\langle+|$ and $|-\rangle\langle-|$. What are the probabilities? What is the state after each outcome?
+
+**(c)** Verify that the probabilities sum to 1 and the projectors satisfy $|+\rangle\langle+| + |-\rangle\langle-| = I$.
+
+**37.** The uncertainty principle for spin.
+
+**(a)** Verify the commutation relation $[\sigma_x, \sigma_y] = 2i\sigma_z$ by explicit matrix multiplication, where:
+
+$$\sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \quad \sigma_y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \quad \sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$$
+
+**(b)** Show that $\sigma_i^2 = I$ for each Pauli matrix. Conclude that $(\Delta\sigma_i)^2 = 1 - \langle\sigma_i\rangle^2$ in any state.
+
+**(c)** For the state $|0\rangle$: compute $\langle\sigma_x\rangle$ and $\langle\sigma_y\rangle$. Use part (b) to find $\Delta\sigma_x$ and $\Delta\sigma_y$. Are they maximal?
+
+**(d)** Verify the same result by expanding $|0\rangle$ in the X-eigenbasis. What are the probabilities for getting $+1$ and $-1$?
+
+**(e)** For the state $|+\rangle$: which component is definite? Compute $\Delta\sigma_y$ and $\Delta\sigma_z$. Verify $\Delta\sigma_y \cdot \Delta\sigma_z \geq |\langle\sigma_x\rangle|$.
+
+**(f)** Can a state have $\Delta\sigma_x = \Delta\sigma_y = \Delta\sigma_z = 0$ (definite values for all three components simultaneously)? Explain using the commutation relations.
+
+
+
+## Lecture 3.3 — Two-Qubit Measurement, Spooky Action, and EPR
+
+**38.** Partial measurement of a product state.
+
+Alice and Bob share the product state $|+\rangle \otimes |0\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |10\rangle)$. Alice measures her qubit in the Z-basis.
+
+**(a)** Compute the probability that Alice gets $|0\rangle$.
+
+**(b)** Compute the post-measurement state if Alice gets $|0\rangle$.
+
+**(c)** Compute the probability and post-measurement state if Alice gets $|1\rangle$.
+
+**(d)** What is Bob's state in each case? Explain why this is not "spooky action at a distance."
+
+**39.** Partial measurement of an entangled state.
+
+Alice and Bob share $|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$. Alice measures her qubit in the Z-basis.
+
+**(a)** Use the projector $|0\rangle\langle 0| \otimes I$ to compute the probability and post-measurement state for Alice getting $|0\rangle$.
+
+**(b)** Repeat for Alice getting $|1\rangle$.
+
+**(c)** What is Bob's state after each outcome?
+
+**(d)** In what sense has the entanglement been broken by the measurement?
+
+**40.** No-signaling.
+
+Alice and Bob share $|\Phi^+\rangle$. Bob measures Z on his qubit.
+
+**(a)** Suppose Alice measures Z first. What are Bob's Z-measurement probabilities?
+
+**(b)** Suppose Alice measures X first. What are Bob's Z-measurement probabilities now?
+
+**(c)** Suppose Alice does nothing. Compute Bob's Z-measurement probabilities directly from the state.
+
+**(d)** Explain how these results support the no-signaling theorem.
+
+**41.** Alice chooses Z or X.
+
+Alice and Bob share $|\Psi^-\rangle$.
+
+**(a)** If Alice measures Z and gets $+1$, what state is Bob's qubit in?
+
+**(b)** If Alice measures X and gets $+1$, what state is Bob's qubit in?
+
+**(c)** In which sense are these two Bob states physically different?
+
+**(d)** Why can't Bob tell, from local measurements alone, which basis Alice chose?
+
+**42.** The EPR argument.
+
+Alice and Bob share the singlet state and are far apart.
+
+**(a)** If Alice measures Z and gets $+1$, what can she predict about Bob's Z outcome?
+
+**(b)** If Alice instead measures X and gets $+1$, what can she predict about Bob's X outcome?
+
+**(c)** State EPR's criterion for an "element of physical reality."
+
+**(d)** Use locality plus this criterion to explain why EPR concludes Bob must have both a definite Z-value and a definite X-value.
+
+**(e)** Why does this lead EPR to say that quantum mechanics is incomplete?
+
+## Lecture 3.4 — Bell's Theorem
+
+**43.** The two-setting hidden variable model.
+
+Alice and Bob share the singlet state, and each can choose to measure either $Z$ or $X$. Assume a local hidden-variable model in which each pair carries predetermined values $a_Z, a_X \in \{+1,-1\}$, with $b_Z = -a_Z$ and $b_X = -a_X$.
+
+**(a)** Write all four possible lookup tables $(a_Z,a_X,b_Z,b_X)$.
+
+**(b)** Verify that equal weights $p_1=p_2=p_3=p_4=\tfrac14$ give $E(Z,Z)=-1$, $E(X,X)=-1$, and $E(Z,X)=0$.
+
+**(c)** Is the equal-weight distribution the only one that works? Find the most general distribution $(p_1,p_2,p_3,p_4)$ consistent with these three correlations.
+
+**44.** The third axis and the quantum predictions.
+
+Define the third measurement axis $\sigma_Q=\frac{1}{\sqrt{2}}(\sigma_z+\sigma_x)$.
+
+**(a)** Verify that $\sigma_Q^2=I$.
+
+**(b)** For the singlet state, quantum mechanics predicts $E(\hat a,\hat b)=-\cos\theta$, where $\theta$ is the angle between the measurement axes. Use this to compute $E(Z,Q)$, $E(X,Q)$, and $E(X,Z)$.
+
+**(c)** For $\pm 1$ outcomes, show that $P(\text{disagree})=\frac{1-E}{2}$.
+
+**(d)** Hence compute $P(\text{disagree on } ZQ)$, $P(\text{disagree on } XQ)$, and $P(\text{disagree on } XZ)$.
+
+**45.** Verifying the correlation function.
+
+For the singlet $|\Psi^-\rangle=\frac{1}{\sqrt{2}}(|01\rangle-|10\rangle)$, verify the correlation formula directly in the following cases:
+
+**(a)** $\hat a=\hat b=\hat z$ by computing $\langle \Psi^-|(\sigma_z\otimes\sigma_z)|\Psi^-\rangle$.
+
+**(b)** $\hat a=\hat z$, $\hat b=\hat x$ by computing $\langle \Psi^-|(\sigma_z\otimes\sigma_x)|\Psi^-\rangle$.
+
+**(c)** $\hat a=\hat z$, $\hat b=\hat q=\frac{1}{\sqrt{2}}(\hat z+\hat x)$ by computing $\langle \Psi^-|(\sigma_z\otimes\sigma_Q)|\Psi^-\rangle$.
+
+**46.** Why three settings matter.
+
+**(a)** Explain why no contradiction appears when only two settings ($X$ and $Z$) are used.
+
+**(b)** Explain in your own words why adding a third setting $Q$ creates a contradiction.
