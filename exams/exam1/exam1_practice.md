@@ -103,4 +103,40 @@ The available quantum gates are the Hadamard gate $H = \frac{1}{\sqrt{2}}\begin{
 
 **(a)** What sequence of gates, applied to input state $|0\rangle$, describes the MZI? Write $|\psi_{out}\rangle$ in terms of $H$, $P(\phi)$, and $|0\rangle$.
 
+## Lecture 2.3 — Polarization and Measurement
+
+**19.** An $|H\rangle$-polarized photon is sent toward a $|V\rangle$ polarizer.
+
+**(a)** What fraction of the light is transmitted?
+
+**(b)** Now a $|D\rangle = \frac{1}{\sqrt{2}}(|H\rangle + |V\rangle)$ polarizer is inserted between the source and the $|V\rangle$ polarizer. Walk through the sequence step by step: what is the state after each polarizer, and what is the total fraction of light transmitted?
+
+**(c)** Explain why inserting an extra polarizer — which can only absorb light — actually *increases* the total transmission. What does the intermediate polarizer do to the quantum state?
+
+**20.** A single photon enters a beam splitter and travels through both arms of a Mach-Zehnder interferometer. At the output, detectors D1 and D2 each record clicks — but every photon produces exactly one click at one detector, never both.
+
+**(a)** What experimental evidence tells us the photon traveled through both arms, not just one?
+
+**(b)** At what stage of the experiment does the photon stop behaving like a wave (superposition in both arms, producing interference) and start behaving like a particle (one click at one detector)? Describe what happens physically at that stage.
+
+## Lectures 2.4 & 2.5 — Groups, Pauli Matrices, and SU(2)
+
+**21.** Both SO(3) and SU(2) describe rotations, but they are not the same group. Explain the key differences: what does each group act on, what are the generators of each, and what happens when you rotate by $2\pi$? What is the physical consequence of the difference — how does it distinguish fermions from bosons?
+
+**22.** A qubit starts in the state $|0\rangle$. The rotation operator $R_x(\theta) = e^{-i\sigma_x \theta/2}$ is applied.
+
+**(a)** Write out $R_x(\theta)$ as an explicit $2 \times 2$ matrix using the formula $R_{\hat{n}}(\theta) = \cos(\theta/2)\,I - i\sin(\theta/2)\,(\hat{n}\cdot\vec{\sigma})$.
+
+**(b)** Apply $R_x(\theta)$ to $|0\rangle$ and find the output state as a function of $\theta$.
+
+**(c)** Describe the path this state traces on the Bloch sphere as $\theta$ goes from $0$ to $2\pi$. What are the states at $\theta = 0$, $\pi/2$, $\pi$, and $3\pi/2$?
+
+**23.** State the four properties a set and operation must satisfy to form a group. Then for each of the following, state whether it is a group and briefly explain why or why not:
+
+- Rotations on a circle (all angles, under composition)
+- Rotations on a sphere (all axes and angles, under composition)
+- Shifts on a number line (any direction, under addition)
+- Shifts on a number line in only one direction (positive shifts only, under addition)
+
+**24.** What is the generator of rotations about the $z$-axis in SU(2)? Write the corresponding rotation matrix $R_z(\theta)$ in terms of this generator.
 
