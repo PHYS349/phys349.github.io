@@ -36,6 +36,7 @@ project:
         - file: lectures/03_02_lecture.md
         - file: lectures/03_03_lecture.md
         - file: lectures/03_04_lecture.md
+        - file: lectures/midterm_practice_exam.md 
 
     - title: Homework
       children:
