@@ -3,11 +3,6 @@
 The practice exam will be released shortly. I'm finishing it Sunday afternoon. It will be largely based on homework problems — study those to prepare.  NOTE NO HOMEWORK IS DUE THIS WEEK.   But practice the problems from 3.3 and 3.4.  We will go over the problem again on Tuesday that could be on the exam. 
 
 
-# Midterm Practice Exam
-
-The practice exam will be released shortly. I'm finishing it Sunday afternoon. It will be largely based on homework problems — study those to prepare.
-
--3/8/2026
 
 ## Lecture 1.1 — Why Quantum? Why Now?
 
@@ -62,9 +57,50 @@ where $s_i = \pm 1$. Consider an antiferromagnet ($J < 0$) with an external fiel
 
 **12.** In classical computing, you can copy a bit and use majority voting to correct errors. Give two reasons why this same strategy fails for qubits.
 
+## Lecture 2.1 — Waves, Complex Numbers, and Interference
+
+**13.** The spatial wave equation is
+
+$$\frac{d^2}{dx^2} E(x) = -k^2 E(x)$$
+
+**(a)** Give two linearly independent real solutions to this equation.
+
+**(b)** Give two linearly independent complex solutions to this equation.
+
+**14.** A wave is described by $E(t) = E_0 \cos(\omega t)$.
+
+**(a)** Rewrite this wave in complex exponential form.
+
+**(b)** Using the complex form, find the expression for the intensity $|E|^2$. Show that this gives the same result as the time-averaged intensity $\langle E^2 \rangle$ of the real form (up to a factor of 2).
+
+**15.** Two waves $E_1 = e^{ikx}$ and $E_2 = e^{i(kx + \phi)}$ are incident on a beam splitter. One output port gives $E_1 + E_2$ and the other gives $E_1 - E_2$.
+
+**(a)** Using the complex form, compute the intensity $|E_1 + E_2|^2$ at the first output. Show how it depends on $\phi$.
+
+**(b)** Compute the intensity $|E_1 - E_2|^2$ at the second output. How does it depend on $\phi$?
+
+**(c)** For what value of $\phi$ does all the power go to one output? What about the other?
+
+## Lecture 2.2 — Interferometers and the Bloch Sphere
+
+**16.** Light enters one input of a Mach-Zehnder interferometer (gate sequence $H \to P(\phi) \to H$, starting from $|0\rangle$). For each case below, draw the path on the Bloch sphere, labeling the state after each gate.
+
+**(a)** Find the value of $\phi$ such that all the light exits output port $|0\rangle$. Draw the Bloch sphere trajectory.
+
+**(b)** Find the value of $\phi$ such that all the light exits output port $|1\rangle$. Draw the Bloch sphere trajectory.
+
+**18.** On a Bloch sphere, label the locations of the following states:
+
+- $|0\rangle$ and $|1\rangle$
+- $|X_+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)$ and $|X_-\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$
+- $|Y_+\rangle = \frac{1}{\sqrt{2}}(|0\rangle + i|1\rangle)$ and $|Y_-\rangle = \frac{1}{\sqrt{2}}(|0\rangle - i|1\rangle)$
+
+Note: different textbooks may use different sign conventions for $|X_\pm\rangle$ and $|Y_\pm\rangle$. What matters is that the two states in each pair are orthogonal. Verify that orthogonal states appear at antipodal (opposite) points on the Bloch sphere.
+
+**17.** A Mach-Zehnder interferometer consists of: a first beam splitter that splits light into two arms, a relative phase shift $\phi$ accumulated between the arms, and a second beam splitter that recombines the light.
+
+The available quantum gates are the Hadamard gate $H = \frac{1}{\sqrt{2}}\begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$ and the phase gate $P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\phi} \end{pmatrix}$.
+
+**(a)** What sequence of gates, applied to input state $|0\rangle$, describes the MZI? Write $|\psi_{out}\rangle$ in terms of $H$, $P(\phi)$, and $|0\rangle$.
 
 
-
-
-
-still going ...............
