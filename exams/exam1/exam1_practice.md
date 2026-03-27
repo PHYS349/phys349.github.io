@@ -412,7 +412,8 @@ Alice and Bob share the singlet state, and each can choose to measure either $Z$
 
 **(c)** Is the equal-weight distribution the only one that works? Find the most general distribution $(p_1,p_2,p_3,p_4)$ consistent with these three correlations.
 
----
+I TOOK OUT THE Q-AXIS PROBLEMS.
+<!-- ---
 
 **44.** The third axis and the quantum predictions.
 
@@ -444,4 +445,4 @@ For the singlet $|\Psi^-\rangle=\frac{1}{\sqrt{2}}(|01\rangle-|10\rangle)$, veri
 
 **(a)** Explain why no contradiction appears when only two settings ($X$ and $Z$) are used.
 
-**(b)** Explain in your own words why adding a third setting $Q$ creates a contradiction.
+**(b)** Explain in your own words why adding a third setting $Q$ creates a contradiction. -->

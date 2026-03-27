@@ -18,14 +18,190 @@ format:
       \newcommand{\ketbra}[2]{|#1\rangle\langle#2|}
 ---
 
-\vspace{0.5cm}
+\vspace{2cm}
 
 **Name:** \hrulefill \hspace{2cm} **Date:** \hrulefill
 
-\vspace{0.3cm}
+\vspace{0.5cm}
 
-**Instructions:** Select the best answer for each question. Circle your answer.
+**Instructions:** Follow the directions for each question. Circle your answer where applicable.
+
+\newpage
+
+**1.** The Ising Hamiltonian for a long 1D spin chain at zero temperature is $H = -J \sum_i s_i s_{i+1} - B \sum_i s_i$, where $s_i = \pm 1$. A magnetic field $B > 0$ is applied to an antiferromagnetic ($J < 0$) chain. Starting from $J = 0$, the magnitude $|J|$ is gradually increased. Which best describes the ground state?
+
+\begin{enumerate}[label=(\Alph*)]
+  \item Spins start antiparallel (alternating) and become parallel (all aligned) as $|J|$ increases.
+  \item Spins start parallel (all aligned with $B$) and become antiparallel (alternating) as $|J|$ increases.
+  \item Spins are always parallel regardless of $|J|$.
+  \item Spins are always antiparallel regardless of $|J|$.
+\end{enumerate}
 
 \vspace{0.5cm}
 
-------------------------------------------------------------------------
+\needspace{8\baselineskip}
+
+**2.** Two waves $E_1 = e^{ikx}$ and $E_2 = e^{i(kx+\phi)}$ enter an ideal beam splitter. The two output ports give fields proportional to $E_1 + E_2$ and $E_1 - E_2$, with intensity $\propto |E|^2$. What value of $\phi$ splits the power equally between both output ports?
+
+\begin{enumerate}[label=(\Alph*)]
+  \item $\phi = 0$
+  \item $\phi = \pi/4$
+  \item $\phi = \pi$
+  \item $\phi = \pi/2$
+\end{enumerate}
+
+\newpage
+
+**3.** For real $k > 0$, the spatial wave equation is $\frac{d^2}{dx^2}E(x) = -k^2 E(x)$. This is a second-order ODwE, so its solution space is two-dimensional. Which of the following statements are correct? (Select all that apply.)
+
+\begin{enumerate}[label=(\Alph*)]
+  \item $e^{kx}$ and $e^{-kx}$ are two linearly independent solutions.
+  \item $\sin(kx)$ and $\cos(kx)$ are two linearly independent solutions.
+  \item $\sin(kx)$, $\cos(kx)$, $e^{ikx}$, and $e^{-ikx}$ are all linearly independent solutions.
+  \item $e^{ikx}$ and $e^{-ikx}$ are two linearly independent solutions.
+\end{enumerate}
+
+\newpage
+
+**4.** Draw a Bloch sphere with labeled $x$, $y$, and $z$ axes. Mark the locations of the following states (global phase does not matter):
+
+$$\ket{0}, \quad \ket{1}, \quad \frac{1}{\sqrt{2}}(\ket{0}+\ket{1}), \quad \frac{1}{\sqrt{2}}(\ket{0}-\ket{1}), \quad \frac{1}{\sqrt{2}}(\ket{0}+i\ket{1}), \quad \frac{1}{\sqrt{2}}(\ket{0}-i\ket{1})$$
+
+\textit{Note: Different conventions for the axis orientations were used in class; either convention is acceptable.}
+
+\newpage
+
+**5.** Both SO(3) and SU(2) describe rotations. Which of the following statements are true? (Select all that apply.)
+
+\begin{enumerate}[label=(\Alph*)]
+  \item SO(3) acts on 3D real vectors; SU(2) acts on 2-component complex spinors (qubits).
+  \item SO(3) and SU(2) are the same group because they both describe rotations.
+  \item The Lie algebra generators of SU(2) are proportional to $\sigma_x/2, \sigma_y/2, \sigma_z/2$.
+  \item A $2\pi$ rotation in SU(2) returns the state vector to itself, just like in SO(3).
+  \item Fermions transform under SU(2) and pick up a $-1$ phase under a $2\pi$ rotation.
+\end{enumerate}
+
+\newpage
+
+**6.** The rotation operator is $R_x(\theta) = e^{-i\sigma_x\theta/2} = \cos(\theta/2)\,I - i\sin(\theta/2)\,\sigma_x$. What is $R_x(\pi)\ket{0}$?
+
+\begin{enumerate}[label=(\Alph*)]
+  \item $\frac{1}{\sqrt{2}}(\ket{0} + \ket{1})$
+  \item $\ket{0}$
+  \item $-i\ket{1}$
+  \item $\frac{1}{\sqrt{2}}(\ket{0} - \ket{1})$
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\needspace{8\baselineskip}
+
+**7.** Which of the following is \textbf{not} a required property of a group?
+
+\begin{enumerate}[label=(\Alph*)]
+  \item Closure: combining any two elements gives another element in the set.
+  \item Associativity: $(a \cdot b) \cdot c = a \cdot (b \cdot c)$.
+  \item Identity: there exists an element $e$ such that $e \cdot a = a \cdot e = a$.
+  \item Inverse: every element has an inverse in the set.
+  \item Commutativity: $a \cdot b = b \cdot a$ for all elements.
+\end{enumerate}
+
+\newpage
+
+**8.** A qubit is prepared in the state $\frac{1}{\sqrt{2}}(\ket{0} + \ket{1})$ and evolves under $U(t) = e^{-i\sigma_z \omega t/2}$. On the Bloch sphere below, draw the initial state, the rotation axis, and sketch the trajectory of the state as time increases. Label the direction of rotation.
+
+\newpage
+
+**9.** Consider the two-qubit state $\ket{\psi} = \frac{1}{2}\ket{00} + \frac{1}{2}\ket{01} + \frac{1}{2}\ket{10} - \frac{1}{2}\ket{11}$. Use the determinant test to determine if this state is entangled. Show your work.
+
+\begin{enumerate}[label=(\Alph*)]
+  \item Entangled, $\det(C) = -1/2$
+  \item Not entangled, $\det(C) = 0$
+  \item Entangled, $\det(C) = -1/4$
+  \item Not entangled, $\det(C) = -1/2$
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\needspace{10\baselineskip}
+
+**10.** Alice and Bob share the singlet state $\ket{\Psi^-} = \frac{1}{\sqrt{2}}(\ket{01} - \ket{10})$. Alice measures her qubit in the $Z$-basis and projects onto $\ket{0}$. What is the probability $P$ of this outcome and the post-measurement state $\ket{\psi}$?
+
+\begin{enumerate}[label=(\Alph*)]
+  \item $P = 1/2$, \; $\ket{\psi} = \ket{00}$
+  \item $P = 1/2$, \; $\ket{\psi} = \ket{01}$
+  \item $P = 1$, \; $\ket{\psi} = \ket{01}$
+  \item $P = 1/2$, \; $\ket{\psi} = \ket{0} \otimes \frac{1}{\sqrt{2}}(\ket{0} - \ket{1})$
+  \item $P = 1/2$, \; $\ket{\psi} = \frac{1}{\sqrt{2}}(\ket{01} - \ket{00})$
+\end{enumerate}
+
+\newpage
+
+**11.** Alice and Bob share $\ket{\Phi^+} = \frac{1}{\sqrt{2}}(\ket{00} + \ket{11})$. Recall that $\ket{\Phi^+} = \frac{1}{\sqrt{2}}(\ket{++} + \ket{--})$. Alice measures in the $X$-basis and obtains $+1$. What is the probability $P$ and Bob's post-measurement state?
+
+\begin{enumerate}[label=(\Alph*)]
+  \item $P = 1/2$, \; Bob has $\ket{-} = \frac{1}{\sqrt{2}}(\ket{0} - \ket{1})$
+  \item $P = 1/2$, \; Bob has $\ket{1}$
+  \item $P = 1/2$, \; Bob has $\ket{0}$
+  \item $P = 1/2$, \; Bob has $\ket{+} = \frac{1}{\sqrt{2}}(\ket{0} + \ket{1})$
+  \item $P = 1$, \; Bob has $\ket{+}$
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\needspace{8\baselineskip}
+
+**12.** Which of the following are \textbf{not} among the three assumptions in the EPR argument? (Select all that apply.)
+
+\begin{enumerate}[label=(\Alph*)]
+  \item Locality: a measurement on one particle cannot instantaneously affect a distant particle.
+  \item Unitarity: all physical processes must be reversible.
+  \item Realism: if a quantity can be predicted with certainty without disturbing the system, it has a definite value.
+  \item Completeness: every element of physical reality must have a counterpart in the theory.
+  \item Reciprocity: measurement results must be symmetric under exchange of observers.
+\end{enumerate}
+
+\newpage
+
+**13.** A Ramsey sequence consists of: a $\pi/2$-pulse, free evolution for time $T$, then a second $\pi/2$-pulse. The qubit starts in $\ket{0}$. $T_2$ dephasing causes random phase kicks during free evolution that vary from run to run.
+
+**(a)** On the Bloch sphere below, draw \textbf{5 different circles} representing 5 independent experimental runs. For each run, show the state after each stage: (i) initialization at $\ket{0}$, (ii) after the first $\pi/2$-pulse, (iii) after free evolution (with a different random phase for each run), and (iv) after the second $\pi/2$-pulse.
+
+**(b)** If we scanned the free evolution time $T$, what would $P_0(T)$ and $P_1(T)$ look like with no decoherence? What would they look like with decoherence, averaged over many runs?
+
+\newpage
+
+**14.** Alice and Bob share an entangled state $\ket{\Phi^+} = \frac{1}{\sqrt{2}}(\ket{00} + \ket{11})$. Bob measures his qubit in the $Z$-basis. Which statement correctly describes what the no-signaling theorem predicts about Bob's measurement outcomes?
+
+\begin{enumerate}[label=(\Alph*)]
+  \item If Alice measures $Z$, Bob's outcome is always the same as Alice's. If Alice measures $X$, Bob's outcome changes. Bob can tell which basis Alice chose.
+  \item The no-signaling theorem states that entangled particles cannot be separated by large distances.
+  \item If Alice measures $Z$, Bob gets 50/50. If Alice measures $X$, Bob gets 50/50. If Alice does nothing, Bob gets 50/50. Bob's local probabilities are the same regardless of Alice's choice.
+  \item Entanglement allows Alice to send a message to Bob by choosing her measurement basis.
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\needspace{10\baselineskip}
+
+**15.** Which statement best describes the difference between the First Quantum Revolution and the Second Quantum Revolution?
+
+\begin{enumerate}[label=(\Alph*)]
+  \item The First Quantum Revolution used classical physics in electronics, while the Second Quantum Revolution introduced quantum physics for the first time.
+  \item The First Quantum Revolution exploited quantum effects in materials and devices, while the Second Quantum Revolution focuses on controlling individual quantum states such as superposition and entanglement.
+  \item The First Quantum Revolution focused only on atoms, while the Second Quantum Revolution focuses only on solids.
+  \item The First Quantum Revolution produced analog technologies, while the Second Quantum Revolution produces digital technologies.
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\needspace{8\baselineskip}
+
+**16.** Using the Hadamard gate $H$ and phase gate $P(\phi)$, what is the correct gate sequence for a Mach-Zehnder interferometer applied to the input state $\ket{0}$?
+
+\begin{enumerate}[label=(\Alph*)]
+  \item $H \, P(\phi) \, H \, \ket{0}$
+  \item $P(\phi) \, H \, P(\phi) \, \ket{0}$
+  \item $P(\phi) \, H \, H \, \ket{0}$
+  \item $H \, H \, P(\phi) \, \ket{0}$
+\end{enumerate}

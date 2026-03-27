@@ -1,0 +1,96 @@
+/* Print-friendly styles for Ctrl+P / Save as PDF */
+@media print {
+  /* Hide navigation, sidebar, header, footer, skip links, and theme controls */
+  nav,
+  .sidebar,
+  .table-of-contents,
+  .theme-switch,
+  .skip-to-main,
+  header,
+  footer,
+  .page-nav,
+  .prev-next,
+  .navigation,
+  [class*="sidebar"],
+  [class*="toc"],
+  [class*="footer"],
+  [class*="header"],
+  [class*="navbar"],
+  [class*="topbar"],
+  [class*="actions"],
+  [class*="theme-"],
+  [class*="skip-to"],
+  a[class*="skip"],
+  .sr-only {
+    display: none !important;
+  }
+
+  /* Shrink font sizes for print */
+  body {
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  h1 {
+    font-size: 18pt !important;
+  }
+
+  h2 {
+    font-size: 14pt !important;
+  }
+
+  h3 {
+    font-size: 12pt !important;
+  }
+
+  h4 {
+    font-size: 10pt !important;
+  }
+
+  p, li, td, th, dd, dt {
+    font-size: 10pt !important;
+  }
+
+  /* Make main content full width */
+  main,
+  article,
+  .main-article,
+  [class*="main-content"],
+  [class*="article"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0.25in !important;
+  }
+
+  /* Ensure math and code blocks don't overflow */
+  pre, code, .math {
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    font-size: 9pt !important;
+  }
+
+  /* Avoid page breaks inside important elements */
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+  }
+
+  pre, blockquote, table, figure, img, .math {
+    page-break-inside: avoid;
+  }
+
+  /* Ensure images fit the page */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Show link URLs in parentheses */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+}

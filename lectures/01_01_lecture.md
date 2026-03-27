@@ -340,9 +340,9 @@ Be specific: name the key quantum idea (e.g., band structure, stimulated emissio
 Imagine pushing the technology toward the few-quanta limit, where discrete particles and measurement back-action matter. Describe what new effects would become important and what would break about the classical/engineering intuition.
 
 **Optional concrete examples (use if helpful):**
-- transistor → single-electron / single-donor / single-atom transistor (tunneling, Coulomb blockade)
-- laser → single-photon / single-atom emitter, photon antibunching
-- MRI → single-spin readout (NV centers, quantum projection noise)
-- superconductor → few-Cooper-pair circuits (Josephson junction qubits, phase as a quantum variable)
+- transistor $\rightarrow$ single-electron / single-donor / single-atom transistor (tunneling, Coulomb blockade)
+- laser $\rightarrow$ single-photon / single-atom emitter, photon antibunching
+- MRI $\rightarrow$ single-spin readout (NV centers, quantum projection noise)
+- superconductor $\rightarrow$ few-Cooper-pair circuits (Josephson junction qubits, phase as a quantum variable)
 
 

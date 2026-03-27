@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(kill:*)",
+      "Bash(eval \"$(/c/Users/jonho/miniconda3/Scripts/conda.exe shell.bash hook)\":*)",
+      "Bash(conda activate:*)",
+      "Bash(jupyter-book:*)"
+    ]
+  }
+}

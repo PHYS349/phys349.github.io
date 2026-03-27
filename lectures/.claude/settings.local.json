@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(myst start:*)",
+      "Bash(where myst:*)",
+      "Bash(where.exe myst:*)",
+      "Bash(pip show:*)",
+      "Bash(npm list:*)",
+      "Bash(npx --yes mystmd --version)",
+      "Bash(where.exe conda:*)",
+      "Bash(conda --version)",
+      "Read(//c/Users/jonho/anaconda3/Scripts/**)",
+      "Read(//c/Users/jonho/miniconda3/Scripts/**)",
+      "Read(//c/ProgramData/anaconda3/Scripts/**)",
+      "Read(//c/Users/jonho/AppData/Local/anaconda3/Scripts/**)",
+      "Bash(eval '$\\(/c/Users/jonho/miniconda3/Scripts/conda.exe shell.bash hook\\)')",
+      "Bash(conda activate:*)",
+      "WebSearch",
+      "Bash(kill %1)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(python -c \"import json; d=json.load\\(open\\(''C:/Users/jonho/GitHub/phys349-jb/.claude/settings.local.json''\\)\\); print\\(d[''permissions''][''allow'']\\)\")",
+      "Read(//c/Users/jonho/AppData/Roaming/TinyTeX/**)",
+      "Read(//c/Users/jonho/**)",
+      "Bash(find /c/Users/jonho/TinyTeX/bin -name pdflatex*)",
+      "Bash(find /c/Users/jonho/TinyTeX -name xelatex* -o -name pdflatex*)",
+      "Bash(cmd.exe /c 'dir C:\\\\Users\\\\jonho\\\\TinyTeX\\\\bin /s /b')",
+      "Bash(cmd.exe /c \"dir C:\\\\Users\\\\jonho\\\\TinyTeX\\\\bin /b\")",
+      "Bash(cmd.exe /c \"if exist C:\\\\Users\\\\jonho\\\\TinyTeX\\\\bin\\\\windows\\\\pdflatex.exe echo FOUND\")",
+      "Bash(ls /c/Users/jonho/GitHub/phys349-jb/_build/temp/mystMEHOC5/*.tex)"
+    ]
+  }
+}

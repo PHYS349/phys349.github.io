@@ -13,6 +13,8 @@ project:
     - quantum computing
     - physics
     - purdue
+  execute:
+    enabled: true
   license:
     content: CC-BY-4.0
 
@@ -37,6 +39,12 @@ project:
         - file: lectures/03_03_lecture.md
         - file: lectures/03_04_lecture.md
         - file: lectures/midterm_practice_exam.md 
+        - file: lectures/03_05_lecture.md
+        #- file: lectures/03_05_hw.md
+        - file: lectures/03_06_lecture.md
+        #- file: lectures/03_06_hw.md
+        #- file: lectures/03_07_lecture.md
+        #- file: lectures/03_07_hw.md
 
     - title: Homework
       children:
@@ -53,20 +61,16 @@ project:
 
 
   exports:
-    - format: typst          # (recommended if you only want a PDF)
-      template: typst/myst/plain_typst_book
+    - format: pdf
+      template: plain_latex_book
       output: exports/phys349_notes.pdf
       id: output-pdf
-      articles:
-        #- index.md
-        #- lectures/01_lecture.md
-        #- homework/01_homework.md
 
 site:
   template: book-theme
   options:
     outline_maxdepth: 1   # show only H1 and H2 in the right-side outline
-    #  style: ./style/custom.css  # Not working as of 1/2026
+    style: ./style/custom.css
     logo: ./figures/PU-H-logo.jpg
     favicon: ./figures/PU-H-logo.jpg
     folders: true
