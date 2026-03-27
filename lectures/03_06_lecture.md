@@ -446,3 +446,7 @@ This is the template for quantum advantage: define a task, prove a classical upp
 ## What's Next
 
 Next lecture we use no-cloning and entanglement to build our first quantum protocol: **quantum key distribution (BB84)** — provably secure communication using the laws of physics.
+
+
+# HOMEWORK
+Homework will be added shortly. 

@@ -838,3 +838,6 @@ This is not just a mathematical curiosity. No-cloning has profound consequences:
 ## What's Next
 
 Next lecture we'll get hands-on with Qiskit: build circuits, run them on a simulator and real quantum hardware, and see measurement statistics. After that, we'll use circuits + no-cloning to build our first quantum protocols: quantum key distribution and teleportation.
+
+# HOMEWORK
+Homework will be added shortly. 
