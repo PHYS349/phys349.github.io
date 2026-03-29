@@ -4,7 +4,7 @@ kernelspec:
   display_name: Python 3
 ---
 
-# Lecture 3.6 — Circuit Challenges and the CHSH Game
+# Lecture 4.1 — Circuit Challenges and the CHSH Game
 
 ## Where We Left Off
 
@@ -449,4 +449,7 @@ Next lecture we use no-cloning and entanglement to build our first quantum proto
 
 
 # HOMEWORK
-Homework will be added shortly. 
+
+[Homework — Qiskit Circuits](../homework/hw_qiskit.ipynb)
+
+**Due: Wednesday at midnight.**
