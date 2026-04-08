@@ -1,1506 +1,1244 @@
-# Lecture 3.7: Grover's Search Algorithm
+# Lecture 3.6: The Deutsch-Jozsa Algorithm
 
-## The Power of Quantum Search
+## Our First Quantum Algorithm
 
-Deutsch-Jozsa showed that quantum computers can solve *some* problems exponentially faster than classical computers — but those problems were artificial.
+We've built up the machinery: qubits, gates, entanglement, measurement. Now we use it for computation.
 
-**Grover's algorithm** (1996) changed everything. It provides a quantum speedup for the most general problem imaginable: **searching an unstructured database**.
+The **Deutsch-Jozsa algorithm** was the first example of a problem where a quantum computer provably outperforms any classical computer. It's not a practically important problem — but it demonstrates the key principles that make quantum algorithms work.
 
-The speedup is "only" quadratic ($O(\sqrt{N})$ instead of $O(N)$), not exponential. But it applies to an enormous class of problems:
-- Database search
-- Satisfiability (SAT)
-- Optimization
-- Cryptographic attacks
-- Any problem that can be phrased as "find an $x$ such that $f(x) = 1$"
+### Historical Context
 
-This lecture develops Grover's algorithm from scratch, with full mathematical details and geometric intuition.
+The story begins with David Deutsch in 1985, asking: "Can quantum computers do anything classical computers cannot?" He constructed a simple 1-bit problem where a quantum computer needs only 1 query while any classical computer needs 2.
+
+In 1992, Deutsch and Richard Jozsa generalized this to $n$ bits, achieving an **exponential** separation: 1 quantum query versus $O(2^n)$ classical queries.
+
+This was revolutionary. Before Deutsch-Jozsa, it wasn't clear that quantum computers offered any fundamental advantage. The algorithm proved they did — at least for some problems.
+
+The techniques introduced here — superposition, phase kickback, interference — became the foundation for all subsequent quantum algorithms:
+- **Simon's algorithm** (1994): Exponential speedup for finding hidden structure
+- **Shor's algorithm** (1994): Exponential speedup for factoring (breaks RSA!)
+- **Grover's algorithm** (1996): Quadratic speedup for search
+
+Deutsch-Jozsa is the "Hello, World!" of quantum algorithms. Master it, and you'll understand the core of quantum computation.
+
+By the end of this lecture, you'll understand:
+- The **oracle model** (black-box functions)
+- **Quantum parallelism** (evaluating a function on all inputs at once)
+- **Interference** (making the answer emerge from cancellation patterns)
+- Why quantum computers can sometimes do exponentially better than classical ones
 
 ---
 
-## The Unstructured Search Problem
+## The Oracle Model
 
-### Setup
+### What's an Oracle?
 
-You have a search space of $N = 2^n$ items, labeled $0, 1, 2, \ldots, N-1$.
+In algorithm analysis, an **oracle** is a black box that computes some function $f(x)$.
 
-There's a function $f: \{0, 1, \ldots, N-1\} \to \{0, 1\}$ that marks "solutions":
+You can query the oracle:
+- Input: $x$
+- Output: $f(x)$
+
+You don't know how the oracle works internally. You only learn about $f$ by querying it.
+
+### Why Oracles?
+
+The oracle model lets us isolate the "hard part" of a problem. Instead of asking "how many operations does this algorithm take?" we ask "how many queries to the oracle does this algorithm need?"
+
+This is useful when:
+- The function $f$ is expensive to compute
+- We want to compare quantum vs classical query complexity
+- We're studying the fundamental power of quantum computation
+
+### Classical vs Quantum Oracles
+
+**Classical oracle:** Given input $x$, returns $f(x)$.
+
+**Quantum oracle:** Must be reversible (all quantum operations are unitary). We use the standard construction:
+
 $$
-f(x) = \begin{cases} 1 & \text{if } x \text{ is a solution} \\ 0 & \text{otherwise} \end{cases}
-$$
-
-**Goal:** Find an $x$ such that $f(x) = 1$.
-
-### The "Unstructured" Part
-
-**Unstructured** means the function $f$ has no exploitable pattern. The items are not sorted, there's no index, no hints about where solutions might be.
-
-Think of it as searching for a needle in a haystack, where each piece of hay looks exactly like every other piece until you check it.
-
-### Classical Complexity
-
-Classically, the only option is to check items one by one:
-1. Pick an item $x$
-2. Evaluate $f(x)$
-3. If $f(x) = 1$, done!
-4. Otherwise, repeat with a different $x$
-
-**Expected queries:** If there's 1 solution among $N$ items, you need $O(N)$ queries on average (about $N/2$).
-
-**Worst case:** You might need to check all $N$ items.
-
-### Quantum Complexity: Grover's Result
-
-Grover's algorithm finds a solution with high probability using only:
-$$
-O(\sqrt{N}) \text{ queries}
+U_f: |x\rangle|y\rangle \mapsto |x\rangle|y \oplus f(x)\rangle
 $$
 
-For $N = 1,000,000$ items:
-- Classical: ~500,000 queries on average
-- Quantum: ~1,000 queries
+where $\oplus$ is XOR (addition mod 2).
 
-A **quadratic speedup**!
+The input $x$ is preserved, and the output $f(x)$ is XORed into an ancilla register.
 
-```{admonition} Grover's Algorithm: The Headline
+```{figure} ./03_06_lecture_files/quantum_oracle.svg
+:width: 300px
+:name: quantum-oracle
+
+Quantum oracle: $|x\rangle|y\rangle \to |x\rangle|y \oplus f(x)\rangle$
+```
+
+### Phase Kickback
+
+Here's a crucial trick. What if we set the ancilla to $|{-}\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$?
+
+$$
+U_f|x\rangle|{-}\rangle = |x\rangle \cdot \frac{|0 \oplus f(x)\rangle - |1 \oplus f(x)\rangle}{\sqrt{2}}
+$$
+
+If $f(x) = 0$:
+$$
+|x\rangle \cdot \frac{|0\rangle - |1\rangle}{\sqrt{2}} = |x\rangle|{-}\rangle
+$$
+
+If $f(x) = 1$:
+$$
+|x\rangle \cdot \frac{|1\rangle - |0\rangle}{\sqrt{2}} = -|x\rangle|{-}\rangle
+$$
+
+In both cases, the ancilla stays as $|{-}\rangle$, but the input state picks up a phase!
+
+$$
+U_f|x\rangle|{-}\rangle = (-1)^{f(x)}|x\rangle|{-}\rangle
+$$
+
+```{admonition} Phase Kickback
 :class: important
 
-**Problem:** Find $x$ such that $f(x) = 1$ (unstructured search)
+When the ancilla is in state $|{-}\rangle$, the quantum oracle acts as:
 
-**Classical:** $O(N)$ queries
+$$
+U_f|x\rangle|{-}\rangle = (-1)^{f(x)}|x\rangle|{-}\rangle
+$$
 
-**Quantum:** $O(\sqrt{N})$ queries
-
-This is **provably optimal** — no quantum algorithm can do better for unstructured search.
+The function value $f(x)$ becomes a **phase** on the input state. This is called **phase kickback** and is essential for quantum algorithms.
 ```
 
 ---
 
-## The Algorithm Overview
+## Deutsch's Problem (1 Qubit)
 
-Grover's algorithm uses the now-familiar recipe:
-1. **Superposition:** Start with uniform superposition over all items
-2. **Oracle:** Mark solutions with a phase flip
-3. **Amplification:** Increase the amplitude of marked items
-4. **Repeat:** Iterate steps 2-3 about $\sqrt{N}$ times
-5. **Measure:** Get a solution with high probability
+Let's start with the simplest case: a function on a single bit.
 
-The key innovation is step 3: **amplitude amplification**. Instead of a single interference step (like Deutsch-Jozsa), Grover iterates to gradually boost the solution amplitude.
+### The Problem
 
-### The Circuit
+You're given an oracle for a function $f: \{0, 1\} \to \{0, 1\}$.
 
-```{figure} ./03_07_lecture_files/grover_circuit.svg
-:width: 550px
-:name: grover-circuit
+There are four possible functions:
 
-Grover's algorithm: Initialize, then repeat (Oracle + Diffusion) about $\sqrt{N}$ times.
-```
+| $x$ | $f_1(x)$ | $f_2(x)$ | $f_3(x)$ | $f_4(x)$ |
+|-----|----------|----------|----------|----------|
+| 0 | 0 | 1 | 0 | 1 |
+| 1 | 0 | 1 | 1 | 0 |
+| Type | constant | constant | balanced | balanced |
 
----
+- **Constant:** $f(0) = f(1)$ (same output for both inputs)
+- **Balanced:** $f(0) \neq f(1)$ (different outputs)
 
-## The Grover Oracle
+**The question:** Is $f$ constant or balanced?
 
-### What It Does
+### Classical Solution
 
-The Grover oracle marks solutions by flipping their phase:
-$$
-O_f|x\rangle = \begin{cases} -|x\rangle & \text{if } f(x) = 1 \\ |x\rangle & \text{if } f(x) = 0 \end{cases}
-$$
+Classically, you must query both inputs:
+1. Query $f(0)$
+2. Query $f(1)$
+3. Compare: if equal, constant; if different, balanced
 
-Compactly:
-$$
-O_f|x\rangle = (-1)^{f(x)}|x\rangle
-$$
+**Classical query complexity: 2**
 
-This is exactly the phase kickback trick from Deutsch-Jozsa!
+There's no way to do better — with only one query, you can't distinguish constant from balanced.
 
-### Implementation
+### Quantum Solution: Deutsch's Algorithm
 
-Use the standard oracle $U_f|x\rangle|y\rangle = |x\rangle|y \oplus f(x)\rangle$ with ancilla in $|-\rangle$:
-
-$$
-U_f|x\rangle|-\rangle = (-1)^{f(x)}|x\rangle|-\rangle
-$$
-
-The ancilla stays in $|-\rangle$, so we can ignore it and write:
-$$
-O_f|x\rangle = (-1)^{f(x)}|x\rangle
-$$
-
-### Effect on Superposition
-
-Starting from uniform superposition:
-$$
-|s\rangle = \frac{1}{\sqrt{N}}\sum_{x=0}^{N-1}|x\rangle
-$$
-
-After the oracle:
-$$
-O_f|s\rangle = \frac{1}{\sqrt{N}}\sum_{x=0}^{N-1}(-1)^{f(x)}|x\rangle
-$$
-
-Solutions get a minus sign; non-solutions are unchanged.
-
-**The problem:** This minus sign is a phase — it's not directly observable! Measuring now would give a random $x$, just like before.
-
-We need a way to convert this phase difference into an amplitude difference.
-
----
-
-## The Diffusion Operator
-
-### The Key Idea: Inversion About the Mean
-
-The diffusion operator "inverts amplitudes about their mean."
-
-If the amplitudes are $a_0, a_1, \ldots, a_{N-1}$ with mean $\bar{a} = \frac{1}{N}\sum_x a_x$, then diffusion transforms:
-$$
-a_x \to 2\bar{a} - a_x
-$$
-
-### Why This Helps
-
-After the oracle, solutions have amplitude $-\frac{1}{\sqrt{N}}$ (negative) and non-solutions have amplitude $+\frac{1}{\sqrt{N}}$ (positive).
-
-The mean is slightly positive (most items are non-solutions).
-
-Inverting about this positive mean:
-- Non-solutions (positive, close to mean) stay positive but decrease slightly
-- Solutions (negative, far below mean) become positive and **increase significantly**
-
-Each iteration boosts the solution amplitude!
-
-### Mathematical Definition
-
-The diffusion operator is:
-$$
-D = 2|s\rangle\langle s| - I
-$$
-
-where $|s\rangle = \frac{1}{\sqrt{N}}\sum_x |x\rangle$ is the uniform superposition.
-
-**Action on a state $|\psi\rangle = \sum_x a_x |x\rangle$:**
-
-$$
-D|\psi\rangle = 2|s\rangle\langle s|\psi\rangle - |\psi\rangle = 2|s\rangle \cdot \bar{a}\sqrt{N} - \sum_x a_x|x\rangle
-$$
-
-where $\bar{a} = \frac{1}{\sqrt{N}}\langle s|\psi\rangle = \frac{1}{N}\sum_x a_x$.
-
-So:
-$$
-D|\psi\rangle = \sum_x (2\bar{a} - a_x)|x\rangle
-$$
-
-This is exactly "inversion about the mean"!
-
-### Worked Example: N = 4, One Solution
-
-Let's trace through Grover's algorithm completely for $N = 4$ items with one solution at $x = 3$.
-
-**Initial state (after Hadamard):**
-$$
-|s\rangle = \frac{1}{2}(|00\rangle + |01\rangle + |10\rangle + |11\rangle)
-$$
-
-Amplitudes: $a_0 = a_1 = a_2 = a_3 = \frac{1}{2}$
-
-**After Oracle (marks $x = 3$):**
-
-The oracle flips the sign of $|11\rangle$:
-$$
-O_f|s\rangle = \frac{1}{2}(|00\rangle + |01\rangle + |10\rangle - |11\rangle)
-$$
-
-Amplitudes: $a_0 = a_1 = a_2 = \frac{1}{2}$, $a_3 = -\frac{1}{2}$
-
-**Compute the mean:**
-$$
-\bar{a} = \frac{1}{4}\left(\frac{1}{2} + \frac{1}{2} + \frac{1}{2} - \frac{1}{2}\right) = \frac{1}{4}
-$$
-
-**After Diffusion (inversion about mean):**
-
-For non-solutions ($x = 0, 1, 2$):
-$$
-a'_x = 2\bar{a} - a_x = 2 \cdot \frac{1}{4} - \frac{1}{2} = 0
-$$
-
-For the solution ($x = 3$):
-$$
-a'_3 = 2\bar{a} - a_3 = 2 \cdot \frac{1}{4} - \left(-\frac{1}{2}\right) = \frac{1}{2} + \frac{1}{2} = 1
-$$
-
-**Final state after 1 iteration:**
-$$
-|11\rangle
-$$
-
-**Result:** After just ONE Grover iteration, we have 100% probability of measuring the solution!
-
-```{figure} ./03_07_lecture_files/grover_amplitudes_n4.svg
-:width: 500px
-:name: grover-amplitudes-n4
-
-Amplitude evolution for $N=4$: (a) Initial uniform, (b) After oracle, (c) After diffusion.
-```
-
-```{admonition} Why N=4 is Special
-:class: note
-
-For $N = 4$ with $M = 1$, the optimal number of iterations is exactly 1, and the success probability is exactly 100%. 
-
-This is because $\theta = \arcsin(1/2) = \pi/6$, and one iteration rotates by $2\theta = \pi/3$, bringing the state from angle $\pi/6$ to angle $\pi/6 + \pi/3 = \pi/2$ — exactly aligned with $|w\rangle$!
-
-For larger $N$, we need more iterations and the success probability is close to (but not exactly) 100%.
-```
-
-### Circuit Implementation
-
-The diffusion operator can be written as:
-$$
-D = H^{\otimes n} (2|0\rangle\langle 0| - I) H^{\otimes n}
-$$
+Quantum mechanics lets us answer with **just 1 query**!
 
 **Circuit:**
-1. Apply $H^{\otimes n}$
-2. Apply a "conditional phase flip" that puts $-1$ on all states except $|0\rangle^{\otimes n}$
-3. Apply $H^{\otimes n}$
 
-The middle step can be implemented as:
-- Apply X to all qubits
-- Apply a multi-controlled Z gate (phase flip if all qubits are 1)
-- Apply X to all qubits
-
-```{figure} ./03_07_lecture_files/diffusion_circuit.svg
-:width: 450px
-:name: diffusion-circuit
-
-Diffusion operator circuit: H, conditional phase, H.
-```
-
-```{admonition} The Grover Iteration
-:class: tip
-
-One **Grover iteration** consists of:
-$$
-G = D \cdot O_f
-$$
-
-That's: Oracle (mark solutions) → Diffusion (amplify marked items)
-
-Repeat $G$ about $\frac{\pi}{4}\sqrt{N}$ times to maximize success probability.
-```
-
----
-
-## Geometric Interpretation
-
-The most elegant way to understand Grover's algorithm is geometrically.
-
-### The Two-Dimensional Subspace
-
-Define two states:
-- $|w\rangle$ = uniform superposition over **solutions** (winners)
-- $|w^\perp\rangle$ = uniform superposition over **non-solutions**
-
-If there are $M$ solutions out of $N$ items:
-$$
-|w\rangle = \frac{1}{\sqrt{M}}\sum_{x: f(x)=1}|x\rangle, \quad |w^\perp\rangle = \frac{1}{\sqrt{N-M}}\sum_{x: f(x)=0}|x\rangle
-$$
-
-These are orthonormal: $\langle w | w^\perp \rangle = 0$.
-
-### The Initial State
-
-The uniform superposition can be written as:
-$$
-|s\rangle = \sin\theta |w\rangle + \cos\theta |w^\perp\rangle
-$$
-
-where $\sin\theta = \sqrt{M/N}$.
-
-For small $M/N$, we have $\theta \approx \sqrt{M/N}$.
-
-### The Oracle as Reflection
-
-The oracle $O_f$ reflects about $|w^\perp\rangle$:
-- $|w\rangle \to -|w\rangle$ (solutions get flipped)
-- $|w^\perp\rangle \to |w^\perp\rangle$ (non-solutions unchanged)
-
-Geometrically, this is a reflection across the $|w^\perp\rangle$ axis.
-
-### The Diffusion as Reflection
-
-The diffusion operator $D$ reflects about $|s\rangle$:
-$$
-D = 2|s\rangle\langle s| - I
-$$
-
-This is a reflection across the initial state $|s\rangle$.
-
-### The Grover Iteration as Rotation
-
-The composition of two reflections is a **rotation**!
-
-$G = D \cdot O_f$ rotates the state by angle $2\theta$ toward $|w\rangle$.
-
-```{figure} ./03_07_lecture_files/grover_geometry.svg
-:width: 450px
-:name: grover-geometry
-
-Geometric view: Each Grover iteration rotates the state by $2\theta$ toward the solution space.
-```
-
-**Starting point:** $|s\rangle$ makes angle $\theta$ with $|w^\perp\rangle$.
-
-**After 1 iteration:** Angle is $3\theta$.
-
-**After 2 iterations:** Angle is $5\theta$.
-
-**After $k$ iterations:** Angle is $(2k+1)\theta$.
-
-### Optimal Number of Iterations
-
-We want the state to reach $|w\rangle$, which is at angle $\pi/2$ from $|w^\perp\rangle$.
-
-Set $(2k+1)\theta = \pi/2$:
-$$
-k = \frac{\pi/2 - \theta}{2\theta} \approx \frac{\pi}{4\theta} - \frac{1}{2}
-$$
-
-For $\theta \approx \sqrt{M/N}$:
-$$
-k \approx \frac{\pi}{4}\sqrt{\frac{N}{M}}
-$$
-
-With $M = 1$ solution:
-$$
-k \approx \frac{\pi}{4}\sqrt{N}
-$$
-
-```{admonition} The Magic Number
-:class: important
-
-For 1 solution among $N$ items, the optimal number of Grover iterations is:
-$$
-k_{\text{opt}} = \left\lfloor \frac{\pi}{4}\sqrt{N} \right\rfloor
-$$
-
-Examples:
-- $N = 100$: about 8 iterations
-- $N = 10,000$: about 79 iterations
-- $N = 1,000,000$: about 785 iterations
-```
-
-### The Overshooting Problem
-
-What happens if we iterate too many times?
-
-The state keeps rotating past $|w\rangle$! After $k_{\text{opt}}$ iterations, additional iterations **decrease** the success probability.
-
-This is unlike classical search, where more queries always help.
-
-```{figure} ./03_07_lecture_files/grover_overshoot.svg
+```{figure} ./03_06_lecture_files/deutsch_circuit.svg
 :width: 400px
-:name: grover-overshoot
+:name: deutsch-circuit
 
-Too many iterations: the state rotates past the solution.
+Deutsch's algorithm: H gates, oracle query, H gate, measure.
 ```
 
-### Success Probability
-
-After $k$ iterations, the state is:
+**Step 0: Initialize**
 $$
-|\psi_k\rangle = \sin((2k+1)\theta)|w\rangle + \cos((2k+1)\theta)|w^\perp\rangle
+|0\rangle|1\rangle
 $$
 
-Success probability:
+**Step 1: Apply H to both qubits**
 $$
-P_{\text{success}} = |\langle w | \psi_k \rangle|^2 = \sin^2((2k+1)\theta)
+H|0\rangle \otimes H|1\rangle = |{+}\rangle|{-}\rangle = \frac{1}{2}(|0\rangle + |1\rangle)(|0\rangle - |1\rangle)
 $$
 
-At $k = k_{\text{opt}}$, this is very close to 1 (not exactly 1 because $\pi/4\sqrt{N}$ may not be an integer).
+**Step 2: Apply the oracle**
+
+Using phase kickback:
+$$
+U_f|{+}\rangle|{-}\rangle = \frac{1}{\sqrt{2}}\big((-1)^{f(0)}|0\rangle + (-1)^{f(1)}|1\rangle\big)|{-}\rangle
+$$
+
+Let's factor out and simplify:
+$$
+= \frac{(-1)^{f(0)}}{\sqrt{2}}\big(|0\rangle + (-1)^{f(0) \oplus f(1)}|1\rangle\big)|{-}\rangle
+$$
+
+The global phase $(-1)^{f(0)}$ doesn't matter. What matters is the relative phase $(-1)^{f(0) \oplus f(1)}$:
+
+- If $f$ is **constant**: $f(0) \oplus f(1) = 0$, so we have $\frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) = |{+}\rangle$
+- If $f$ is **balanced**: $f(0) \oplus f(1) = 1$, so we have $\frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) = |{-}\rangle$
+
+**Step 3: Apply H to the first qubit**
+
+$$
+H|{+}\rangle = |0\rangle, \quad H|{-}\rangle = |1\rangle
+$$
+
+**Step 4: Measure the first qubit**
+
+- Result $|0\rangle$: $f$ is constant
+- Result $|1\rangle$: $f$ is balanced
+
+### Summary: Deutsch's Algorithm
+
+| Step | State (ignoring ancilla) |
+|------|--------------------------|
+| Initialize | $\|0\rangle$ |
+| After H | $\|{+}\rangle = \frac{1}{\sqrt{2}}(\|0\rangle + \|1\rangle)$ |
+| After oracle | $\frac{1}{\sqrt{2}}(\|0\rangle + (-1)^{f(0) \oplus f(1)}\|1\rangle)$ |
+| After H | $\|0\rangle$ if constant, $\|1\rangle$ if balanced |
+
+**Quantum query complexity: 1**
+
+We've achieved a 2× speedup: 1 query instead of 2.
+
+Not very impressive yet. But the real power comes when we scale up.
 
 ---
 
-## The Grover Operator as a Unitary
+## The Deutsch-Jozsa Problem (n Qubits)
 
-### The Grover Iterate
+Now let's generalize to $n$-bit inputs.
 
-The combination of oracle and diffusion is a single unitary operator:
+### The Problem
+
+You're given an oracle for a function $f: \{0, 1\}^n \to \{0, 1\}$.
+
+You're **promised** that $f$ is either:
+- **Constant:** $f(x) = 0$ for all $x$, or $f(x) = 1$ for all $x$
+- **Balanced:** $f(x) = 0$ for exactly half the inputs, and $f(x) = 1$ for the other half
+
+**The question:** Is $f$ constant or balanced?
+
+```{admonition} The Promise is Essential
+:class: warning
+
+The algorithm **only works** when the promise is satisfied. If $f$ is neither constant nor balanced (say, 60% zeros and 40% ones), the algorithm gives unreliable results.
+
+This is a **promise problem**: we're guaranteed the input has a special structure, and we exploit that structure. Without the promise, the problem becomes much harder.
+```
+
+### Classical Solution
+
+In the worst case, you might need to query just over half the inputs:
+- Query $f(x)$ for $2^{n-1} + 1$ different values of $x$
+- If all outputs are the same, $f$ must be constant
+- If you see both 0 and 1, $f$ is balanced
+
+**Classical query complexity: $O(2^n)$** (exponential in $n$)
+
+Actually, with high probability, you can detect balanced functions much faster (after ~$\sqrt{2^n}$ queries, you're very likely to see both outputs). But in the **worst case**, you need exponentially many queries.
+
+### The Hadamard Transform on n Qubits
+
+Before diving into the algorithm, let's understand the key mathematical tool: the $n$-qubit Hadamard transform.
+
+**Single qubit Hadamard:**
 $$
-G = D \cdot O_f
+H|0\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle) = |+\rangle
 $$
-
-Running Grover for $k$ iterations is simply applying $G^k$:
 $$
-|\psi_k\rangle = G^k |s\rangle
-$$
-
-This perspective is powerful because:
-1. $G$ has a simple eigenstructure (we'll see this shortly)
-2. We can use **quantum phase estimation** on $G$ to extract information
-3. It connects Grover to other quantum algorithms
-
-### Eigenvalues of G
-
-In the 2D subspace spanned by $\{|w\rangle, |w^\perp\rangle\}$, the Grover operator acts as a rotation by $2\theta$:
-$$
-G = \begin{pmatrix} \cos 2\theta & -\sin 2\theta \\ \sin 2\theta & \cos 2\theta \end{pmatrix}
-$$
-
-The eigenvalues are $e^{\pm 2i\theta}$ with eigenvectors:
-$$
-|g_\pm\rangle = \frac{1}{\sqrt{2}}(|w\rangle \mp i|w^\perp\rangle)
-$$
-
-**Why this matters:** The eigenvalues encode $\theta$, which encodes the number of solutions $M = N\sin^2\theta$. This is the key to **quantum counting**.
-
----
-
-## Amplitude Amplification: The General Framework
-
-Grover's algorithm is actually a special case of a more general technique called **amplitude amplification** (Brassard, Høyer, Mosca, Tapp, 2000).
-
-### The General Setting
-
-Suppose you have:
-- A quantum algorithm $\mathcal{A}$ that prepares some state $|\psi\rangle = \mathcal{A}|0\rangle$
-- A way to recognize "good" states (an oracle that marks solutions)
-
-The initial state has some overlap with the solution space:
-$$
-a = |\langle w | \psi \rangle|^2
+H|1\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle) = |-\rangle
 $$
 
-In standard Grover, $\mathcal{A} = H^{\otimes n}$ and $a = M/N$.
+We can write this compactly as:
+$$
+H|x\rangle = \frac{1}{\sqrt{2}}\sum_{z \in \{0,1\}} (-1)^{xz}|z\rangle
+$$
 
-### The Amplification Theorem
+where $x, z \in \{0, 1\}$ and $xz$ is ordinary multiplication.
 
-```{admonition} Amplitude Amplification Theorem
+**Two qubit Hadamard (worked example):**
+$$
+H^{\otimes 2}|00\rangle = H|0\rangle \otimes H|0\rangle = |+\rangle|+\rangle = \frac{1}{2}(|00\rangle + |01\rangle + |10\rangle + |11\rangle)
+$$
+
+$$
+H^{\otimes 2}|01\rangle = |+\rangle|-\rangle = \frac{1}{2}(|00\rangle - |01\rangle + |10\rangle - |11\rangle)
+$$
+
+$$
+H^{\otimes 2}|10\rangle = |-\rangle|+\rangle = \frac{1}{2}(|00\rangle + |01\rangle - |10\rangle - |11\rangle)
+$$
+
+$$
+H^{\otimes 2}|11\rangle = |-\rangle|-\rangle = \frac{1}{2}(|00\rangle - |01\rangle - |10\rangle + |11\rangle)
+$$
+
+Notice the pattern of signs! For $H^{\otimes 2}|xy\rangle$, the coefficient of $|ab\rangle$ is $\frac{1}{2}(-1)^{xa + yb}$.
+
+**General n-qubit Hadamard:**
+$$
+H^{\otimes n}|x\rangle = \frac{1}{\sqrt{2^n}}\sum_{z=0}^{2^n-1} (-1)^{x \cdot z}|z\rangle
+$$
+
+where $x \cdot z = x_1 z_1 \oplus x_2 z_2 \oplus \cdots \oplus x_n z_n$ is the **bitwise inner product** (XOR of the AND of corresponding bits).
+
+```{admonition} The Hadamard Transform as Quantum Fourier Transform
+:class: note
+
+The $n$-qubit Hadamard transform is the **Quantum Fourier Transform over $\mathbb{Z}_2^n$** — the group of $n$-bit strings under XOR.
+
+In this context:
+- The basis states $|x\rangle$ correspond to group elements
+- The phases $(-1)^{x \cdot z}$ are the **characters** of the group
+- The transform converts between "position" and "frequency" representations
+
+This is why the Hadamard transform is so powerful: it's a Fourier transform, and Fourier transforms are nature's way of revealing hidden structure.
+
+The more general Quantum Fourier Transform over $\mathbb{Z}_N$ (used in Shor's algorithm) is a direct generalization of this idea.
+```
+
+**Key property:** The Hadamard transform is its own inverse: $H^{\otimes n} H^{\otimes n} = I$.
+
+This means:
+- $H^{\otimes n}|0\rangle^{\otimes n}$ creates a uniform superposition
+- Applying $H^{\otimes n}$ again returns to $|0\rangle^{\otimes n}$
+
+But if we modify the phases in between (via the oracle), the final state changes!
+
+### Quantum Solution: The Deutsch-Jozsa Algorithm
+
+The quantum algorithm solves this with **just 1 query**, regardless of $n$!
+
+**Circuit:**
+
+```{figure} ./03_06_lecture_files/deutsch_jozsa_circuit.svg
+:width: 500px
+:name: dj-circuit
+
+Deutsch-Jozsa algorithm for $n$ qubits.
+```
+
+**Step 0: Initialize**
+$$
+|0\rangle^{\otimes n}|1\rangle
+$$
+
+That's $n$ qubits in $|0\rangle$ (the input register) and 1 qubit in $|1\rangle$ (the ancilla).
+
+**Step 1: Apply H to all qubits**
+$$
+H^{\otimes n}|0\rangle^{\otimes n} \otimes H|1\rangle = \frac{1}{\sqrt{2^n}}\sum_{x=0}^{2^n-1}|x\rangle \otimes |{-}\rangle
+$$
+
+The input register is now in an **equal superposition** of all $2^n$ possible inputs!
+
+**Step 2: Apply the oracle**
+
+Using phase kickback on each term:
+$$
+U_f \left(\frac{1}{\sqrt{2^n}}\sum_x |x\rangle\right)|{-}\rangle = \frac{1}{\sqrt{2^n}}\sum_x (-1)^{f(x)}|x\rangle \otimes |{-}\rangle
+$$
+
+The function value $f(x)$ is now encoded as a **phase** on each basis state.
+
+**Step 3: Apply H to the input register**
+
+This is the key step. We apply $H^{\otimes n}$ to the input register.
+
+Recall that:
+$$
+H|x\rangle = \frac{1}{\sqrt{2}}\sum_{z \in \{0,1\}} (-1)^{xz}|z\rangle
+$$
+
+For $n$ qubits:
+$$
+H^{\otimes n}|x\rangle = \frac{1}{\sqrt{2^n}}\sum_{z=0}^{2^n-1} (-1)^{x \cdot z}|z\rangle
+$$
+
+where $x \cdot z = x_1 z_1 \oplus x_2 z_2 \oplus \cdots \oplus x_n z_n$ is the bitwise inner product.
+
+Applying this to our state:
+$$
+H^{\otimes n}\left(\frac{1}{\sqrt{2^n}}\sum_x (-1)^{f(x)}|x\rangle\right) = \frac{1}{2^n}\sum_x \sum_z (-1)^{f(x) + x \cdot z}|z\rangle
+$$
+
+Rearranging:
+$$
+= \sum_z \left(\frac{1}{2^n}\sum_x (-1)^{f(x) + x \cdot z}\right)|z\rangle
+$$
+
+The amplitude of $|z\rangle$ is:
+$$
+a_z = \frac{1}{2^n}\sum_x (-1)^{f(x) + x \cdot z}
+$$
+
+**Step 4: Measure**
+
+What's the amplitude of $|0\rangle^{\otimes n}$ (all zeros)?
+
+$$
+a_0 = \frac{1}{2^n}\sum_x (-1)^{f(x)}
+$$
+
+**If $f$ is constant:**
+- All $(-1)^{f(x)}$ terms are the same (either all $+1$ or all $-1$)
+- $a_0 = \frac{1}{2^n} \cdot 2^n \cdot (\pm 1) = \pm 1$
+- Probability of measuring $|0\rangle^{\otimes n}$ is $|a_0|^2 = 1$
+
+**If $f$ is balanced:**
+- Half the terms are $+1$, half are $-1$
+- $a_0 = \frac{1}{2^n}(2^{n-1} - 2^{n-1}) = 0$
+- Probability of measuring $|0\rangle^{\otimes n}$ is $0$
+
+### The Result
+
+| Measurement | Conclusion |
+|-------------|------------|
+| All zeros ($\|0\rangle^{\otimes n}$) | $f$ is constant |
+| Anything else | $f$ is balanced |
+
+**Quantum query complexity: 1**
+
+We've achieved an **exponential speedup**: 1 query instead of $O(2^n)$!
+
+### What Do You Measure When f is Balanced?
+
+If $f$ is constant, you always measure $|0\rangle^{\otimes n}$. But if $f$ is balanced, what do you actually measure?
+
+The answer depends on the **structure** of $f$. Let's work out a specific example.
+
+**Example: The parity function**
+
+Suppose $f(x) = x_1 \oplus x_2 \oplus \cdots \oplus x_n$ (XOR of all bits). This is balanced: half the $n$-bit strings have even parity, half have odd.
+
+After the oracle, the state is:
+$$
+\frac{1}{\sqrt{2^n}}\sum_x (-1)^{x_1 \oplus x_2 \oplus \cdots \oplus x_n}|x\rangle
+$$
+
+After the final Hadamard, the amplitude of $|z\rangle$ is:
+$$
+a_z = \frac{1}{2^n}\sum_x (-1)^{f(x) + x \cdot z} = \frac{1}{2^n}\sum_x (-1)^{(x_1 \oplus \cdots \oplus x_n) + (x_1 z_1 \oplus \cdots \oplus x_n z_n)}
+$$
+
+This simplifies (after some algebra) to:
+- $a_z = \pm 1$ if $z = 11\ldots1$ (all ones)
+- $a_z = 0$ otherwise
+
+So we measure $|11\ldots1\rangle$ with certainty!
+
+**The general pattern:** For functions of the form $f(x) = s \cdot x$ (inner product with a secret string $s$), we measure exactly $|s\rangle$. This is the **Bernstein-Vazirani algorithm**.
+
+For other balanced functions, we measure some nonzero string that reflects the structure of $f$. The key point is: **we never measure all zeros**, which is how we know $f$ is balanced.
+
+```{admonition} Deutsch-Jozsa: The Bottom Line
 :class: important
 
-Given:
-- Algorithm $\mathcal{A}$ that produces state with overlap $a$ with solutions
-- Oracle $O_f$ that marks solutions
+The Deutsch-Jozsa algorithm determines whether an $n$-bit function is constant or balanced using **1 quantum query**.
 
-Then: $O(\frac{1}{\sqrt{a}})$ applications of $\mathcal{A}$, $\mathcal{A}^{-1}$, and $O_f$ suffice to find a solution with high probability.
-```
+Classical algorithms need up to $2^{n-1}+1$ queries in the worst case.
 
-**The key insight:** If you have *any* method to generate states with overlap $a$ with solutions (even a classical randomized algorithm!), amplitude amplification boosts the success probability using only $O(1/\sqrt{a})$ iterations instead of $O(1/a)$ repetitions.
-
-### Example: Boosting a Weak Classical Algorithm
-
-Suppose a classical algorithm finds a solution with probability $p = 0.01$ (1%).
-
-**Classical approach:** Run 100 times, expect ~1 success. Complexity: $O(1/p) = O(100)$.
-
-**Quantum amplification:** 
-1. Implement the classical algorithm as a quantum circuit $\mathcal{A}$
-2. Apply amplitude amplification
-3. Complexity: $O(1/\sqrt{p}) = O(10)$ — a 10× speedup!
-
-### The Generalized Grover Iterate
-
-For amplitude amplification, the iterate becomes:
-$$
-G = \mathcal{A} S_0 \mathcal{A}^{-1} O_f
-$$
-
-where $S_0 = 2|0\rangle\langle 0| - I$ flips the phase of the initial state $|0\rangle$.
-
-Standard Grover is the special case $\mathcal{A} = H^{\otimes n}$, where $\mathcal{A}^{-1} = \mathcal{A}$ and $\mathcal{A} S_0 \mathcal{A}^{-1} = D$.
-
----
-
-## Quantum Counting
-
-What if we don't know the number of solutions $M$? **Quantum counting** solves this.
-
-### The Idea
-
-The Grover iterate $G$ has eigenvalues $e^{\pm 2i\theta}$ where $\sin\theta = \sqrt{M/N}$.
-
-If we can estimate $\theta$, we can compute $M$!
-
-### The Algorithm
-
-1. Prepare the state $|s\rangle = H^{\otimes n}|0\rangle^{\otimes n}$
-2. Apply **quantum phase estimation** (QPE) to estimate the eigenvalue of $G$
-3. Extract $\theta$ from the estimated phase
-4. Compute $M = N \sin^2\theta$
-
-### Quantum Phase Estimation (Preview)
-
-QPE is a powerful subroutine that estimates eigenvalues of unitary operators. Given:
-- A unitary $U$ with eigenvalue $e^{2\pi i \phi}$
-- An eigenstate $|u\rangle$ of $U$
-
-QPE outputs an estimate of $\phi$ using $O(1/\epsilon)$ applications of controlled-$U$ for precision $\epsilon$.
-
-We'll study QPE in detail in the next lecture (Shor's algorithm), where it's the key ingredient.
-
-### Quantum Counting Complexity
-
-**Query complexity:** $O(\sqrt{N})$ — same as Grover!
-
-**What we gain:** Knowledge of $M$, which tells us:
-- The optimal number of Grover iterations
-- Whether any solutions exist ($M = 0$?)
-- The fraction of solutions (useful for sampling)
-
-```{admonition} Quantum Counting Summary
-:class: tip
-
-Quantum counting uses QPE on the Grover operator to estimate the number of solutions $M$.
-
-- **Input:** Oracle $O_f$, search space size $N$
-- **Output:** Estimate of $M = |\{x : f(x) = 1\}|$
-- **Complexity:** $O(\sqrt{N}/\epsilon)$ for multiplicative error $\epsilon$
-
-This is a quadratic speedup over classical counting, which requires $O(N)$ evaluations.
+This is an **exponential speedup** — the first provable quantum advantage!
 ```
 
 ---
 
-## The Algorithm Step by Step
+## How Does It Work? The Key Ideas
 
-Let's put it all together.
+Let's understand the algorithm at a deeper level.
 
-### Input
-- Oracle $O_f$ that marks solutions
-- Number of items $N = 2^n$
-- (Optionally) estimate of number of solutions $M$
+### Idea 1: Quantum Parallelism
 
-### Algorithm
-
-1. **Initialize:** Prepare $|0\rangle^{\otimes n}$
-
-2. **Create superposition:** Apply $H^{\otimes n}$ to get $|s\rangle = \frac{1}{\sqrt{N}}\sum_x |x\rangle$
-
-3. **Grover iterations:** Repeat $k = \lfloor \frac{\pi}{4}\sqrt{N/M} \rfloor$ times:
-   - Apply oracle $O_f$
-   - Apply diffusion $D = H^{\otimes n}(2|0\rangle\langle 0| - I)H^{\otimes n}$
-
-4. **Measure:** Measure all qubits in computational basis
-
-5. **Verify:** Check if the result $x$ satisfies $f(x) = 1$
-
-### Output
-- A solution $x$ with $f(x) = 1$, with probability $\geq 1 - O(M/N)$
-
-### Complexity
-- **Query complexity:** $O(\sqrt{N/M})$ oracle calls
-- **Gate complexity:** $O(\sqrt{N/M} \cdot n)$ gates (each iteration uses $O(n)$ gates)
-
----
-
-## Why Quadratic, Not Exponential?
-
-A natural question: Deutsch-Jozsa achieves exponential speedup. Why is Grover "only" quadratic?
-
-### The Fundamental Limit
-
-**Theorem (Bennett, Bernstein, Brassard, Vazirani 1997):** Any quantum algorithm for unstructured search requires $\Omega(\sqrt{N})$ queries.
-
-Grover's algorithm is **optimal**! You cannot do better with quantum mechanics for this problem.
-
-### The BBBV Proof Idea
-
-The proof uses a clever "hybrid argument." Here's the intuition:
-
-**Setup:** Consider $N+1$ different oracles:
-- $O_0$: no solutions (all items return 0)
-- $O_i$ for $i = 1, \ldots, N$: item $i$ is the unique solution
-
-**Key observation:** After $k$ queries, the state depends on which oracle we're using. Call this state $|\psi_i^{(k)}\rangle$ for oracle $O_i$.
-
-**The constraint:** Adjacent oracles $O_i$ and $O_{i+1}$ differ only in how they treat items $i$ and $i+1$. Each query can change the state by at most a bounded amount:
+The Hadamard transform creates a superposition of all inputs:
 $$
-\| |\psi_i^{(k)}\rangle - |\psi_{i+1}^{(k)}\rangle \| \leq O(k/\sqrt{N})
+H^{\otimes n}|0\rangle^{\otimes n} = \frac{1}{\sqrt{2^n}}\sum_{x=0}^{2^n-1}|x\rangle
 $$
 
-**The requirement:** To distinguish $O_0$ from some $O_i$, the states must be noticeably different. By the triangle inequality:
+When we apply the oracle, it acts on **all $2^n$ inputs simultaneously**:
 $$
-\| |\psi_0^{(k)}\rangle - |\psi_i^{(k)}\rangle \| \leq \sum_{j=0}^{i-1} \| |\psi_j^{(k)}\rangle - |\psi_{j+1}^{(k)}\rangle \| \leq O(ik/\sqrt{N})
+U_f \to \frac{1}{\sqrt{2^n}}\sum_x (-1)^{f(x)}|x\rangle
 $$
 
-**The conclusion:** For the algorithm to succeed with constant probability on a random oracle, we need $\| |\psi_0^{(k)}\rangle - |\psi_i^{(k)}\rangle \| = \Omega(1)$ for most $i$. This requires $k = \Omega(\sqrt{N})$.
+In one oracle call, we've "evaluated" $f$ on all inputs!
 
-### Intuition: Information Accumulates Slowly
+But wait — we can't just read out all the $f(x)$ values. Measurement would give us just one random $x$ and its $f(x)$. The information is encoded in **phases**, which we can't directly observe.
 
-Another way to think about it:
+### Idea 2: Phase Kickback
 
-Each oracle query provides limited information:
-- Classically: you learn $f(x)$ for one $x$ — that's $O(1)$ bit
-- Quantumly: you learn about phases on all $|x\rangle$ simultaneously, but measurement collapses most of this
+The oracle doesn't output $f(x)$ in a register we can read. Instead, phase kickback encodes $f(x)$ as a **phase** on $|x\rangle$:
+$$
+|x\rangle \to (-1)^{f(x)}|x\rangle
+$$
 
-The quadratic speedup comes from:
-- **Quantum parallelism:** query all $x$ at once
-- **Amplitude amplification:** boost solution amplitude by $O(1/\sqrt{N})$ per iteration
-- After $\sqrt{N}$ iterations, amplitude reaches $O(1)$
+Phases are not directly measurable, but they affect **interference patterns**.
 
-But you can't do better because:
-- Each query changes the state by a bounded amount (unitary evolution is continuous)
-- You need the solution amplitude to go from $1/\sqrt{N}$ to $O(1)$
-- This requires $\Omega(\sqrt{N})$ steps
+### Idea 3: Interference — The Geometric Picture
 
-```{admonition} The Optimality of Grover
+This is the heart of the algorithm. Let's visualize what happens.
+
+**Think of amplitudes as arrows (vectors in the complex plane):**
+- Each basis state $|x\rangle$ has an amplitude (a complex number)
+- Before the oracle: all amplitudes are $+\frac{1}{\sqrt{2^n}}$ (arrows pointing right)
+- After the oracle: amplitudes are $\pm\frac{1}{\sqrt{2^n}}$ (arrows pointing right or left)
+
+**The final Hadamard causes interference:**
+
+The amplitude of $|0\rangle^{\otimes n}$ after the final Hadamard is:
+$$
+a_0 = \frac{1}{2^n}\sum_x (-1)^{f(x)}
+$$
+
+This is a sum of $2^n$ terms, each equal to $+\frac{1}{2^n}$ or $-\frac{1}{2^n}$.
+
+```{figure} ./03_06_lecture_files/interference_diagram.svg
+:width: 500px
+:name: interference-diagram
+
+Interference in Deutsch-Jozsa: amplitudes add constructively (constant) or cancel (balanced).
+```
+
+**Constant function:** All arrows point the same direction.
+$$
+a_0 = \frac{1}{2^n} \cdot 2^n \cdot (+1) = +1 \quad \text{or} \quad a_0 = \frac{1}{2^n} \cdot 2^n \cdot (-1) = -1
+$$
+
+All $2^n$ arrows add up → **constructive interference** → $|a_0|^2 = 1$.
+
+**Balanced function:** Half the arrows point right, half point left.
+$$
+a_0 = \frac{1}{2^n}(2^{n-1} \cdot (+1) + 2^{n-1} \cdot (-1)) = 0
+$$
+
+The arrows cancel in pairs → **destructive interference** → $|a_0|^2 = 0$.
+
+**This is the quantum magic:** The Hadamard transform "focuses" all the phase information into a single amplitude. The global property (constant vs balanced) determines whether the arrows add up or cancel.
+
+### Idea 4: The Algorithm Extracts Global Information
+
+Here's a key insight: the algorithm doesn't tell us $f(x)$ for any particular $x$. It tells us a **global property** of $f$ (whether all values are the same).
+
+This is typical of quantum algorithms:
+- Classical algorithms: compute $f(x)$ for specific inputs
+- Quantum algorithms: extract global/structural information about $f$
+
+The art of quantum algorithm design is finding problems where:
+1. The desired answer is a global property
+2. That property can be made to control interference patterns
+
+```{admonition} The Quantum Algorithm Recipe
 :class: important
 
-Grover's $O(\sqrt{N})$ query complexity is **provably optimal** for unstructured search.
+Most quantum algorithms follow this pattern:
 
-This is one of the few cases where we have tight upper and lower bounds:
-- Upper bound: Grover achieves $O(\sqrt{N})$
-- Lower bound: BBBV proves $\Omega(\sqrt{N})$ is necessary
+1. **Superposition:** Put the input register in a uniform superposition of all values
+2. **Oracle/Phase encoding:** Apply the function, encoding results as phases via kickback
+3. **Interference:** Apply a transform (often Hadamard or QFT) so the desired answer constructively interferes
+4. **Measurement:** Read out the answer
 
-No future quantum algorithm can do better for this problem!
+The art is designing step 3 so that the correct answer has amplitude close to 1.
+
+This recipe appears in Deutsch-Jozsa, Simon, Grover, Shor, and most other quantum algorithms.
 ```
 
-### Quantum Walks Perspective
+---
 
-There's an elegant alternative view of Grover's algorithm using **quantum walks**.
+## Why Is This Problem "Easy"?
 
-A **quantum walk** is the quantum analog of a random walk. Instead of probabilistically moving between states, a quantum walker moves in superposition, with amplitudes that can interfere.
+You might object: the Deutsch-Jozsa problem is artificial. Who cares about constant vs balanced functions?
 
-**Grover as a quantum walk:** The algorithm can be viewed as a quantum walk on the complete graph $K_N$:
-- Vertices are the $N$ items
-- The "marked vertex" is the solution
-- The walk dynamics are designed so the walker accumulates amplitude at the marked vertex
+You're right! This is a **contrived problem**. It was designed to demonstrate quantum speedup, not to solve a real-world task.
 
-**Why this matters:**
-1. Quantum walks generalize to **spatial search** on graphs
-2. On some graphs, quantum walks achieve speedups beyond Grover
-3. Quantum walks are a general algorithmic primitive (like classical random walks)
+But the principles it demonstrates — superposition, phase kickback, interference — are the same principles that power actually useful algorithms like Grover's (searching) and Shor's (factoring).
 
-**Example:** Searching a 2D grid of $N$ items:
-- Classical random walk: $O(N \log N)$ steps
-- Quantum walk: $O(\sqrt{N \log N})$ steps
-
-The quantum walk framework unifies many quantum algorithms and provides tools for designing new ones.
-
-### Comparison with Structured Problems
-
-| Problem | Classical | Quantum | Speedup |
-|---------|-----------|---------|---------|
-| Unstructured search | $O(N)$ | $O(\sqrt{N})$ | Quadratic |
-| Deutsch-Jozsa (promise) | $O(2^n)$ | $O(1)$ | Exponential |
-| Simon (hidden period) | $O(2^{n/2})$ | $O(n)$ | Exponential |
-| Factoring | $O(e^{n^{1/3}})$ | $O(n^2)$ | Super-polynomial |
-
-Exponential speedups require **structure** in the problem. For unstructured search, quadratic is the best possible.
+Think of Deutsch-Jozsa as the "Hello, World!" of quantum algorithms. It's not useful by itself, but it teaches you the fundamental techniques.
 
 ---
 
-## Multiple Solutions
+## Deterministic vs Probabilistic
 
-What if there are $M > 1$ solutions?
+One notable feature of Deutsch-Jozsa: it's **deterministic**.
 
-### The Algorithm Still Works!
+- The answer is always correct (100% probability)
+- No need to repeat and take a majority vote
 
-The geometric picture extends naturally:
-- $|w\rangle$ is now the uniform superposition over all $M$ solutions
-- Initial angle: $\sin\theta = \sqrt{M/N}$
-- Optimal iterations: $k \approx \frac{\pi}{4}\sqrt{N/M}$
+This is unusual! Most quantum algorithms are probabilistic — they give the right answer with high probability, but not certainty.
 
-**Fewer iterations needed!** More solutions means faster convergence.
-
-### The Catch: You Need to Know M
-
-The optimal number of iterations depends on $M$. If you don't know $M$:
-
-**Option 1: Guess and check**
-- Try $k = 1, 2, 4, 8, \ldots$ iterations
-- After each, measure and check if $f(x) = 1$
-- Expected total queries: $O(\sqrt{N/M})$ (only constant factor overhead)
-
-**Option 2: Quantum counting**
-- Use a variant of Grover + quantum phase estimation
-- Estimate $M$ with $O(\sqrt{N})$ queries
-- Then run Grover with the right $k$
-
-### Finding All Solutions
-
-To find all $M$ solutions:
-- Run Grover $O(M)$ times
-- Each run finds one solution (possibly a repeat)
-- After $O(M \log M)$ runs, you've found all with high probability
+However, Deutsch-Jozsa's determinism comes from the promise that $f$ is either constant or balanced. If $f$ could be "almost balanced" (say, 51% zeros and 49% ones), the algorithm would fail.
 
 ---
 
-## Applications
+## The Bernstein-Vazirani Algorithm
 
-### Database Search
+The Bernstein-Vazirani problem is closely related to Deutsch-Jozsa, but instead of asking "constant or balanced?", it asks "what is the hidden structure?"
 
-The original motivation: search an unsorted database of $N$ items.
+### The Problem
 
-**Classical:** $O(N)$ lookups.
-**Quantum:** $O(\sqrt{N})$ lookups.
+You're given an oracle for $f(x) = s \cdot x$ where $s$ is an unknown $n$-bit string and $s \cdot x$ is the bitwise inner product mod 2.
 
-But be careful! In practice, the "oracle" (database lookup) may dominate the cost. The speedup is in *query complexity*, not necessarily wall-clock time.
+**Goal:** Find $s$.
 
-### SAT and Constraint Satisfaction
+### Classical Solution
 
-Given a Boolean formula $\phi(x_1, \ldots, x_n)$, find an assignment that satisfies it.
+Query $f$ on the $n$ standard basis vectors:
+- $f(100...0) = s_1$
+- $f(010...0) = s_2$
+- ...
+- $f(000...1) = s_n$
 
-**Search space:** $N = 2^n$ possible assignments.
+**Classical query complexity: $n$**
 
-**Oracle:** $f(x) = 1$ if $\phi(x)$ is true.
+### Quantum Solution
 
-**Grover:** Find a satisfying assignment in $O(\sqrt{2^n}) = O(2^{n/2})$ evaluations.
+Use the exact same circuit as Deutsch-Jozsa!
 
-This doesn't solve SAT in polynomial time (it's still exponential in $n$), but it's a quadratic improvement over brute force.
+**Why it works:** After the algorithm, the amplitude of $|z\rangle$ is:
+$$
+a_z = \frac{1}{2^n}\sum_x (-1)^{s \cdot x + x \cdot z} = \frac{1}{2^n}\sum_x (-1)^{x \cdot (s \oplus z)}
+$$
 
-### Cryptographic Attacks
+If $z = s$, then $s \oplus z = 0$, so $x \cdot (s \oplus z) = 0$ for all $x$:
+$$
+a_s = \frac{1}{2^n}\sum_x (-1)^0 = \frac{1}{2^n} \cdot 2^n = 1
+$$
 
-**Symmetric key search:** Given ciphertext $c$, find key $k$ such that $\text{Encrypt}(k, m) = c$.
+If $z \neq s$, the sum has equal positive and negative terms (this is a Fourier orthogonality relation), so $a_z = 0$.
 
-With $n$-bit keys:
-- Classical: $O(2^n)$ encryptions
-- Quantum Grover: $O(2^{n/2})$ encryptions
+**Result:** We measure $|s\rangle$ with probability 1!
 
-**Implication:** 128-bit keys offer only 64 bits of security against quantum attacks.
+**Quantum query complexity: 1**
 
-**Mitigation:** Use 256-bit keys (128 bits of quantum security).
+An $n$× speedup, though not exponential (since classical is already $O(n)$, not $O(2^n)$).
 
-### Optimization
+---
 
-Find $x$ that minimizes $f(x)$.
+## Simon's Algorithm: Bridge to Shor
 
-**Approach:** Binary search on the minimum value.
-- Is there an $x$ with $f(x) < v$?
-- Use Grover to search for such an $x$
-- Adjust $v$ based on result
+Simon's algorithm (1994) represents a crucial stepping stone between Deutsch-Jozsa and Shor's factoring algorithm.
 
-**Complexity:** $O(\sqrt{N} \log(\text{range}))$ queries.
+### The Problem
 
-### Amplitude Estimation
+You're given an oracle for a function $f: \{0,1\}^n \to \{0,1\}^n$ with the following promise:
 
-A generalization of Grover that estimates the fraction of solutions:
+There exists a secret string $s$ such that:
+$$
+f(x) = f(y) \iff x \oplus y \in \{0^n, s\}
+$$
 
-Given oracle for $f$, estimate $p = M/N = \Pr_x[f(x) = 1]$.
+In other words, $f$ is 2-to-1 with a hidden XOR period $s$ (unless $s = 0^n$, in which case $f$ is 1-to-1).
 
-**Classical:** $O(1/\epsilon^2)$ samples for precision $\epsilon$.
-**Quantum:** $O(1/\epsilon)$ queries — quadratic speedup!
+**Goal:** Find $s$.
 
-This is useful for Monte Carlo estimation, option pricing, and risk analysis.
+### Why It Matters
 
-### Fixed-Point Amplitude Amplification
+**Classical:** Any algorithm needs $\Omega(2^{n/2})$ queries (birthday paradox argument).
 
-Standard Grover has a problem: if you don't know $M$, you might **overshoot** and decrease success probability.
+**Quantum:** Simon's algorithm finds $s$ with $O(n)$ queries — an **exponential speedup**!
 
-**Fixed-point amplitude amplification** (Yoder, Low, Chuang 2014) solves this:
+### How It Works (Sketch)
 
-The key idea is to modify the reflection angles in each iteration so that:
-1. Success probability increases **monotonically**
-2. Running more iterations never hurts
-3. The algorithm converges to a fixed point (hence the name)
+The algorithm is similar to Deutsch-Jozsa:
+1. Prepare superposition: $\frac{1}{\sqrt{2^n}}\sum_x |x\rangle|0\rangle$
+2. Apply oracle: $\frac{1}{\sqrt{2^n}}\sum_x |x\rangle|f(x)\rangle$
+3. Measure the second register (getting some value $f(x_0)$)
+4. The first register collapses to $\frac{1}{\sqrt{2}}(|x_0\rangle + |x_0 \oplus s\rangle)$
+5. Apply Hadamard to the first register
+6. Measure, getting some $z$ with $z \cdot s = 0$
 
-**The modification:** Instead of reflecting by exactly $\pi$ in the oracle and diffusion, use a sequence of carefully chosen angles that converge to the solution without overshooting.
+Each run gives a random $z$ orthogonal to $s$. After $O(n)$ runs, we have enough equations to solve for $s$ via Gaussian elimination.
 
-**Trade-off:** Fixed-point Grover uses about 3× more queries than standard Grover, but it's more robust when $M$ is unknown.
+### Connection to Shor
 
-```{admonition} Fixed-Point Grover
-:class: tip
+Simon's algorithm was the direct inspiration for Shor's factoring algorithm:
 
-Standard Grover can overshoot if you run too many iterations.
+| Aspect | Simon | Shor |
+|--------|-------|------|
+| Group | $\mathbb{Z}_2^n$ (XOR) | $\mathbb{Z}_N$ (addition mod N) |
+| Hidden structure | XOR period $s$ | Multiplicative period $r$ |
+| Transform | Hadamard = QFT over $\mathbb{Z}_2^n$ | QFT over $\mathbb{Z}_N$ |
+| Speedup | Exponential | Exponential |
 
-Fixed-point amplitude amplification modifies the algorithm so that success probability increases monotonically — running more iterations always helps (up to the limit).
+Shor essentially asked: "Can we do Simon's algorithm over a different group?" The answer was yes, and it broke RSA.
 
-Cost: ~3× more queries, but no need to know $M$ precisely.
+```{admonition} The Quantum Algorithms Family Tree
+:class: note
+
+```
+Deutsch (1985)
+    │
+    ├── Deutsch-Jozsa (1992): exponential speedup for promise problem
+    │       │
+    │       └── Bernstein-Vazirani (1993): finding hidden linear structure
+    │               │
+    │               └── Simon (1994): finding hidden XOR period
+    │                       │
+    │                       └── Shor (1994): finding hidden multiplicative period → FACTORING
+    │
+    └── Grover (1996): quadratic speedup for unstructured search
 ```
 
-### Grover Adaptive Search (Optimization)
-
-For optimization problems, we want to find $x$ that **minimizes** $f(x)$, not just satisfies a condition.
-
-**Grover Adaptive Search:**
-
-1. Set threshold $T = $ some initial estimate
-2. Define oracle: $g(x) = 1$ if $f(x) < T$, else $0$
-3. Use Grover to find $x$ with $f(x) < T$
-4. Update $T \leftarrow f(x)$
-5. Repeat until no improvement found
-
-**Analysis:** Each phase finds a better solution. The number of phases is at most $O(\log(\text{range}))$. Each Grover search takes $O(\sqrt{N/M_T})$ where $M_T$ is the number of items better than threshold $T$.
-
-**Total complexity:** $O(\sqrt{N})$ on average (by amortized analysis).
-
-**Applications:**
-- Combinatorial optimization
-- Satisfiability (finding best assignment)
-- Machine learning (hyperparameter search)
+Each algorithm builds on the insights of its predecessors!
+```
 
 ---
 
-## Lab: Implementing Grover's Algorithm
+## Building Oracles: From Abstract to Concrete
+
+So far, we've treated oracles as black boxes. But in practice, oracles must be built from quantum gates. Let's see how.
+
+### The Standard Oracle Construction
+
+For a function $f: \{0,1\}^n \to \{0,1\}$, the quantum oracle implements:
+$$
+U_f|x\rangle|y\rangle = |x\rangle|y \oplus f(x)\rangle
+$$
+
+This XORs $f(x)$ into the ancilla register, leaving the input unchanged.
+
+### Example: Inner Product Oracle
+
+For $f(x) = s \cdot x = s_1 x_1 \oplus s_2 x_2 \oplus \cdots \oplus s_n x_n$, the oracle is remarkably simple:
+
+**Circuit:** For each bit $i$ where $s_i = 1$, apply CNOT from qubit $i$ to the ancilla.
+
+```{figure} ./03_06_lecture_files/inner_product_oracle.svg
+:width: 350px
+:name: inner-product-oracle
+
+Oracle for $f(x) = s \cdot x$ with $s = 101$: CNOTs from qubits 0 and 2 to ancilla.
+```
+
+**Why it works:** Each CNOT computes $\text{ancilla} \gets \text{ancilla} \oplus x_i$ when $s_i = 1$. The cumulative effect is:
+$$
+\text{ancilla} \gets \text{ancilla} \oplus (s_1 x_1 \oplus s_2 x_2 \oplus \cdots \oplus s_n x_n) = \text{ancilla} \oplus f(x)
+$$
+
+**Gate count:** $O(n)$ CNOTs (at most one per bit of $s$).
+
+### Example: Constant Oracle
+
+For $f(x) = c$ (constant):
+- If $c = 0$: do nothing (identity gate)
+- If $c = 1$: apply X to the ancilla
+
+**Gate count:** $O(1)$ (just one X gate or nothing).
+
+### Example: Parity Oracle
+
+For $f(x) = x_1 \oplus x_2 \oplus \cdots \oplus x_n$ (parity of all bits):
+
+**Circuit:** CNOT from every input qubit to the ancilla.
+
+**Gate count:** $O(n)$ CNOTs.
+
+### More Complex Oracles
+
+For more complex functions, oracle construction can be tricky:
+
+**AND function:** $f(x_1, x_2) = x_1 \land x_2$
+
+This requires a **Toffoli gate** (controlled-controlled-NOT):
+$$
+\text{Toffoli}|x_1\rangle|x_2\rangle|y\rangle = |x_1\rangle|x_2\rangle|y \oplus (x_1 \land x_2)\rangle
+$$
+
+The Toffoli flips the target only if both controls are 1.
+
+**General Boolean functions:** Any Boolean function can be implemented as a reversible circuit using:
+- NOT gates
+- CNOT gates  
+- Toffoli gates
+
+But the circuit may be large! A function with no special structure might require $O(2^n)$ gates.
+
+---
+
+## Query Complexity vs Gate Complexity
+
+The oracle model focuses on **query complexity**: how many times must we call the oracle?
+
+But there's another measure: **gate complexity**: how many elementary gates in total?
+
+### The Distinction
+
+| Complexity | Deutsch-Jozsa Quantum | Deutsch-Jozsa Classical |
+|------------|----------------------|-------------------------|
+| Query complexity | 1 | $O(2^n)$ |
+| Total gate complexity | 1 oracle + $O(n)$ Hadamards | $O(2^n)$ oracle calls |
+
+### Why It Matters
+
+The oracle itself may require many gates to implement:
+- Simple oracles (inner product): $O(n)$ gates
+- Complex oracles (arbitrary function): up to $O(2^n)$ gates
+
+If the oracle requires $O(2^n)$ gates, then even with 1 query, the total gate complexity is $O(2^n)$ — no better than classical!
+
+### When Is the Quantum Speedup Real?
+
+The speedup is meaningful when:
+1. The oracle is "cheap" (polynomial gates), OR
+2. The oracle is truly a black box (we can't look inside)
+
+**Example where speedup is real:** The function is computed by a small circuit, but we don't know the circuit's structure. We only have query access.
+
+**Example where speedup is illusory:** The oracle for a random function requires $O(2^n)$ gates. The "1 query" speedup is meaningless because implementing that 1 query costs $O(2^n)$ gates.
+
+```{admonition} Query Complexity: A Useful Abstraction
+:class: note
+
+Query complexity is still valuable because:
+1. It's a clean theoretical model for comparing quantum and classical
+2. Many real problems have structured oracles (polynomial-sized circuits)
+3. It reveals fundamental limits: if quantum can't beat classical in queries, it often can't beat classical at all
+
+But always remember: **query complexity is a lower bound**, not the full story. Total gate complexity matters too.
+```
+
+---
+
+## Lab: Implementing Deutsch-Jozsa
+
+Let's implement the algorithm in Qiskit.
 
 ### Setup
 
 ```{code-block} python
 import numpy as np
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
-from qiskit.quantum_info import Statevector
+from qiskit import QuantumCircuit
 from qiskit_aer import AerSimulator
 
 simulator = AerSimulator()
 ```
 
-### Creating the Oracle
+### Creating Oracles
 
 ```{code-block} python
-def create_oracle(n, solutions):
+def constant_oracle(n, value=0):
     """
-    Create a Grover oracle that marks the given solutions.
-    
-    The oracle flips the phase of marked states: |x⟩ → -|x⟩ if f(x) = 1.
-    
-    Implementation: For each solution s, we:
-    1. Apply X to qubits where s has a 0 (so |s⟩ becomes |11...1⟩)
-    2. Apply multi-controlled Z (flips phase of |11...1⟩)
-    3. Apply X again to restore the qubits
-    
-    Note: This implementation marks each solution separately, so if multiple
-    solutions share structure, a more efficient circuit might be possible.
-    
-    Oracle complexity: O(n) gates per solution using O(n) ancillas,
-    or O(n²) gates per solution with no ancillas.
+    Create an oracle for a constant function.
+    f(x) = value for all x.
     """
-    oracle = QuantumCircuit(n, name='Oracle')
+    qc = QuantumCircuit(n + 1)
+    if value == 1:
+        qc.x(n)  # Flip ancilla if f(x) = 1
+    # If value == 0, do nothing
+    return qc.to_gate(label=f'f=const({value})')
+
+def balanced_oracle(n, pattern=None):
+    """
+    Create an oracle for a balanced function.
+    Uses a pattern to determine which inputs give 1.
+    Default: f(x) = x · (111...1) = parity of x
+    """
+    qc = QuantumCircuit(n + 1)
+    if pattern is None:
+        pattern = [1] * n  # Default: all 1s (parity function)
     
-    for sol in solutions:
-        # Step 1: Flip bits that are 0 in the solution
-        # This transforms |sol⟩ to |11...1⟩
-        for i in range(n):
-            if not (sol >> i) & 1:  # If bit i of sol is 0
-                oracle.x(i)
-        
-        # Step 2: Multi-controlled Z gate
-        # Flips phase only when all qubits are |1⟩
-        if n == 1:
-            oracle.z(0)
-        elif n == 2:
-            oracle.cz(0, 1)
-        else:
-            # MCZ = H on target, then MCX (Toffoli generalization), then H
-            # This flips phase of |11...1⟩
-            oracle.h(n-1)
-            oracle.mcx(list(range(n-1)), n-1)  # Multi-controlled X
-            oracle.h(n-1)
-        
-        # Step 3: Undo the bit flips
-        for i in range(n):
-            if not (sol >> i) & 1:
-                oracle.x(i)
+    # f(x) = x · pattern = XOR of x_i where pattern_i = 1
+    # Implementation: CNOT from each x_i (where pattern_i = 1) to ancilla
+    for i in range(n):
+        if pattern[i] == 1:
+            qc.cx(i, n)
     
-    return oracle.to_gate()
+    return qc.to_gate(label='f=balanced')
+
+def random_balanced_oracle(n):
+    """Create a random balanced oracle"""
+    # Use inner product with a random non-zero string
+    pattern = [np.random.randint(0, 2) for _ in range(n)]
+    while sum(pattern) == 0:  # Ensure at least one 1
+        pattern = [np.random.randint(0, 2) for _ in range(n)]
+    return balanced_oracle(n, pattern), pattern
 ```
 
-```{admonition} Oracle Complexity
-:class: warning
-
-The oracle construction above is simple but not optimal:
-
-**Gate complexity:** A multi-controlled Z on $n$ qubits requires:
-- $O(n)$ Toffoli gates with $O(n)$ ancilla qubits, OR
-- $O(n^2)$ Toffoli gates with no ancillas
-
-**Practical implication:** For large $n$, the oracle can dominate the algorithm cost. Grover's $O(\sqrt{N})$ query speedup only helps when each query (oracle call) is not too expensive.
-
-For specific problems (like SAT), custom oracle constructions can be much more efficient than the generic approach shown here.
-```
-
-### Creating the Diffusion Operator
+### The Deutsch-Jozsa Circuit
 
 ```{code-block} python
-def create_diffusion(n):
+def deutsch_jozsa(oracle, n):
     """
-    Create the Grover diffusion operator.
-    D = H^n (2|0><0| - I) H^n
+    Construct the Deutsch-Jozsa circuit.
+    oracle: the quantum oracle gate
+    n: number of input qubits
     """
-    diffusion = QuantumCircuit(n, name='Diffusion')
+    qc = QuantumCircuit(n + 1, n)
+    
+    # Initialize ancilla to |1⟩
+    qc.x(n)
     
     # Apply H to all qubits
-    diffusion.h(range(n))
-    
-    # Apply X to all qubits (to flip for |0> detection)
-    diffusion.x(range(n))
-    
-    # Multi-controlled Z (phase flip |11...1>)
-    diffusion.h(n-1)
-    diffusion.mcx(list(range(n-1)), n-1)
-    diffusion.h(n-1)
-    
-    # Apply X to all qubits
-    diffusion.x(range(n))
-    
-    # Apply H to all qubits
-    diffusion.h(range(n))
-    
-    return diffusion.to_gate()
-```
-
-### The Full Grover Circuit
-
-```{code-block} python
-def grover_circuit(n, solutions, iterations=None):
-    """
-    Create the full Grover circuit.
-    n: number of qubits
-    solutions: list of marked items
-    iterations: number of Grover iterations (default: optimal)
-    """
-    N = 2**n
-    M = len(solutions)
-    
-    if iterations is None:
-        # Optimal number of iterations
-        iterations = int(np.round(np.pi/4 * np.sqrt(N/M)))
-    
-    qc = QuantumCircuit(n, n)
-    
-    # Initialize to uniform superposition
-    qc.h(range(n))
+    qc.h(range(n + 1))
     qc.barrier()
     
-    # Create oracle and diffusion gates
-    oracle = create_oracle(n, solutions)
-    diffusion = create_diffusion(n)
+    # Apply the oracle
+    qc.append(oracle, range(n + 1))
+    qc.barrier()
     
-    # Apply Grover iterations
-    for _ in range(iterations):
-        qc.append(oracle, range(n))
-        qc.append(diffusion, range(n))
-        qc.barrier()
+    # Apply H to input qubits (not ancilla)
+    qc.h(range(n))
     
-    # Measure
+    # Measure input qubits
     qc.measure(range(n), range(n))
     
-    return qc, iterations
+    return qc
 ```
 
-### Testing Grover's Algorithm
+### Testing the Algorithm
 
 ```{code-block} python
-def test_grover():
-    """Test Grover's algorithm with various configurations"""
-    print("Grover's Algorithm Test")
-    print("="*60)
+def test_deutsch_jozsa():
+    """Test Deutsch-Jozsa on various oracles"""
+    print("Deutsch-Jozsa Algorithm Test")
+    print("="*50)
     
-    test_cases = [
-        (3, [5], "1 solution in 8 items"),
-        (4, [7], "1 solution in 16 items"),
-        (4, [3, 7], "2 solutions in 16 items"),
-        (5, [13], "1 solution in 32 items"),
-    ]
-    
-    for n, solutions, description in test_cases:
-        N = 2**n
-        qc, iterations = grover_circuit(n, solutions)
+    for n in [3, 5, 8]:
+        print(f"\nn = {n} qubits ({2**n} possible inputs)")
+        print("-"*40)
+        
+        # Test constant oracles
+        for value in [0, 1]:
+            oracle = constant_oracle(n, value)
+            qc = deutsch_jozsa(oracle, n)
+            
+            result = simulator.run(qc, shots=1000).result()
+            counts = result.get_counts()
+            
+            # Check if we got all zeros
+            all_zeros = '0' * n
+            is_constant = all_zeros in counts and counts[all_zeros] > 990
+            
+            print(f"  Constant ({value}): measured {list(counts.keys())[0]} → ", end='')
+            print("CONSTANT ✓" if is_constant else "ERROR")
+        
+        # Test balanced oracle
+        oracle, pattern = random_balanced_oracle(n)
+        qc = deutsch_jozsa(oracle, n)
         
         result = simulator.run(qc, shots=1000).result()
         counts = result.get_counts()
         
-        # Check success rate
-        success = sum(counts.get(format(s, f'0{n}b'), 0) for s in solutions)
-        total = sum(counts.values())
+        all_zeros = '0' * n
+        is_balanced = all_zeros not in counts or counts.get(all_zeros, 0) < 10
         
-        print(f"\n{description}")
-        print(f"  N = {N}, solutions = {solutions}")
-        print(f"  Iterations: {iterations}")
-        print(f"  Success rate: {100*success/total:.1f}%")
-        print(f"  Top results: {dict(sorted(counts.items(), key=lambda x: -x[1])[:3])}")
+        print(f"  Balanced (pattern {pattern}): measured {list(counts.keys())[0]} → ", end='')
+        print("BALANCED ✓" if is_balanced else "ERROR")
 
-test_grover()
+test_deutsch_jozsa()
 ```
 
-### Visualizing the Amplitude Evolution
+### Visualizing the State Evolution
 
 ```{code-block} python
-def visualize_amplitude_evolution(n, solution, max_iterations=None):
-    """Visualize how amplitudes evolve during Grover iterations"""
-    import matplotlib.pyplot as plt
-    
-    N = 2**n
-    if max_iterations is None:
-        max_iterations = int(np.ceil(np.pi/4 * np.sqrt(N))) + 2
-    
-    solution_amps = []
-    other_amps = []
-    
-    for k in range(max_iterations + 1):
-        qc = QuantumCircuit(n)
-        qc.h(range(n))
-        
-        oracle = create_oracle(n, [solution])
-        diffusion = create_diffusion(n)
-        
-        for _ in range(k):
-            qc.append(oracle, range(n))
-            qc.append(diffusion, range(n))
-        
-        sv = Statevector(qc)
-        amplitudes = np.abs(sv.data)**2
-        
-        solution_amps.append(amplitudes[solution])
-        # Average of non-solution amplitudes
-        other_amps.append((1 - amplitudes[solution]) / (N - 1))
-    
-    plt.figure(figsize=(10, 5))
-    plt.plot(range(max_iterations + 1), solution_amps, 'b-o', label='Solution')
-    plt.plot(range(max_iterations + 1), other_amps, 'r-o', label='Non-solution (avg)')
-    plt.xlabel('Iterations')
-    plt.ylabel('Probability')
-    plt.title(f'Grover Amplitude Evolution (N={N}, solution={solution})')
-    plt.legend()
-    plt.grid(True)
-    plt.axhline(y=1/N, color='gray', linestyle='--', label='Initial')
-    optimal_k = int(np.round(np.pi/4 * np.sqrt(N)))
-    plt.axvline(x=optimal_k, color='green', linestyle='--', label=f'Optimal k={optimal_k}')
-    plt.savefig('grover_evolution.png', dpi=150, bbox_inches='tight')
-    plt.show()
-    
-    print(f"Optimal iterations: {optimal_k}")
-    print(f"Solution probability at optimal: {solution_amps[optimal_k]:.4f}")
-
-# Uncomment to run:
-# visualize_amplitude_evolution(4, 7)
-```
-
-### Amplitude Bar Chart (N=4 Example)
-
-```{code-block} python
-def visualize_n4_steps():
-    """Visualize each step of Grover for N=4, solution=3"""
-    import matplotlib.pyplot as plt
+def visualize_dj_states(n=2):
+    """Visualize the state at each step of Deutsch-Jozsa"""
     from qiskit.quantum_info import Statevector
     
-    n = 2
-    solution = 3  # |11⟩
-    N = 4
+    print(f"\nState Evolution for n={n}")
+    print("="*50)
     
-    fig, axes = plt.subplots(1, 3, figsize=(12, 4))
-    labels = ['|00⟩', '|01⟩', '|10⟩', '|11⟩']
-    colors = ['steelblue', 'steelblue', 'steelblue', 'orangered']
+    # Create a balanced oracle (parity function)
+    def get_state_after_steps(steps):
+        qc = QuantumCircuit(n + 1)
+        qc.x(n)  # Ancilla to |1⟩
+        if steps >= 1:
+            qc.h(range(n + 1))  # Hadamard all
+        if steps >= 2:
+            # Oracle: parity function
+            for i in range(n):
+                qc.cx(i, n)
+        if steps >= 3:
+            qc.h(range(n))  # Hadamard input qubits
+        return Statevector(qc)
     
-    # Step 1: After Hadamard (uniform superposition)
-    qc = QuantumCircuit(n)
-    qc.h(range(n))
-    sv = Statevector(qc)
-    amps = sv.data.real  # Real part (all positive initially)
+    step_names = [
+        "Initial: |0...0⟩|1⟩",
+        "After H⊗(n+1): superposition",
+        "After Oracle: phases applied",
+        "After H⊗n: interference"
+    ]
     
-    axes[0].bar(labels, amps, color=colors)
-    axes[0].axhline(y=0, color='black', linewidth=0.5)
-    axes[0].set_ylim(-0.6, 1.1)
-    axes[0].set_ylabel('Amplitude')
-    axes[0].set_title('(a) Initial: After H⊗²')
-    
-    # Step 2: After Oracle (flip |11⟩)
-    oracle = create_oracle(n, [solution])
-    qc.append(oracle, range(n))
-    sv = Statevector(qc)
-    amps = sv.data.real
-    
-    axes[1].bar(labels, amps, color=colors)
-    axes[1].axhline(y=0, color='black', linewidth=0.5)
-    axes[1].axhline(y=np.mean(amps), color='green', linestyle='--', label=f'Mean = {np.mean(amps):.2f}')
-    axes[1].set_ylim(-0.6, 1.1)
-    axes[1].set_title('(b) After Oracle')
-    axes[1].legend()
-    
-    # Step 3: After Diffusion (inversion about mean)
-    diffusion = create_diffusion(n)
-    qc.append(diffusion, range(n))
-    sv = Statevector(qc)
-    amps = sv.data.real
-    
-    axes[2].bar(labels, amps, color=colors)
-    axes[2].axhline(y=0, color='black', linewidth=0.5)
-    axes[2].set_ylim(-0.6, 1.1)
-    axes[2].set_title('(c) After Diffusion')
-    
-    plt.suptitle('Grover Algorithm: N=4, Solution=|11⟩', fontsize=14)
-    plt.tight_layout()
-    plt.savefig('grover_n4_steps.png', dpi=150, bbox_inches='tight')
-    plt.show()
+    for step in range(4):
+        sv = get_state_after_steps(step)
+        print(f"\nStep {step}: {step_names[step]}")
+        
+        # Show amplitudes for first few basis states
+        for i, amp in enumerate(sv[:min(8, len(sv))]):
+            if abs(amp) > 1e-10:
+                bits = format(i, f'0{n+1}b')
+                print(f"  |{bits}⟩: {amp:.4f}")
+        if len(sv) > 8:
+            print("  ...")
 
-# Uncomment to run:
-# visualize_n4_steps()
+visualize_dj_states(2)
 ```
 
-### The Geometric Picture
+### Comparing Query Complexity
 
 ```{code-block} python
-def visualize_grover_geometry(n, solution, iterations=None):
-    """Visualize Grover's algorithm geometrically"""
-    import matplotlib.pyplot as plt
+def compare_complexity():
+    """Compare quantum vs classical query complexity"""
+    print("\nQuery Complexity Comparison")
+    print("="*50)
+    print(f"{'n':<6} {'Classical (worst)':<20} {'Quantum':<10} {'Speedup':<15}")
+    print("-"*50)
     
-    N = 2**n
-    M = 1  # One solution
+    for n in range(1, 11):
+        classical = 2**(n-1) + 1
+        quantum = 1
+        speedup = classical / quantum
+        print(f"{n:<6} {classical:<20} {quantum:<10} {speedup:<15.0f}×")
     
-    theta = np.arcsin(np.sqrt(M/N))
-    
-    if iterations is None:
-        iterations = int(np.round(np.pi/4 * np.sqrt(N/M)))
-    
-    fig, ax = plt.subplots(figsize=(8, 8))
-    
-    # Draw axes
-    ax.arrow(0, 0, 1.2, 0, head_width=0.03, head_length=0.03, fc='black', ec='black')
-    ax.arrow(0, 0, 0, 1.2, head_width=0.03, head_length=0.03, fc='black', ec='black')
-    ax.text(1.25, 0, r'$|w^\perp\rangle$', fontsize=12)
-    ax.text(0, 1.25, r'$|w\rangle$', fontsize=12)
-    
-    # Draw initial state
-    ax.arrow(0, 0, np.cos(theta), np.sin(theta), head_width=0.03, 
-             head_length=0.03, fc='blue', ec='blue', linewidth=2)
-    ax.text(np.cos(theta)+0.05, np.sin(theta)+0.05, r'$|s\rangle$', fontsize=12, color='blue')
-    
-    # Draw states after each iteration
-    colors = plt.cm.viridis(np.linspace(0, 1, iterations+1))
-    
-    for k in range(iterations + 1):
-        angle = (2*k + 1) * theta
-        x, y = np.cos(angle), np.sin(angle)
-        if k > 0:
-            ax.plot([0, x], [0, y], '-', color=colors[k], linewidth=1.5)
-            ax.plot(x, y, 'o', color=colors[k], markersize=8)
-            if k == iterations:
-                ax.text(x+0.05, y+0.05, f'After {k} iter', fontsize=10)
-    
-    # Draw unit circle
-    circle = plt.Circle((0, 0), 1, fill=False, color='gray', linestyle='--')
-    ax.add_patch(circle)
-    
-    ax.set_xlim(-0.3, 1.4)
-    ax.set_ylim(-0.3, 1.4)
-    ax.set_aspect('equal')
-    ax.grid(True, alpha=0.3)
-    ax.set_title(f'Grover Geometry: N={N}, θ={theta:.3f} rad, {iterations} iterations')
-    
-    plt.savefig('grover_geometry.png', dpi=150, bbox_inches='tight')
-    plt.show()
+    print("\nNote: Classical worst-case. Quantum is always 1 query!")
 
-# Uncomment to run:
-# visualize_grover_geometry(4, 7, iterations=3)
+compare_complexity()
 ```
 
 ---
 
-## Common Pitfalls and Practical Considerations
+## Limitations and Perspective
 
-### 1. Wrong Number of Iterations
+### What Deutsch-Jozsa Demonstrates
 
-Too few iterations: low success probability.
-Too many iterations: state rotates past the solution, low success probability.
+1. **Quantum computers can solve some problems exponentially faster** than classical computers (at least in query complexity)
+2. **Superposition** allows evaluating functions on many inputs simultaneously
+3. **Phase kickback** encodes function values in quantum phases
+4. **Interference** extracts global properties from local phases
+5. The **Hadamard transform** acts as a quantum Fourier transform, converting phases to amplitudes
 
-**Solution:** If you don't know $M$, use the "guess and double" strategy.
+### What Deutsch-Jozsa Doesn't Demonstrate
 
-### 2. The Oracle Dominates Complexity
+1. **Practical usefulness** — the constant-vs-balanced problem is artificial
+2. **Robustness** — the algorithm requires the promise to be exactly satisfied
+3. **Typical quantum advantage** — most real speedups are polynomial (like Grover) or rely on number-theoretic structure (like Shor)
+4. **Fault tolerance** — we assumed perfect qubits and gates
+5. **Gate complexity advantage** — if the oracle is expensive, the speedup may be illusory
 
-Grover gives a quadratic speedup in **queries**, but if each query (oracle evaluation) is expensive, the total cost may still be high.
+### The Promise Problem Caveat
 
-**Example:** Searching a physical database where each lookup requires disk I/O. The oracle cost dominates, and Grover provides little practical benefit.
+Deutsch-Jozsa is a **promise problem**: we're guaranteed the input satisfies a special condition.
 
-### 3. No Solutions
+What if the promise is violated?
 
-If $M = 0$ (no solutions), Grover rotates the state but never reaches a solution. After measurement, you'll get a random non-solution.
+| Actual Function | DJ Measurement | Conclusion |
+|-----------------|----------------|------------|
+| Constant | All zeros | Correct! |
+| Balanced | Not all zeros | Correct! |
+| 75% zeros | ??? | Could be anything |
 
-**Solution:** Run the algorithm and verify $f(x) = 1$. If verification fails, there may be no solutions (or you need more iterations).
+For "almost balanced" functions, the algorithm gives **unreliable results**. The probability of measuring all zeros is:
+$$
+p = \left|\frac{1}{2^n}\sum_x (-1)^{f(x)}\right|^2
+$$
 
-### 4. Classical Preprocessing May Be Better
+If 75% of $f(x) = 0$ and 25% give $f(x) = 1$:
+$$
+p = \left|\frac{0.75 - 0.25}{1}\right|^2 = 0.25
+$$
 
-For some problems, classical preprocessing (sorting, indexing, hashing) reduces the search space more than Grover's $\sqrt{N}$ speedup.
+We'd measure all zeros 25% of the time — neither 0% (balanced) nor 100% (constant).
 
-**Example:** Finding a name in a phone book.
-- Classical brute force: $O(N)$
-- Classical with sorting: $O(\log N)$ (binary search)
-- Quantum Grover: $O(\sqrt{N})$
+### The Bigger Picture
 
-Binary search beats Grover! Use the right tool for the problem.
+Deutsch-Jozsa was historically important: it was the first **proof** that quantum computers could outperform classical computers for some problem.
 
-### 5. Fault Tolerance Requirements
+But the real excitement came later:
+- **Simon's algorithm** (1994): Exponential speedup for finding hidden XOR structure → inspired Shor
+- **Shor's algorithm** (1994): Exponential speedup for factoring → breaks RSA
+- **Grover's algorithm** (1996): Quadratic speedup for search → broadly applicable
 
-Grover requires $O(\sqrt{N})$ iterations, each with $O(n)$ gates. For large $N$, this is many gates, requiring error correction.
-
-**Current NISQ devices:** Limited to small $N$ (maybe $N \approx 1000$).
-
-**Fault-tolerant era:** Grover becomes practical for larger search spaces.
-
----
-
-## Grover's Algorithm and NP Problems
-
-### The Temptation
-
-NP-complete problems (like SAT) have $N = 2^n$ possible solutions. Grover searches in $O(\sqrt{N}) = O(2^{n/2})$ time.
-
-**Tempting thought:** "Grover gives exponential speedup for NP problems!"
-
-### The Reality
-
-$O(2^{n/2})$ is still exponential in $n$. It's a **quadratic speedup**, not a polynomial-time algorithm.
-
-| Problem Size | Classical Brute Force | Quantum Grover |
-|--------------|----------------------|----------------|
-| $n = 20$ | $2^{20} \approx 10^6$ | $2^{10} \appro 10^3$ |
-| $n = 40$ | $2^{40} \approx 10^{12}$ | $2^{20} \approx 10^6$ |
-| $n = 100$ | $2^{100} \approx 10^{30}$ | $2^{50} \approx 10^{15}$ |
-| $n = 256$ | $2^{256}$ (astronomical) | $2^{128}$ (still huge!) |
-
-Grover doesn't make NP problems tractable. It makes them **somewhat less intractable**.
-
-### The BQP vs NP Question
-
-**BQP** = problems solvable by quantum computers in polynomial time.
-
-Current belief: $\text{BQP} \not\supseteq \text{NP}$ (quantum computers probably can't solve all NP problems efficiently).
-
-Grover provides evidence for this: even the best possible quantum search is only quadratically faster.
+The journey from Deutsch-Jozsa to Shor took less than 10 years. It transformed quantum computing from a theoretical curiosity to a potential revolution in cryptography.
 
 ---
 
 ## Summary
 
-1. **The unstructured search problem:** Find $x$ with $f(x) = 1$ among $N$ items.
+1. **Historical significance:** Deutsch-Jozsa (1992) was the first proof of quantum speedup, inspiring Simon (1994) and Shor (1994).
 
-2. **Complexity:**
-   - Classical: $O(N)$ queries
-   - Quantum (Grover): $O(\sqrt{N})$ queries
-   - This is **provably optimal** (BBBV theorem)
+2. **The oracle model** lets us study query complexity: how many times must we evaluate $f$?
 
-3. **The algorithm:**
-   - Initialize: uniform superposition $|s\rangle$
-   - Repeat $k \approx \frac{\pi}{4}\sqrt{N/M}$ times: Oracle → Diffusion
-   - Measure
+3. **Deutsch's algorithm** solves the 1-bit constant-vs-balanced problem with 1 query (classical needs 2).
 
-4. **The Grover iterate:** $G = D \cdot O_f$ is a rotation by $2\theta$ in the 2D subspace
-   - Eigenvalues: $e^{\pm 2i\theta}$ where $\sin\theta = \sqrt{M/N}$
-   - This eigenstructure enables quantum counting via phase estimation
+4. **The Deutsch-Jozsa algorithm** generalizes to $n$ bits: 1 query vs $O(2^n)$ classical — **exponential speedup**.
 
-5. **Geometric picture:**
-   - Oracle = reflection about $|w^\perp\rangle$
-   - Diffusion = reflection about $|s\rangle$
-   - Two reflections = rotation by $2\theta$
+5. **The n-qubit Hadamard transform** is the QFT over $\mathbb{Z}_2^n$:
+$$H^{\otimes n}|x\rangle = \frac{1}{\sqrt{2^n}}\sum_z (-1)^{x \cdot z}|z\rangle$$
 
-6. **Amplitude amplification** generalizes Grover:
-   - Start with any state having overlap $a$ with solutions
-   - Amplify to high success probability in $O(1/\sqrt{a})$ iterations
-   - Useful for boosting weak classical algorithms
+6. **The key techniques:**
+   - **Superposition:** Evaluate on all inputs at once
+   - **Phase kickback:** Encode $f(x)$ as a phase $(-1)^{f(x)}$
+   - **Interference:** Constructive (constant) → measure $|0\rangle^{\otimes n}$; destructive (balanced) → measure anything else
 
-7. **Quantum counting:** Use phase estimation on $G$ to estimate $M$ in $O(\sqrt{N})$ queries
+7. **Related algorithms:**
+   - **Bernstein-Vazirani:** Same circuit, finds hidden string $s$ in $f(x) = s \cdot x$
+   - **Simon:** Finds hidden XOR period — direct precursor to Shor
 
-8. **Variants:**
-   - **Fixed-point Grover:** Never overshoots, converges monotonically
-   - **Grover adaptive search:** Finds minimum in $O(\sqrt{N})$ queries
+8. **Oracle construction:** Simple functions (inner product) need $O(n)$ gates; complex functions may need $O(2^n)$ gates.
 
-9. **Applications:**
-   - Database search, SAT, constraint satisfaction
-   - Cryptographic attacks (halves effective key length)
-   - Optimization via adaptive search
-   - Monte Carlo via amplitude estimation
+9. **Query vs gate complexity:** A 1-query algorithm is only meaningful if the oracle is efficiently implementable.
 
-10. **Limitations:**
-    - Quadratic speedup only (not exponential)
-    - Oracle complexity matters
-    - Still exponential for NP problems
-    - Requires $\Omega(\sqrt{N})$ coherent operations
-
-11. **Quantum walks:** Grover can be viewed as a quantum walk on the complete graph; this perspective generalizes to spatial search on other graphs.
+10. **The promise matters:** Algorithm fails gracefully when the constant-or-balanced promise is violated.
 
 ---
 
 ## Homework
 
-### Problem 1: Grover by Hand (Small Example)
+### Problem 1: Deutsch's Algorithm by Hand
 
-Consider $N = 4$ items with one solution at $x = 3$.
+Work through Deutsch's algorithm for the function $f(0) = 1, f(1) = 0$ (a balanced function).
 
-**(a)** Write the initial state $|s\rangle$ as a vector in the computational basis.
+**(a)** Write the state after each step: initialization, first Hadamards, oracle, second Hadamard.
 
-**(b)** Write the oracle matrix $O_f$.
+**(b)** What is the final measurement outcome? Does it correctly identify $f$ as balanced?
 
-**(c)** Write the diffusion matrix $D$.
-
-**(d)** Compute $O_f|s\rangle$.
-
-**(e)** Compute $D \cdot O_f|s\rangle$.
-
-**(f)** What is the probability of measuring $|11\rangle$ (the solution)?
-
-**(g)** How does this compare to the initial probability $1/4$?
+**(c)** Repeat for the constant function $f(0) = f(1) = 1$.
 
 ---
 
-### Problem 2: Optimal Iterations
+### Problem 2: Phase Kickback Derivation
 
-**(a)** For $N = 256$ with $M = 1$ solution, calculate the optimal number of iterations.
+Prove the phase kickback formula:
 
-**(b)** What is the success probability at the optimal iteration count?
+**(a)** Show that $X|{-}\rangle = -|{-}\rangle$ where $|{-}\rangle = \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)$.
 
-**(c)** What happens if you use exactly double the optimal iterations?
+**(b)** Show that for the oracle $U_f|x\rangle|y\rangle = |x\rangle|y \oplus f(x)\rangle$:
+$$
+U_f|x\rangle|{-}\rangle = (-1)^{f(x)}|x\rangle|{-}\rangle
+$$
 
-**(d)** What happens if you use exactly half the optimal iterations?
-
----
-
-### Problem 3: Multiple Solutions
-
-**(a)** For $N = 1024$ with $M = 4$ solutions, calculate the optimal number of iterations.
-
-**(b)** Compare to the case $M = 1$. Why are fewer iterations needed?
-
-**(c)** If you don't know $M$ but know it's between 1 and 10, describe a strategy to find a solution.
+**(c)** Why is it called "kickback"? Where does the phase come from?
 
 ---
 
-### Problem 4: Geometric Derivation
+### Problem 3: Deutsch-Jozsa Amplitude Calculation
 
-**(a)** Prove that the oracle $O_f$ is a reflection about $|w^\perp\rangle$ in the $\{|w\rangle, |w^\perp\rangle\}$ subspace.
+For a 3-qubit Deutsch-Jozsa instance:
 
-**(b)** Prove that the diffusion operator $D$ is a reflection about $|s\rangle$.
+**(a)** Write the state after the first Hadamard layer (before the oracle).
 
-**(c)** Use the fact that two reflections compose to a rotation to derive the rotation angle $2\theta$.
+**(b)** If $f$ is the parity function ($f(x) = x_1 \oplus x_2 \oplus x_3$), write the state after the oracle.
 
----
+**(c)** Calculate the amplitude of $|000\rangle$ after the final Hadamard layer.
 
-### Problem 5: Diffusion Operator
-
-**(a)** Verify that $D = 2|s\rangle\langle s| - I$ acts as "inversion about the mean."
-
-**(b)** Show that $D = H^{\otimes n}(2|0\rangle\langle 0| - I)H^{\otimes n}$.
-
-**(c)** The operator $2|0\rangle\langle 0| - I$ flips the phase of all states except $|0\rangle$. Design a circuit for this using X gates and a multi-controlled Z.
+**(d)** Calculate the amplitude of $|111\rangle$ after the final Hadamard layer.
 
 ---
 
-### Problem 6: Query Complexity Lower Bound
+### Problem 4: Proving Correctness
 
-The BBBV theorem says Grover is optimal. Here's intuition for why:
+Prove that the Deutsch-Jozsa algorithm correctly distinguishes constant and balanced functions.
 
-**(a)** In one oracle query, how much can the state change? (Hint: the oracle is a unitary that acts as identity on non-solutions.)
+**(a)** Show that for a constant function, the amplitude of $|0\rangle^{\otimes n}$ is $\pm 1$.
 
-**(b)** The solution amplitude starts at $1/\sqrt{N}$ and needs to reach $O(1)$. If each query can change amplitudes by at most $O(1/\sqrt{N})$, how many queries are needed?
+**(b)** Show that for a balanced function, the amplitude of $|0\rangle^{\otimes n}$ is $0$.
 
-**(c)** Make this argument more precise. (This is challenging!)
-
----
-
-### Problem 7: Cryptographic Implications
-
-**(a)** AES-128 uses 128-bit keys. How many classical operations are needed to brute-force search all keys?
-
-**(b)** How many Grover iterations would a quantum computer need?
-
-**(c)** What key length provides 128 bits of security against quantum attack?
-
-**(d)** Why is this called "Grover's attack" on symmetric cryptography?
+**(c)** What if $f$ is neither constant nor balanced (the promise is violated)? What can happen?
 
 ---
 
-### Problem 8: SAT Oracle Design
+### Problem 5: Bernstein-Vazirani
 
-Consider the Boolean formula in CNF (Conjunctive Normal Form):
-$$\phi(x_1, x_2, x_3) = (x_1 \lor x_2) \land (\neg x_1 \lor x_3) \land (\neg x_2 \lor \neg x_3)$$
+The Bernstein-Vazirani problem: find the hidden string $s$ given an oracle for $f(x) = s \cdot x$ (inner product mod 2).
 
-**(a)** How many possible assignments $(x_1, x_2, x_3) \in \{0,1\}^3$?
+**(a)** Explain why the Deutsch-Jozsa circuit also solves this problem.
 
-**(b)** Find all satisfying assignments by exhaustive search.
+**(b)** What is the amplitude of $|s\rangle$ after the algorithm?
 
-**(c)** Design an oracle circuit that marks satisfying assignments.
-
-*Hint:* Build the oracle in layers:
-1. **Clause evaluation:** For each clause, compute whether it's satisfied into an ancilla. For example, $(x_1 \lor x_2)$ is satisfied unless both are 0, so use a Toffoli with $x_1$ and $x_2$ as controls (after flipping them) targeting an ancilla.
-2. **AND the clauses:** Use another Toffoli to compute the AND of all clause ancillas.
-3. **Phase flip:** Apply Z to the final ancilla (or use phase kickback).
-4. **Uncompute:** Reverse steps 1-2 to clean up ancillas.
-
-**(d)** How many ancilla qubits does your circuit need?
-
-**(e)** If this formula had $n$ variables and $m$ clauses (each with at most $k$ literals), estimate the oracle complexity in terms of $n$, $m$, $k$.
-
-**(f)** Compare the total complexity of Grover + your oracle to classical brute force for $n = 100$ variables.
+**(c)** Implement this in Qiskit for $n = 5$ with a random secret string $s$. Verify you recover $s$.
 
 ---
 
-### Problem 9: Implementation
+### Problem 6: Oracle Construction
 
-**(a)** Implement Grover's algorithm in Qiskit for $N = 16$ with solution at $x = 9$.
+**(a)** Design an oracle circuit for the function $f(x_1, x_2) = x_1 \land x_2$ (AND gate). Your circuit should implement $|x_1 x_2\rangle|y\rangle \to |x_1 x_2\rangle|y \oplus (x_1 \land x_2)\rangle$.
 
-**(b)** Run with 0, 1, 2, 3, 4, 5 iterations and plot the success probability.
+*Hint:* You need the **Toffoli gate** (CCNOT), which flips the target qubit only when both control qubits are $|1\rangle$. In Qiskit, use `qc.ccx(control1, control2, target)`.
 
-**(c)** Where is the maximum? Does it match the theoretical prediction?
+**(b)** Is this function constant, balanced, or neither?
 
-**(d)** Implement amplitude estimation to estimate the number of solutions for a mystery oracle.
+**(c)** What would Deutsch-Jozsa output for this oracle? (Remember, the promise is violated!)
 
----
-
-### Problem 10: Grover vs Classical
-
-**(a)** For what value of $N$ does Grover with $\sqrt{N}$ queries equal classical with $N$ queries at $N = 10^6$ operations? (Assume 1 query = 1 operation.)
-
-**(b)** If quantum operations are 1000× slower than classical operations, for what $N$ does Grover become advantageous?
-
-**(c)** If the oracle requires $n$ gates to evaluate and $N = 2^n$, compare total gate complexity of classical brute force vs Grover.
+**(d)** Design an oracle for $f(x_1, x_2, x_3) = (x_1 \land x_2) \oplus x_3$. How many Toffoli and CNOT gates do you need?
 
 ---
 
-### Problem 11: Amplitude Amplification (General)
+### Problem 7: Generalizing the Oracle
 
-Amplitude amplification generalizes Grover to the case where the initial state is not uniform.
+The standard oracle computes $U_f|x\rangle|y\rangle = |x\rangle|y \oplus f(x)\rangle$.
 
-**(a)** Suppose we start with state $|\psi\rangle$ (not necessarily $|s\rangle$) where $|\langle w|\psi\rangle|^2 = a$ (overlap with solution space). What is the optimal number of iterations?
+**(a)** Why must quantum oracles be reversible? Why can't we just compute $|x\rangle \to |f(x)\rangle$?
 
-**(b)** This is useful when a classical algorithm can generate "good guesses" with probability $a > 1/N$. If $a = 1/100$, how many iterations are needed?
+**(b)** Can you construct a reversible oracle for a function that's not reversible (e.g., $f(x) = 0$ for all $x$)?
 
-**(c)** Compare to Grover with uniform start ($a = M/N$). When is amplitude amplification advantageous?
-
----
-
-### Problem 12: Practical Considerations
-
-**(a)** You have a quantum computer with 50 qubits and can run circuits of depth 1000. What is the largest $N$ for which you can run Grover?
-
-**(b)** If each Grover iteration requires 100 gates, estimate the maximum $N$.
-
-**(c)** Current quantum computers have gate error rates around 0.1%. After how many gates does the error become significant? What does this imply for Grover?
-
-**(d)** Discuss: when will Grover's algorithm provide practical speedups on real hardware?
+**(c)** What's the minimum number of ancilla qubits needed for an oracle computing $f: \{0,1\}^n \to \{0,1\}^m$?
 
 ---
 
-### Problem 13: Quantum Counting
+### Problem 8: Resource Counting
 
-Quantum counting uses phase estimation on the Grover iterate $G$ to estimate the number of solutions $M$.
+**(a)** How many qubits does the $n$-qubit Deutsch-Jozsa algorithm use?
 
-**(a)** The Grover iterate $G = D \cdot O_f$ has eigenvalues $e^{\pm 2i\theta}$ where $\sin\theta = \sqrt{M/N}$. Verify this for the 2D subspace spanned by $\{|w\rangle, |w^\perp\rangle\}$.
+**(b)** How many Hadamard gates?
 
-**(b)** If phase estimation gives us $\theta$ with precision $\delta$, what is the error in our estimate of $M$? (Use $M = N\sin^2\theta$ and propagate errors.)
+**(c)** The oracle is treated as a "black box." In practice, how would the oracle's complexity affect the overall algorithm?
 
-**(c)** To estimate $M$ with relative error $\epsilon$ (i.e., $|\hat{M} - M| \leq \epsilon M$), what precision $\delta$ do we need in $\theta$?
-
-**(d)** Phase estimation requires $O(1/\delta)$ controlled applications of $G$. Each application of $G$ uses 1 oracle query. What is the total query complexity to estimate $M$ with relative error $\epsilon$?
-
-**(e)** Compare to classical counting: to estimate $M$ with relative error $\epsilon$, how many samples/queries does classical counting need?
+**(d)** If the oracle requires $O(n)$ elementary gates to implement, what is the total gate complexity of Deutsch-Jozsa?
 
 ---
 
-### Problem 14: Fixed-Point Grover
+### Problem 9: Probabilistic Classical Algorithm
 
-Standard Grover can overshoot if we run too many iterations.
+Consider a randomized classical algorithm for the constant-vs-balanced problem:
 
-**(a)** For $N = 1000$ and $M = 1$, calculate the success probability after $k = 25$ iterations (optimal is about 25) and after $k = 50$ iterations.
+**(a)** If you query $k$ random inputs and all give the same output, what's the probability that $f$ is actually balanced?
 
-**(b)** If you don't know $M$ and guess $k$ randomly between 1 and 50, what is your expected success probability? (Average over both $k$ and the measurement outcome.)
+**(b)** How many queries do you need for 99% confidence?
 
-**(c)** The "guess and double" strategy runs Grover with $k = 1, 2, 4, 8, \ldots$ iterations, measuring after each. Argue that this finds a solution in $O(\sqrt{N/M})$ total queries.
+**(c)** Compare to the quantum algorithm. Is the quantum advantage as impressive when we allow classical randomness?
 
-**(d)** Why might fixed-point amplitude amplification (which never overshoots) be preferable to "guess and double" in practice?
+---
+
+### Problem 10: Simon's Algorithm (Challenge)
+
+Simon's algorithm finds a hidden XOR period $s$ where $f(x) = f(y) \iff x \oplus y \in \{0^n, s\}$.
+
+**(a)** For $n = 2$ with $s = 11$, list all pairs $(x, y)$ where $f(x) = f(y)$.
+
+**(b)** After one run of Simon's algorithm, we get a random $z$ with $z \cdot s = 0$. For $s = 11$, what are the possible values of $z$?
+
+**(c)** Why do we need $O(n)$ runs of the algorithm to find $s$, rather than just one?
+
+**(d)** Explain conceptually why Simon's algorithm gives an exponential speedup while Bernstein-Vazirani only gives a polynomial speedup.
+
+---
+
+### Problem 11: Query vs Gate Complexity
+
+**(a)** For the inner product oracle $f(x) = s \cdot x$, how many CNOT gates are needed in terms of the Hamming weight of $s$ (number of 1s)?
+
+**(b)** Suppose we have a "random" function $f: \{0,1\}^n \to \{0,1\}$ with no special structure. Argue that any circuit computing $f$ requires $\Omega(2^n / n)$ gates. (This is a known result from circuit complexity.)
+
+**(c)** Given part (b), is there any quantum speedup for determining whether a random function is constant or balanced? Explain.
+
+**(d)** What does this tell us about when quantum algorithms provide meaningful speedups?
+
+---
+
+### Problem 12: Beyond the Promise
+
+**(a)** Suppose $f: \{0,1\}^3 \to \{0,1\}$ has $f(x) = 1$ for exactly 3 out of 8 inputs. Calculate the probability of measuring $|000\rangle$ in Deutsch-Jozsa.
+
+**(b)** Can you modify Deutsch-Jozsa to estimate the fraction of inputs where $f(x) = 1$? What would you measure?
+
+**(c)** This problem (counting solutions) is related to a variant of Grover's algorithm. Why might amplitude estimation be useful here?
 
 ---
 
 ## Looking Ahead
 
-Grover showed us that quantum computers offer a quadratic speedup for the most general search problem. The speedup is modest but broadly applicable.
+Deutsch-Jozsa showed that quantum computers can be exponentially faster — at least for carefully designed problems.
 
-Next lecture, we tackle the crown jewel of quantum algorithms: **Shor's algorithm for factoring**. Unlike Grover's quadratic speedup, Shor achieves an exponential speedup — and breaks the RSA cryptosystem that secures most of the internet.
+Next lecture, we'll study **Grover's algorithm**: a quantum speedup for the practical problem of searching an unstructured database. The speedup is "only" quadratic ($O(\sqrt{N})$ vs $O(N)$), but it applies to nearly any search problem.

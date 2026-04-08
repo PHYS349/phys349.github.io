@@ -119,6 +119,40 @@ The quantum prediction for spin correlations is $E(\hat{a}, \hat{b}) = -\cos\the
 
 ---
 
+## Chapter 4: Quantum Circuits and Protocols
+
+### Lecture 04_00 — Quantum Circuits and the No-Cloning Theorem
+
+This lecture transitions from "what quantum states are" to "how to do things with them" by introducing the quantum circuit formalism. It begins with classical circuits (wires, gates, truth tables for NOT, AND, XOR) and the classical half-adder (Sum = $a \oplus b$, Carry = $a \wedge b$), emphasizing that classical fan-out (copying bits) is free.
+
+Quantum circuits have three ingredients: wires carry qubits, gates are unitary operations, and measurements collapse qubits to classical bits (double wires). Gate composition reads right-to-left in matrix multiplication: if gate $A$ is first and $B$ is second, the total operation is $BA$. Single-qubit gates ($X$, $H$, $Z$, $S$, $T$) are reviewed. The key new content is multi-qubit gates:
+
+**CNOT** (controlled-NOT): $\text{CNOT} = |0\rangle\langle 0| \otimes I + |1\rangle\langle 1| \otimes X$, with matrix $\begin{pmatrix} 1&0&0&0 \\ 0&1&0&0 \\ 0&0&0&1 \\ 0&0&1&0 \end{pmatrix}$.
+
+**CZ** (controlled-Z): $\text{CZ} = |0\rangle\langle 0| \otimes I + |1\rangle\langle 1| \otimes Z$; only effect is $|11\rangle \to -|11\rangle$. Symmetric under qubit exchange.
+
+**SWAP**: $\text{SWAP}|a\rangle|b\rangle = |b\rangle|a\rangle$, decomposed as three CNOTs: $\text{SWAP} = \text{CNOT}_{12} \cdot \text{CNOT}_{21} \cdot \text{CNOT}_{12}$.
+
+**General controlled-$U$**: $C_U = |0\rangle\langle 0| \otimes I + |1\rangle\langle 1| \otimes U$.
+
+**Toffoli (CCX)**: three-qubit gate, flips target only if both controls are $|1\rangle$. Quantum version of reversible AND.
+
+The lecture builds Bell states from circuits: $|00\rangle \xrightarrow{H \otimes I} \frac{1}{\sqrt{2}}(|00\rangle + |10\rangle) \xrightarrow{\text{CNOT}} \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle) = |\Phi^+\rangle$. Different inputs ($|00\rangle, |01\rangle, |10\rangle, |11\rangle$) produce all four Bell states. The reverse circuit (CNOT then H) performs Bell measurement.
+
+**Qiskit ordering convention**: top wire = qubit 0 = rightmost position in ket. So $H$ on qubit 0 gives matrix $I \otimes H$, not $H \otimes I$.
+
+The lecture culminates with the **no-cloning theorem**: no unitary $U$ satisfies $U(|\psi\rangle \otimes |0\rangle) = |\psi\rangle \otimes |\psi\rangle$ for all $|\psi\rangle$. Proof by contradiction: linearity forces $U\left(\frac{|a\rangle + |b\rangle}{\sqrt{2}} \otimes |0\rangle\right) = \frac{1}{\sqrt{2}}(|aa\rangle + |bb\rangle)$, which is an entangled state, not the cloned product $\frac{1}{2}(|aa\rangle + |ab\rangle + |ba\rangle + |bb\rangle)$. Key insight: cloning is nonlinear, but QM only allows linear (unitary) evolution. Consequences: QKD security, teleportation must destroy the original, quantum error correction requires entanglement-based encoding, fan-out is not free.
+
+### Lecture 04_01 — Circuit Challenges and the CHSH Game
+
+This lecture applies circuit formalism to three problems. **Part 1: Quantum half-adder.** Reversibility constraint means quantum circuits must write results into ancilla qubits rather than overwriting. The quantum half-adder uses 4 qubits: inputs $a, b$ on qubits 0,1; sum target on qubit 2; carry target on qubit 3. Sum ($a \oplus b$) computed via two CNOTs: $|a\rangle|b\rangle|0\rangle \xrightarrow{\text{CNOT}_{0\to 2}} |a\rangle|b\rangle|a\rangle \xrightarrow{\text{CNOT}_{1\to 2}} |a\rangle|b\rangle|a \oplus b\rangle$. Carry ($a \wedge b$) computed via Toffoli: $\text{CCX}|a\rangle|b\rangle|0\rangle = |a\rangle|b\rangle|a \wedge b\rangle$. The Toffoli alone is classically universal.
+
+**Part 2: GHZ states.** The Greenberger–Horne–Zeilinger state extends Bell entanglement to three (or more) qubits: $|\text{GHZ}\rangle = \frac{1}{\sqrt{2}}(|000\rangle + |111\rangle)$. Circuit: $H$ on qubit 0, then CNOT from qubit 0 to each other qubit. GHZ entanglement is fragile — measuring any single qubit collapses the rest to a product state (unlike bipartite Bell entanglement). Generalizes to $n$ qubits: $|\text{GHZ}_n\rangle = \frac{1}{\sqrt{2}}(|00\cdots 0\rangle + |11\cdots 1\rangle)$.
+
+**Part 3: CHSH game.** A cooperative game between Alice and Bob that quantifies quantum advantage. Referee sends random bits $x, y \in \{0,1\}$; players respond with $a, b$; winning condition is $a \oplus b = x \wedge y$ (same answers unless both questions are 1). Classical bound: no strategy exceeds 75% (proof: any deterministic strategy satisfying three "match" cases forces failure on the fourth). Quantum strategy: share $|\Phi^+\rangle$, measure in rotated bases. Alice uses $\alpha = 0$ (if $x=0$) or $\alpha = \pi/4$ (if $x=1$); Bob uses $\beta = \pi/8$ (if $y=0$) or $\beta = -\pi/8$ (if $y=1$). Rotation gate: $R(\theta) = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}$. Correlation formula: $\Pr(a = b) = \cos^2(\alpha - \beta)$, $\Pr(a \neq b) = \sin^2(\alpha - \beta)$. Every case gives winning probability $\cos^2(\pi/8)$, so overall $\Pr(\text{win}) = \cos^2(\pi/8) = \frac{2+\sqrt{2}}{4} \approx 85.4\%$. This is optimal: **Tsirelson's bound** (1980). The gap between 75% (classical) and 85.4% (quantum) is a precise, measurable quantum advantage. Pattern: define task → prove classical bound → beat it with entanglement.
+
+---
+
 ## Quick Reference: Key Equations
 
 | Topic | Equation |
@@ -141,6 +175,16 @@ The quantum prediction for spin correlations is $E(\hat{a}, \hat{b}) = -\cos\the
 | Entanglement test | $\det(C) \neq 0 \Leftrightarrow$ entangled |
 | Uncertainty principle | $\Delta A \cdot \Delta B \geq \frac{1}{2}\|\langle[\hat{A}, \hat{B}]\rangle\|$ |
 | Bell correlation | $E(\hat{a}, \hat{b}) = -\cos\theta_{ab}$ |
+| CNOT | $\text{CNOT} = \|0\rangle\langle 0\| \otimes I + \|1\rangle\langle 1\| \otimes X$ |
+| CZ | $\text{CZ} = \|0\rangle\langle 0\| \otimes I + \|1\rangle\langle 1\| \otimes Z$ |
+| General controlled-$U$ | $C_U = \|0\rangle\langle 0\| \otimes I + \|1\rangle\langle 1\| \otimes U$ |
+| SWAP decomposition | $\text{SWAP} = \text{CNOT}_{12} \cdot \text{CNOT}_{21} \cdot \text{CNOT}_{12}$ |
+| No-cloning | No unitary $U$: $U(\|\psi\rangle \otimes \|0\rangle) = \|\psi\rangle \otimes \|\psi\rangle$ $\forall \|\psi\rangle$ |
+| GHZ state | $\|\text{GHZ}\rangle = \frac{1}{\sqrt{2}}(\|000\rangle + \|111\rangle)$ |
+| CHSH winning condition | $a \oplus b = x \wedge y$ |
+| CHSH classical bound | $\Pr(\text{win}) \leq 3/4 = 75\%$ |
+| CHSH quantum bound | $\Pr(\text{win}) = \cos^2(\pi/8) = \frac{2+\sqrt{2}}{4} \approx 85.4\%$ |
+| Entangled correlation | $\Pr(a = b) = \cos^2(\alpha - \beta)$ |
 
 ---
 
@@ -149,5 +193,6 @@ The quantum prediction for spin correlations is $E(\hat{a}, \hat{b}) = -\cos\the
 **Chapter 1** motivates "why quantum computing" through computational hardness, ending with real hardware.
 **Chapter 2** builds single-qubit physics bottom-up: waves → interference → interferometers → Bloch sphere → group theory → Pauli matrices → time evolution → Rabi/Ramsey → decoherence. The MZI is the unifying thread.
 **Chapter 3** extends to two qubits: tensor products → entanglement → Bell states → EPR → Bell's theorem. The course proves that nature is nonlocal (or non-realistic), grounding quantum weirdness in experimental fact.
+**Chapter 4** introduces circuits and protocols: classical → quantum circuit formalism, CNOT/CZ/SWAP/Toffoli gates, Bell state construction, no-cloning theorem, GHZ states, CHSH game as quantitative quantum advantage. Upcoming: QKD (BB84) and quantum teleportation.
 
-**Next likely topics:** Quantum gates and circuits (CNOT, universal gate sets), quantum algorithms (Deutsch-Jozsa, Grover, Shor), quantum error correction, or deeper dives into specific hardware platforms.
+**Next likely topics:** QKD (BB84), quantum teleportation, quantum algorithms (Deutsch-Jozsa, Grover, Shor), quantum error correction.

@@ -39,10 +39,11 @@ project:
         - file: lectures/03_03_lecture.md
         - file: lectures/03_04_lecture.md
         - file: lectures/midterm_practice_exam.md 
-        - file: lectures/04_00_lecture.md
         - file: lectures/04_01_lecture.md
-        #- file: lectures/03_07_lecture.md
-        #- file: lectures/03_07_hw.md
+        - file: lectures/04_02_lecture.md
+        - file: lectures/04_03_lecture.md
+        - file: lectures/04_04_lecture.md
+
 
     - title: Homework
       children:

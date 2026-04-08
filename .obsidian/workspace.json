@@ -1,0 +1,216 @@
+{
+  "main": {
+    "id": "b0e6a80708721cff",
+    "type": "split",
+    "children": [
+      {
+        "id": "660253e829855657",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8a3db3b419e55be4",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f26476c64dc3142e",
+    "type": "split",
+    "children": [
+      {
+        "id": "25a1e38df78581c4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c93c93f00f7b52b9",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "490dc8911f05401f",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "fb6c17f5f5ced540",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "5c29e1982a891ccd",
+    "type": "split",
+    "children": [
+      {
+        "id": "63136a70bc24b564",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "74fd0da37edf73fe",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "0409c1ac05f3a70a",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "bf9208e81ea464ea",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "370e28fe3a808d82",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "fa56a6ed778a454d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "lectures/PHYS349/qiskit_tutorials_summary.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of qiskit_tutorials_summary"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "c93c93f00f7b52b9",
+  "lastOpenFiles": [
+    "_build/site/content/lectures.lecture-18.json",
+    "_build/site/public/04_04_lecture-48fa57340ce11db17a9d60f4dc0f7b9f.md",
+    "_build/site/public/04_03_lecture-af19c03cf98d82a2dcbad2c10b4fe94e.md",
+    "homework/hw_teleportation.ipynb",
+    "homework/hw_qkd.ipynb",
+    "lectures/04_04_lecture.md",
+    "lectures/04_04_outline.md",
+    "_build/site/public/04_02_lecture-16528d066960cb252cd63056b1b119e3.md",
+    "_build/site/public/04_01_lecture-4c7b8e3ebe6cc279d6f042d9597cdf8d.md",
+    "_build/site/public/04_01_lecture-171bb11957d7326943d62041a39d4497.md",
+    "lectures/04_01_lecture.md",
+    "_build/site/public/04_02_lecture-0a4888dfeb240c59ee819b3cf59bc453.md",
+    "lectures/04_02_extra.md",
+    "lectures/04_02_lecture.md",
+    "lectures/04_03_extra3.md",
+    "lectures/04_03_extra2.md",
+    "lectures/04_03_extra.md",
+    "lectures/04_03_lecture.md",
+    "_build/site/public/04_02_lecture-218bc9fef3c8887b410cd0d944f3dfb6.md",
+    "_build/site/public/460c5617da69a5ca4e4b64e7408387c9.png",
+    "_build/site/public/6c715df82a0ada4b99227037e1bfb4fb.png",
+    "_build/execute/88f6a8f338503bb0e98ba785afbd7839.json",
+    "lectures/04_02_extra3.md",
+    "lectures/04_02_extra2.md",
+    "_build/site/content/lectures.extra.json",
+    "_build/site/public/04_03_extra-c01f3084491db765ed6578af21138231.md",
+    "lectures/04_03_iclicker.md",
+    "lectures/04_03_lecture.md.tmp.7431.1774918653585",
+    "lectures/04_03_outline.md",
+    "CLAUDE.md",
+    "lecture_resources/qiskit_tutorials_summary.md",
+    "lecture_resources/outline.md",
+    "lecture_resources/lecture_notes2.md"
+  ]
+}
