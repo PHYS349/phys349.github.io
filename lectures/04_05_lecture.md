@@ -829,8 +829,8 @@ Pair up with a neighbor. Each of you pick a secret binary string of length 4–6
 
 Next lecture: Grover's search algorithm. Deutsch-Jozsa gives an exponential speedup but solves a somewhat artificial problem (who really needs to distinguish constant from balanced?). Grover's algorithm tackles something universal — finding a marked item in an unstructured list — and achieves a quadratic speedup: $O(\sqrt{N})$ queries instead of $O(N)$. The oracle framework and phase kickback carry over directly. The new ingredient is amplitude amplification: a geometric rotation in Hilbert space that pumps probability into the marked state.
 
-{download}`Download Homework: Teleportation, Entanglement Swapping, and Quantum Algorithms <../homework/04_05_homework.ipynb>`
+<!-- {download}`Download Homework: Teleportation, Entanglement Swapping, and Quantum Algorithms <../homework/04_05_homework.ipynb>` -->
 
-Due: Wednesday at midnight.
+<!-- Due: Wednesday at midnight. -->
 
 <!-- **Reference:** The [IBM Deutsch-Jozsa tutorial](../lecture_resources/deutsch-jozsa.ipynb) covers the same algorithms with additional context — a useful companion if you get stuck. -->
