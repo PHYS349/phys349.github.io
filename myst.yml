@@ -43,6 +43,7 @@ project:
         - file: lectures/04_02_lecture.md
         - file: lectures/04_03_lecture.md
         - file: lectures/04_04_lecture.md
+        - file: lectures/04_05_lecture.md
 
 
     - title: Homework
