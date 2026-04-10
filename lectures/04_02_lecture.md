@@ -450,6 +450,11 @@ Next lecture we use no-cloning and entanglement to build our first quantum proto
 
 # HOMEWORK
 
-[📥 Download Homework — Qiskit Circuits (.ipynb)](../homework/download_hw_qiskit.html)
+[📥 Download Homework — Qiskit Circuits (.ipynb)](https://raw.githubusercontent.com/PHYS349/phys349.github.io/main/homework/hw_qiskit.ipynb)
 
 **Due: Wednesday at midnight.**
+
+```{admonition} Download Tip
+:class: tip
+Right-click the link above and select **"Save Link As..."** to download the notebook directly. If the file opens as text in your browser, use **Ctrl+S** (or **Cmd+S** on Mac) to save it. Make sure the filename ends in `.ipynb` — if your browser saved it as `.txt` or `.json`, just rename it to `hw_qiskit.ipynb`.
+```
