@@ -459,7 +459,7 @@ document.querySelectorAll('a.ipynb-download').forEach(link => {
   link.addEventListener('click', function(e) {
     e.preventDefault();
     const url = this.href;
-    const filename = this.dataset.filename;
+    const filename = url.split('/').pop();
     fetch(url)
       .then(r => r.blob())
       .then(blob => {
