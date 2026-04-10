@@ -450,6 +450,6 @@ Next lecture we use no-cloning and entanglement to build our first quantum proto
 
 # HOMEWORK
 
-{download}`Download Homework — Qiskit Circuits <../homework/hw_qiskit.ipynb>`
+[Download Homework — Qiskit Circuits (.ipynb)](https://github.com/PHYS349/phys349.github.io/raw/main/homework/hw_qiskit.ipynb)
 
 **Due: Wednesday at midnight.**
