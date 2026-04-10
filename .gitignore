@@ -5,4 +5,5 @@ _build
 *.js
 .claude/worktrees/silly-babbage/
 *.html
+!homework/download_*.html
 /.claude

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><title>Downloading 04_05_homework.ipynb…</title></head>
+<body>
+<p>Your download should start automatically. If not, <a id="fallback" href="https://raw.githubusercontent.com/PHYS349/phys349.github.io/main/homework/04_05_homework.ipynb">click here</a>.</p>
+<script>
+fetch("https://raw.githubusercontent.com/PHYS349/phys349.github.io/main/homework/04_05_homework.ipynb")
+  .then(r => r.blob())
+  .then(blob => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "04_05_homework.ipynb";
+    a.click();
+  });
+</script>
+</body>
+</html>
