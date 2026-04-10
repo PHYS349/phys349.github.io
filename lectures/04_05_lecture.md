@@ -829,29 +829,8 @@ Pair up with a neighbor. Each of you pick a secret binary string of length 4–6
 
 Next lecture: Grover's search algorithm. Deutsch-Jozsa gives an exponential speedup but solves a somewhat artificial problem (who really needs to distinguish constant from balanced?). Grover's algorithm tackles something universal — finding a marked item in an unstructured list — and achieves a quadratic speedup: $O(\sqrt{N})$ queries instead of $O(N)$. The oracle framework and phase kickback carry over directly. The new ingredient is amplitude amplification: a geometric rotation in Hilbert space that pumps probability into the marked state.
 
-<a href="https://raw.githubusercontent.com/PHYS349/phys349.github.io/main/homework/04_05_homework.ipynb" class="ipynb-download" data-filename="04_05_homework.ipynb">📥 Download Homework: Teleportation, Entanglement Swapping, and Quantum Algorithms (.ipynb)</a>
+[📥 Download Homework: Teleportation, Entanglement Swapping, and Quantum Algorithms (.ipynb)](../homework/download_04_05.html)
 
 Due: Wednesday, April 15 at midnight.
-
-<script>
-document.querySelectorAll('a.ipynb-download').forEach(link => {
-  link.addEventListener('click', function(e) {
-    e.preventDefault();
-    const url = this.href;
-    const filename = url.split('/').pop();
-    fetch(url)
-      .then(r => r.blob())
-      .then(blob => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
-      });
-  });
-});
-</script>
 
 <!-- **Reference:** The [IBM Deutsch-Jozsa tutorial](../lecture_resources/deutsch-jozsa.ipynb) covers the same algorithms with additional context — a useful companion if you get stuck. -->
