@@ -44,6 +44,10 @@ project:
         - file: lectures/04_03_lecture.md
         - file: lectures/04_04_lecture.md
         - file: lectures/04_05_lecture.md
+        - file: lectures/04_06_lecture.md
+        - file: lectures/05_01_lecture.md
+        #- file: lectures/05_02_lecture.md
+        #- file: lectures/final_project.md
 
 
     - title: Homework
@@ -52,6 +56,7 @@ project:
         - file: homework/02_homework.md
         - file: homework/03_homework.md
         - file: homework/04_homework.md
+        #- file: homework/finalprojects.md
     - title: Resources
       children:
         - file: ./resources/syllabus.md

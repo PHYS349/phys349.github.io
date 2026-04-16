@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><title>Downloading final_phase1.ipynb…</title></head>
+<body>
+<p>Your download should start automatically. If not, <a id="fallback" href="https://raw.githubusercontent.com/PHYS349/phys349.github.io/main/homework/final_phase1.ipynb">click here</a>.</p>
+<script>
+fetch("https://raw.githubusercontent.com/PHYS349/phys349.github.io/main/homework/final_phase1.ipynb")
+  .then(r => r.blob())
+  .then(blob => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "final_phase1.ipynb";
+    a.click();
+  });
+</script>
+</body>
+</html>
