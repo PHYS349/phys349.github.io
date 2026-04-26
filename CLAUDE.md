@@ -21,6 +21,7 @@ This is PHYS 349, an undergraduate quantum computing course taught by Jonathan H
 - Jupyter Book 2 / MyST markdown
 - YAML frontmatter with kernelspec (python3)
 - LaTeX math: display with `$$...$$`, inline with `$...$`
+- **In tables:** use `\vert` instead of `|` inside inline LaTeX (e.g., `$\alpha\vert 000\rangle$`). MyST parses `|` as a column delimiter before the LaTeX renderer sees it, which breaks ket notation.
 - Horizontal rules (`------------------------------------------------------------------------`) between major Parts
 
 ### Structure

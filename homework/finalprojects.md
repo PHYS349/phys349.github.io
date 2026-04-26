@@ -36,7 +36,7 @@ Full project description: [Final Project page on the course website](../lectures
 
 ## What You Need To Do Right Now
 
-1. **Create a free IBM Quantum account** at [quantum.ibm.com](https://quantum.ibm.com) (no credit card; the Open Plan gives 10 minutes of QPU time per month — plenty for this project).
+1. **Create a free IBM Quantum account** at [quantum.cloud.ibm.com](https://quantum.cloud.ibm.com) (no credit card; the Open Plan gives 10 minutes of QPU time per month — plenty for this project). You'll need to create an instance and download an API key — full instructions are in the Phase 1 notebook.
 2. Finish **HW 4.6 (Grover's)** — due Wednesday, April 16.
 3. Show up Tuesday Apr 14 with a laptop so we can log into IBM Quantum together in class.
 

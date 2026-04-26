@@ -46,8 +46,8 @@ project:
         - file: lectures/04_05_lecture.md
         - file: lectures/04_06_lecture.md
         - file: lectures/05_01_lecture.md
-        #- file: lectures/05_02_lecture.md
-        #- file: lectures/final_project.md
+        - file: lectures/05_02_lecture.md
+        - file: lectures/final_project.md
 
 
     - title: Homework
